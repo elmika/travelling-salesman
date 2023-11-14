@@ -3,3 +3,21 @@
 TSP is a classic algorithmic problem in the field of computer science and operations research. It asks for the shortest possible route that visits a set of locations exactly once and returns to the origin point.
 
 In this project, we implement some problems and algorithms to resolve them.
+
+
+## Project Structure
+
+This is a typical Maven structure:
+
+```
+ProjectRoot/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/yourname/tsp/
+│   │   │       └── TravelingSalesman.java
+│   │   └── resources/
+│   └── test/
+│       └── java/
+└── pom.xml
+```
