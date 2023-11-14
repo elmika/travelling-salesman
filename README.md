@@ -20,4 +20,23 @@ ProjectRoot/
 │   └── test/
 │       └── java/
 └── pom.xml
+└── Dockerfile
+```
+
+## Running with Docker
+
+You can also run this application using Docker to avoid installing Maven and Java directly on your machine.
+
+### Building the Docker Image
+
+To build the Docker image, run:
+
+```bash
+docker build -t tsp-solver .
+```
+
+Then, run the application:
+
+```bash
+docker run tsp-solver
 ```
