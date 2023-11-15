@@ -7,7 +7,7 @@ public class TravellingSalesman {
 
         double[][] problem = ProblemFactory.createSimpleProblem();
         SimpleSolver solver = new SimpleSolver(problem);
-        int[] solution = solver.findSolution(problem);
+        int[] solution = solver.findSolution();
 
         displaySolution(solution, problem);
     }

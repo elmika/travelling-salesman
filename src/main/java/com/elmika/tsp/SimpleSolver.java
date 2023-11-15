@@ -6,11 +6,11 @@ import java.util.List;
 
 public class SimpleSolver {
     
-    // private double[][] distanceMatrix;
+    private double[][] distanceMatrix;
     private int iterationIndex = 0;
 
     public SimpleSolver(double[][] distanceMatrix) {
-        //this.distanceMatrix = distanceMatrix;
+        this.distanceMatrix = distanceMatrix;
     }
 
     public List<Integer> solveTSP() {
@@ -19,26 +19,26 @@ public class SimpleSolver {
         return null;
     }
     
-/*
-     * Best random 5 point solution of 10 attempts
+    /*
+     * Call relevant internal function to solve our problem.
     */
-    public int[] findSolution(double[][] problem) {
+    public int[] findSolution() {
        
-        // return findBestRandomSolution(problem);
-        return findBestSolution(problem);
+        // return findBestRandomSolution();
+        return findBestSolution();
     }
 
     /*
      * Best random 5 point solution of 10 attempts
     */
-    public int[] findBestRandomSolution(double[][] problem) {
+    private int[] findBestRandomSolution() {
        
-        int[] solution = findRandomSolution(problem);
-        double distance = getTotalDistance(solution, problem);
+        int[] solution = this.findRandomSolution();
+        double distance = getTotalDistance(solution, this.distanceMatrix);
 
         for (int i = 0; i < 10; i++) {
-            int[] newSolution = findRandomSolution(problem);
-            double newDistance = getTotalDistance(newSolution, problem);
+            int[] newSolution = findRandomSolution();
+            double newDistance = getTotalDistance(newSolution, this.distanceMatrix);
             if( newDistance < distance){
                 solution = newSolution;
                 distance = newDistance;
@@ -51,14 +51,14 @@ public class SimpleSolver {
     /*
      * Best solution with brute force.
     */
-    public int[] findBestSolution(double[][] problem) {
+    public int[] findBestSolution() {
        
         int[] solution = findNextIteration();
-        double distance = getTotalDistance(solution, problem);
+        double distance = getTotalDistance(solution, this.distanceMatrix);
 
         int[] newSolution = findNextIteration();
         while(newSolution.length != 0) {
-            double newDistance = getTotalDistance(newSolution, problem);
+            double newDistance = getTotalDistance(newSolution, this.distanceMatrix);
             if( newDistance < distance){
                 solution = newSolution;
                 distance = newDistance;
@@ -72,8 +72,12 @@ public class SimpleSolver {
     /*
      * Random 5 point solution
     */
-    private static int[] findRandomSolution(double[][] problem) {
-        Integer[] solution =  {1,  2,  3,  5,  4};
+    private int[] findRandomSolution() {
+        
+        Integer[] solution =  new Integer[this.distanceMatrix.length];
+        for(int i = 0; i < this.distanceMatrix.length; i++) {
+            solution[i]= i+1;
+        }
 
 		List<Integer> intList = Arrays.asList(solution);
 
