@@ -34,11 +34,11 @@ public class SimpleSolver {
     private int[] findBestRandomSolution() {
        
         int[] solution = this.findRandomSolution();
-        double distance = getTotalDistance(solution, this.distanceMatrix);
+        double distance = this.getTotalDistance(solution);
 
         for (int i = 0; i < 10; i++) {
             int[] newSolution = findRandomSolution();
-            double newDistance = getTotalDistance(newSolution, this.distanceMatrix);
+            double newDistance = this.getTotalDistance(newSolution);
             if( newDistance < distance){
                 solution = newSolution;
                 distance = newDistance;
@@ -54,11 +54,11 @@ public class SimpleSolver {
     public int[] findBestSolution() {
        
         int[] solution = findNextIteration();
-        double distance = getTotalDistance(solution, this.distanceMatrix);
+        double distance = getTotalDistance(solution);
 
         int[] newSolution = findNextIteration();
         while(newSolution.length != 0) {
-            double newDistance = getTotalDistance(newSolution, this.distanceMatrix);
+            double newDistance = getTotalDistance(newSolution);
             if( newDistance < distance){
                 solution = newSolution;
                 distance = newDistance;
@@ -96,6 +96,7 @@ public class SimpleSolver {
     */
     private int[] findNextIteration() {
         
+        // Still works for asymetric problem!
         int[][] solutions = {
              {1, 2, 3, 4, 5 }, {1, 2, 3, 5, 4 }, {1, 2, 4, 3, 5 }, {1, 2, 4, 5, 3 }, {1, 2, 5, 3, 4 }, 
              {1, 2, 5, 4, 3 }, {1, 3, 2, 4, 5 }, {1, 3, 2, 5, 4 }, {1, 3, 4, 2, 5 }, {1, 3, 4, 5, 2 }, 
@@ -115,21 +116,23 @@ public class SimpleSolver {
     /*
      * Problem of 5 cities, set up with distance matrix
     */
-    private static double getDistance(int A, int B, double[][] problem) {
-        double distance = problem[A-1][B-1];            
-        return distance;
+    private double getDistance(int A, int B) {
+                   
+        return this.distanceMatrix[A-1][B-1];        
     }
 
     /*
      * Problem of 5 cities, set up with distance matrix
     */
-    public static double getTotalDistance(int[] sol, double[][] pb) {
+    public double getTotalDistance(int[] sol) {
+                
+        double totalDistance = this.getDistance(sol[sol.length-1], sol[0]);
         
-        return      getDistance(sol[0], sol[1], pb)
-                            + getDistance(sol[1], sol[2], pb)
-                            + getDistance(sol[2], sol[3], pb)
-                            + getDistance(sol[3], sol[4], pb)
-                            + getDistance(sol[4], sol[0], pb);
+        for(int i = 1; i < sol.length; i++){
+            totalDistance += this.getDistance(sol[i-1], sol[i]);
+        }
+
+        return totalDistance;        
     }
 
 }

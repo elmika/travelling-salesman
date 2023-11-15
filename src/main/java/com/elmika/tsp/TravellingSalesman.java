@@ -9,10 +9,10 @@ public class TravellingSalesman {
         SimpleSolver solver = new SimpleSolver(problem);
         int[] solution = solver.findSolution();
 
-        displaySolution(solution, problem);
+        displaySolution(solution, solver);
     }
 
-    private static void displaySolution(int[] sol, double[][] pb){
+    private static void displaySolution(int[] sol, SimpleSolver solver){
 
         String solString = ""+sol[0];
         for(int i = 1; i < sol.length; i++) {
@@ -20,7 +20,7 @@ public class TravellingSalesman {
         }
 
         System.out.println("Solution is:"+solString);
-        System.out.println("Distance is:"+SimpleSolver.getTotalDistance(sol, pb));
+        System.out.println("Distance is:"+solver.getTotalDistance(sol));
     }
 
 }
