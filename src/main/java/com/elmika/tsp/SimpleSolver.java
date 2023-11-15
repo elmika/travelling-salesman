@@ -5,10 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class SimpleSolver {
-    private double[][] distanceMatrix;
+    
+    // private double[][] distanceMatrix;
+    private int iterationIndex = 0;
 
     public SimpleSolver(double[][] distanceMatrix) {
-        this.distanceMatrix = distanceMatrix;
+        //this.distanceMatrix = distanceMatrix;
     }
 
     public List<Integer> solveTSP() {
@@ -16,12 +18,20 @@ public class SimpleSolver {
         // Return the optimal path as a List of Integer
         return null;
     }
-
     
+/*
+     * Best random 5 point solution of 10 attempts
+    */
+    public int[] findSolution(double[][] problem) {
+       
+        // return findBestRandomSolution(problem);
+        return findBestSolution(problem);
+    }
+
     /*
      * Best random 5 point solution of 10 attempts
     */
-    public static int[] findSolution(double[][] problem) {
+    public int[] findBestRandomSolution(double[][] problem) {
        
         int[] solution = findRandomSolution(problem);
         double distance = getTotalDistance(solution, problem);
@@ -33,6 +43,27 @@ public class SimpleSolver {
                 solution = newSolution;
                 distance = newDistance;
             }
+        }
+
+        return solution;
+    }
+
+    /*
+     * Best solution with brute force.
+    */
+    public int[] findBestSolution(double[][] problem) {
+       
+        int[] solution = findNextIteration();
+        double distance = getTotalDistance(solution, problem);
+
+        int[] newSolution = findNextIteration();
+        while(newSolution.length != 0) {
+            double newDistance = getTotalDistance(newSolution, problem);
+            if( newDistance < distance){
+                solution = newSolution;
+                distance = newDistance;
+            }
+            newSolution = findNextIteration();
         }
 
         return solution;
@@ -54,6 +85,23 @@ public class SimpleSolver {
         }
 
         return intSolution;
+    }
+
+    /*
+     * Iterate over all possible path for 5 points.
+    */
+    private int[] findNextIteration() {
+        
+        int[][] solutions = {
+             {1, 2, 3, 4, 5 }, {1, 2, 3, 5, 4 }, {1, 2, 4, 3, 5 }, {1, 2, 4, 5, 3 }, {1, 2, 5, 3, 4 }, {1, 2, 5, 4, 3 }, {1, 3, 2, 4, 5 }, {1, 3, 2, 5, 4 }, {1, 3, 4, 2, 5 }, {1, 3, 4, 5, 2 }, {1, 3, 5, 2, 4 }, {1, 3, 5, 4, 2 }, {1, 4, 2, 3, 5 }, {1, 4, 2, 5, 3 }, {1, 4, 3, 2, 5 }, {1, 4, 3, 5, 2 }, {1, 4, 5, 2, 3 }, {1, 4, 5, 3, 2 }, {1, 5, 2, 3, 4 }, {1, 5, 2, 4, 3 }, {1, 5, 3, 2, 4 }, {1, 5, 3, 4, 2 }, {1, 5, 4, 2, 3 }, {1, 5, 4, 3, 2 }, {2, 1, 3, 4, 5 }, {2, 1, 3, 5, 4 }, {2, 1, 4, 3, 5 }, {2, 1, 4, 5, 3 }, {2, 1, 5, 3, 4 }, {2, 1, 5, 4, 3 }, {2, 3, 1, 4, 5 }, {2, 3, 1, 5, 4 }, {2, 3, 4, 1, 5 }, {2, 3, 4, 5, 1 }, {2, 3, 5, 1, 4 }, {2, 3, 5, 4, 1 }, {2, 4, 1, 3, 5 }, {2, 4, 1, 5, 3 }, {2, 4, 3, 1, 5 }, {2, 4, 3, 5, 1 }, {2, 4, 5, 1, 3 }, {2, 4, 5, 3, 1 }, {2, 5, 1, 3, 4 }, {2, 5, 1, 4, 3 }, {2, 5, 3, 1, 4 }, {2, 5, 3, 4, 1 }, {2, 5, 4, 1, 3 }, {2, 5, 4, 3, 1 }, {3, 1, 2, 4, 5 }, {3, 1, 2, 5, 4 }, {3, 1, 4, 2, 5 }, {3, 1, 4, 5, 2 }, {3, 1, 5, 2, 4 }, {3, 1, 5, 4, 2 }, {3, 2, 1, 4, 5 }, {3, 2, 1, 5, 4 }, {3, 2, 4, 1, 5 }, {3, 2, 4, 5, 1 }, {3, 2, 5, 1, 4 }, {3, 2, 5, 4, 1 }, {3, 4, 1, 2, 5 }, {3, 4, 1, 5, 2 }, {3, 4, 2, 1, 5 }, {3, 4, 2, 5, 1 }, {3, 4, 5, 1, 2 }, {3, 4, 5, 2, 1 }, {3, 5, 1, 2, 4 }, {3, 5, 1, 4, 2 }, {3, 5, 2, 1, 4 }, {3, 5, 2, 4, 1 }, {3, 5, 4, 1, 2 }, {3, 5, 4, 2, 1 }, {4, 1, 2, 3, 5 }, {4, 1, 2, 5, 3 }, {4, 1, 3, 2, 5 }, {4, 1, 3, 5, 2 }, {4, 1, 5, 2, 3 }, {4, 1, 5, 3, 2 }, {4, 2, 1, 3, 5 }, {4, 2, 1, 5, 3 }, {4, 2, 3, 1, 5 }, {4, 2, 3, 5, 1 }, {4, 2, 5, 1, 3 }, {4, 2, 5, 3, 1 }, {4, 3, 1, 2, 5 }, {4, 3, 1, 5, 2 }, {4, 3, 2, 1, 5 }, {4, 3, 2, 5, 1 }, {4, 3, 5, 1, 2 }, {4, 3, 5, 2, 1 }, {4, 5, 1, 2, 3 }, {4, 5, 1, 3, 2 }, {4, 5, 2, 1, 3 }, {4, 5, 2, 3, 1 }, {4, 5, 3, 1, 2 }, {4, 5, 3, 2, 1 }, {5, 1, 2, 3, 4 }, {5, 1, 2, 4, 3 }, {5, 1, 3, 2, 4 }, {5, 1, 3, 4, 2 }, {5, 1, 4, 2, 3 }, {5, 1, 4, 3, 2 }, {5, 2, 1, 3, 4 }, {5, 2, 1, 4, 3 }, {5, 2, 3, 1, 4 }, {5, 2, 3, 4, 1 }, {5, 2, 4, 1, 3 }, {5, 2, 4, 3, 1 }, {5, 3, 1, 2, 4 }, {5, 3, 1, 4, 2 }, {5, 3, 2, 1, 4 }, {5, 3, 2, 4, 1 }, {5, 3, 4, 1, 2 }, {5, 3, 4, 2, 1 }, {5, 4, 1, 2, 3 }, {5, 4, 1, 3, 2 }, {5, 4, 2, 1, 3 }, {5, 4, 2, 3, 1 }, {5, 4, 3, 1, 2 }, {5, 4, 3, 2, 1 }
+        };
+
+        if(iterationIndex == 120) {
+            return new int[0];
+        }
+
+        iterationIndex++;
+        return solutions[iterationIndex-1];
     }
 
     /*

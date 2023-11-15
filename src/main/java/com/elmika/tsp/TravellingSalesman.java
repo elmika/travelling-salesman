@@ -1,7 +1,7 @@
 package com.elmika.tsp;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+// import java.util.stream.Collectors;
+// import java.util.stream.Stream;
 
 public class TravellingSalesman {
 
@@ -9,7 +9,8 @@ public class TravellingSalesman {
         System.out.println("Traveling Salesman Problem Solver");
 
         double[][] problem = ProblemFactory.createSimpleProblem();
-        int[] solution = SimpleSolver.findSolution(problem);
+        SimpleSolver solver = new SimpleSolver(problem);
+        int[] solution = solver.findSolution(problem);
 
         displaySolution(solution, problem);
     }
@@ -24,6 +25,6 @@ public class TravellingSalesman {
         );
 
         System.out.println("Distance is:"+SimpleSolver.getTotalDistance(sol, pb));
-}
+    }
 
 }
