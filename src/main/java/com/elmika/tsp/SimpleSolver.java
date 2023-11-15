@@ -19,9 +19,29 @@ public class SimpleSolver {
 
     
     /*
-     * Random 5 point solution
+     * Best random 5 point solution of 10 attempts
     */
     public static int[] findSolution(double[][] problem) {
+       
+        int[] solution = findRandomSolution(problem);
+        double distance = getTotalDistance(solution, problem);
+
+        for (int i = 0; i < 10; i++) {
+            int[] newSolution = findRandomSolution(problem);
+            double newDistance = getTotalDistance(newSolution, problem);
+            if( newDistance < distance){
+                solution = newSolution;
+                distance = newDistance;
+            }
+        }
+
+        return solution;
+    }
+
+    /*
+     * Random 5 point solution
+    */
+    private static int[] findRandomSolution(double[][] problem) {
         Integer[] solution =  {1,  2,  3,  5,  4};
 
 		List<Integer> intList = Arrays.asList(solution);
@@ -32,7 +52,6 @@ public class SimpleSolver {
         for (int i = 0; i < intList.size(); i++) {
             intSolution[i] = intList.get(i).intValue();
         }
-
 
         return intSolution;
     }
