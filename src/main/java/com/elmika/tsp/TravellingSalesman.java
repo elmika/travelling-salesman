@@ -1,8 +1,5 @@
 package com.elmika.tsp;
 
-// import java.util.stream.Collectors;
-// import java.util.stream.Stream;
-
 public class TravellingSalesman {
 
     public static void main(String[] args) {
@@ -17,13 +14,12 @@ public class TravellingSalesman {
 
     private static void displaySolution(int[] sol, double[][] pb){
 
-        System.out.println("Solution is:"+sol[0]+
-                            "->"+sol[1]+
-                            "->"+sol[2]+
-                            "->"+sol[3]+
-                            "->"+sol[4]
-        );
+        String solString = ""+sol[0];
+        for(int i = 1; i < sol.length; i++) {
+            solString+="->"+sol[i];
+        }
 
+        System.out.println("Solution is:"+solString);
         System.out.println("Distance is:"+SimpleSolver.getTotalDistance(sol, pb));
     }
 
