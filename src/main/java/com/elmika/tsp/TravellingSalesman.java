@@ -1,30 +1,34 @@
 package com.elmika.tsp;
 
-// import java.util.stream.Collectors;
-// import java.util.stream.Stream;
-
 public class TravellingSalesman {
 
     public static void main(String[] args) {
         System.out.println("Traveling Salesman Problem Solver");
 
-        double[][] problem = ProblemFactory.createSimpleProblem();
-        SimpleSolver solver = new SimpleSolver(problem);
-        int[] solution = solver.findSolution(problem);
+        double[][] problem;
+        String option = "bigger";
+        switch(option){
+            case "trivial": problem = ProblemFactory.createSimplestProblem(); break;
+            case "simple": problem = ProblemFactory.createSimpleProblem(); break;
+            case "bigger": problem = ProblemFactory.createBiggerProblem(); break;
+            default: problem = ProblemFactory.createSimplestProblem(); break;
+        }
 
-        displaySolution(solution, problem);
+        SimpleSolver solver = new SimpleSolver(problem);
+        int[] solution = solver.findSolution();
+
+        displaySolution(solution, solver);
     }
 
-    private static void displaySolution(int[] sol, double[][] pb){
+    private static void displaySolution(int[] sol, SimpleSolver solver){
 
-        System.out.println("Solution is:"+sol[0]+
-                            "->"+sol[1]+
-                            "->"+sol[2]+
-                            "->"+sol[3]+
-                            "->"+sol[4]
-        );
+        String solString = ""+sol[0];
+        for(int i = 1; i < sol.length; i++) {
+            solString+="->"+sol[i];
+        }
 
-        System.out.println("Distance is:"+SimpleSolver.getTotalDistance(sol, pb));
+        System.out.println("Solution is:"+solString);
+        System.out.println("Distance is:"+solver.getTotalDistance(sol));
     }
 
 }
