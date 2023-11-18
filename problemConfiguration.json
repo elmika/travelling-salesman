@@ -1,0 +1,9 @@
+{
+    "problem": "simple",
+    "resolutionStrategy": "random10",
+    "possibleProblems": ["trivial", "simple", "bigger"],
+    "possibleResolutionStrategies": ["random10", "brute-force"]
+}
+
+
+

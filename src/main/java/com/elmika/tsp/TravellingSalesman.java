@@ -5,11 +5,11 @@ public class TravellingSalesman {
     public static void main(String[] args) {
         System.out.println("Traveling Salesman Problem Solver");
 
-        JSONParsing.test();
+        // JSONParsing.test();
+        ProblemConfiguration config = JSONParsing.getConfig();
 
         double[][] problem;
-        String option = "bigger";
-        switch(option){
+        switch(config.getProblem()){
             case "trivial": problem = ProblemFactory.createSimplestProblem(); break;
             case "simple": problem = ProblemFactory.createSimpleProblem(); break;
             case "bigger": problem = ProblemFactory.createBiggerProblem(); break;
