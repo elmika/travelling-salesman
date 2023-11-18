@@ -7,14 +7,7 @@ public class TravellingSalesman {
 
         // JSONParsing.test();
         ProblemConfiguration config = JSONParsing.getConfig();
-
-        double[][] problem;
-        switch(config.getProblem()){
-            case "trivial": problem = ProblemFactory.createSimplestProblem(); break;
-            case "simple": problem = ProblemFactory.createSimpleProblem(); break;
-            case "bigger": problem = ProblemFactory.createBiggerProblem(); break;
-            default: problem = ProblemFactory.createSimplestProblem(); break;
-        }
+        double[][] problem = ProblemFactory.createProblem(config.getProblem());        
 
         SimpleSolver solver = new SimpleSolver(problem);
         int[] solution = solver.findSolution();
