@@ -5,6 +5,8 @@ public class TravellingSalesman {
     public static void main(String[] args) {
         System.out.println("Traveling Salesman Problem Solver");
 
+        JSONParsing.test();
+
         double[][] problem;
         String option = "bigger";
         switch(option){

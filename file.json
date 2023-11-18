@@ -1,0 +1,5 @@
+{
+    "test": "Sample json value",
+    "yes": "Why not",
+    "list": [1, 2, 3, 4, 5]
+}
