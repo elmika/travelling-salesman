@@ -24,13 +24,21 @@ public class SimpleSolver {
                 System.out.println("Using Brute Force algorithm to find the best route.");
                 sol = findBestSolution(); 
             break;
-            case "random10": 
-                System.out.println("Comparing 10 random solutions to find the best route.");  
-                sol = findBestRandomSolution(); 
+            case "random":
+                System.out.println("Finding one random solution.");
+                sol = findRandomSolution();
+            break;
+            case "random10":
+                System.out.println("Comparing 10 random solutions to find the best route.");
+                sol = findBestRandomSolution(10);
+            break;
+            case "random100":
+                System.out.println("Comparing 100 random solutions to find the best route.");
+                sol = findBestRandomSolution(100);
             break;
             default:
                 System.out.println("Comparing 10 random solutions to find the best route.");
-                sol = findBestRandomSolution();
+                sol = findBestRandomSolution(10);
         }
 
         return sol;
@@ -39,12 +47,12 @@ public class SimpleSolver {
     /*
      * Best random 5 point solution of 10 attempts
     */
-    private Integer[] findBestRandomSolution() {
+    private Integer[] findBestRandomSolution(Integer iterations) {
        
         Integer[] solution = this.findRandomSolution();
         double distance = this.getTotalDistance(solution);
 
-        for (Integer i = 0; i < 10; i++) {
+        for (Integer i = 0; i < iterations; i++) {
             Integer[] newSolution = findRandomSolution();
             double newDistance = this.getTotalDistance(newSolution);
             if( newDistance < distance){
