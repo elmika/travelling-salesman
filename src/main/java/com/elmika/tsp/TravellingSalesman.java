@@ -10,12 +10,12 @@ public class TravellingSalesman {
         double[][] problem = ProblemFactory.createProblem(config.getProblem());        
 
         SimpleSolver solver = new SimpleSolver(problem);
-        int[] solution = solver.findSolution();
+        Integer[] solution = solver.findSolution();
 
         displaySolution(solution, solver);
     }
 
-    private static void displaySolution(int[] sol, SimpleSolver solver){
+    private static void displaySolution(Integer[] sol, SimpleSolver solver){
 
         String solString = ""+sol[0];
         for(int i = 1; i < sol.length; i++) {

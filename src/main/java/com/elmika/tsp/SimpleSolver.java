@@ -7,7 +7,7 @@ import java.util.List;
 public class SimpleSolver {
     
     private double[][] distanceMatrix;
-    private int iterationIndex = 0;
+    private Integer iterationIndex = 0;
 
     public SimpleSolver(double[][] distanceMatrix) {
         this.distanceMatrix = distanceMatrix;
@@ -22,7 +22,7 @@ public class SimpleSolver {
     /*
      * Call relevant internal function to solve our problem.
     */
-    public int[] findSolution() {
+    public Integer[] findSolution() {
        
         // return findBestRandomSolution();
         return findBestSolution();
@@ -31,13 +31,13 @@ public class SimpleSolver {
     /*
      * Best random 5 point solution of 10 attempts
     */
-    private int[] findBestRandomSolution() {
+    private Integer[] findBestRandomSolution() {
        
-        int[] solution = this.findRandomSolution();
+        Integer[] solution = this.findRandomSolution();
         double distance = this.getTotalDistance(solution);
 
-        for (int i = 0; i < 10; i++) {
-            int[] newSolution = findRandomSolution();
+        for (Integer i = 0; i < 10; i++) {
+            Integer[] newSolution = findRandomSolution();
             double newDistance = this.getTotalDistance(newSolution);
             if( newDistance < distance){
                 solution = newSolution;
@@ -51,12 +51,12 @@ public class SimpleSolver {
     /*
      * Best solution with brute force.
     */
-    public int[] findBestSolution() {
+    public Integer[] findBestSolution() {
        
-        int[] solution = findNextIteration();
+        Integer[] solution = findNextIteration();
         double distance = getTotalDistance(solution);
 
-        int[] newSolution = findNextIteration();
+        Integer[] newSolution = findNextIteration();
         while(newSolution.length != 0) {
             double newDistance = getTotalDistance(newSolution);
             if( newDistance < distance){
@@ -72,10 +72,10 @@ public class SimpleSolver {
     /*
      * Random solution
     */
-    private int[] findRandomSolution() {
+    private Integer[] findRandomSolution() {
         
         Integer[] solution =  new Integer[this.distanceMatrix.length];
-        for(int i = 0; i < this.distanceMatrix.length; i++) {
+        for(Integer i = 0; i < this.distanceMatrix.length; i++) {
             solution[i]= i+1;
         }
 
@@ -83,8 +83,8 @@ public class SimpleSolver {
 
 		Collections.shuffle(intList);
 
-        int[] intSolution = new int[intList.size()];
-        for (int i = 0; i < intList.size(); i++) {
+        Integer[] intSolution = new Integer[intList.size()];
+        for (Integer i = 0; i < intList.size(); i++) {
             intSolution[i] = intList.get(i).intValue();
         }
 
@@ -92,16 +92,18 @@ public class SimpleSolver {
     }
 
     /*
-     * Iterate over all possible path for max 5 points... Starting from point 1!
+     * Iterate over all possible path for 4 to 6 points... Starting from point 1!
     */
-    private int[] findNextIteration() {
+    private Integer[] findNextIteration() {
         
-        int problemSize = this.distanceMatrix.length;
+        Integer problemSize = this.distanceMatrix.length;
 
         if(problemSize <= 3 || problemSize >6){
-            return new int[0];
+            Integer[] empty = {};
+
+            return empty;
         }
-        int combinations;
+        Integer combinations;
         switch(problemSize) {
             case 4: combinations = 6; break;
             case 5: combinations = 24; break;
@@ -109,11 +111,11 @@ public class SimpleSolver {
             default: combinations = 0;                          
         }
 
-        int[][] solutions = new int[combinations][problemSize];
+        Integer[][] solutions = new Integer[combinations][problemSize];
         // Still works for asymetric problem!
         switch(problemSize) {
             case 4:                
-                int[][] solutions4 = {
+                Integer[][] solutions4 = {
                     {1, 2, 3, 4}, {1, 2, 4, 3}, 
                     {1, 3, 2, 4}, {1, 3, 4, 2},
                     {1, 4, 2, 3}, {1, 4, 3, 2}
@@ -121,7 +123,7 @@ public class SimpleSolver {
                 solutions = solutions4;
             break;
             case 5:
-                int[][] solutions5 = {
+                Integer[][] solutions5 = {
                     {1, 2, 3, 4, 5 }, {1, 2, 3, 5, 4 }, {1, 2, 4, 3, 5 }, {1, 2, 4, 5, 3 }, {1, 2, 5, 3, 4 }, 
                     {1, 2, 5, 4, 3 }, {1, 3, 2, 4, 5 }, {1, 3, 2, 5, 4 }, {1, 3, 4, 2, 5 }, {1, 3, 4, 5, 2 }, 
                     {1, 3, 5, 2, 4 }, {1, 3, 5, 4, 2 }, {1, 4, 2, 3, 5 }, {1, 4, 2, 5, 3 }, {1, 4, 3, 2, 5 }, 
@@ -131,7 +133,7 @@ public class SimpleSolver {
                 solutions = solutions5;
             break;
             case 6:                
-                int[][] solutions6 = {
+                Integer[][] solutions6 = {
                     {1, 2, 3, 4, 5, 6}, {1, 2, 3, 5, 4, 6}, {1, 2, 4, 3, 5, 6}, {1, 2, 4, 5, 3, 6}, {1, 2, 5, 3, 4, 6}, {1, 2, 5, 4, 3, 6}, {1, 3, 2, 4, 5, 6}, {1, 3, 2, 5, 4, 6}, {1, 3, 4, 2, 5, 6}, {1, 3, 4, 5, 2, 6}, {1, 3, 5, 2, 4, 6}, {1, 3, 5, 4, 2, 6}, {1, 4, 2, 3, 5, 6}, {1, 4, 2, 5, 3, 6}, {1, 4, 3, 2, 5, 6}, {1, 4, 3, 5, 2, 6}, {1, 4, 5, 2, 3, 6}, {1, 4, 5, 3, 2, 6}, {1, 5, 2, 3, 4, 6}, {1, 5, 2, 4, 3, 6}, {1, 5, 3, 2, 4, 6}, {1, 5, 3, 4, 2, 6}, {1, 5, 4, 2, 3, 6}, {1, 5, 4, 3, 2, 6}, 
                     {2, 1, 3, 4, 5, 6}, {2, 1, 3, 5, 4, 6}, {2, 1, 4, 3, 5, 6}, {2, 1, 4, 5, 3, 6}, {2, 1, 5, 3, 4, 6}, {2, 1, 5, 4, 3, 6}, {2, 3, 1, 4, 5, 6}, {2, 3, 1, 5, 4, 6}, {2, 3, 4, 1, 5, 6}, {2, 3, 4, 5, 1, 6}, {2, 3, 5, 1, 4, 6}, {2, 3, 5, 4, 1, 6}, {2, 4, 1, 3, 5, 6}, {2, 4, 1, 5, 3, 6}, {2, 4, 3, 1, 5, 6}, {2, 4, 3, 5, 1, 6}, {2, 4, 5, 1, 3, 6}, {2, 4, 5, 3, 1, 6}, {2, 5, 1, 3, 4, 6}, {2, 5, 1, 4, 3, 6}, {2, 5, 3, 1, 4, 6}, {2, 5, 3, 4, 1, 6}, {2, 5, 4, 1, 3, 6}, {2, 5, 4, 3, 1, 6}, 
                     {3, 1, 2, 4, 5, 6}, {3, 1, 2, 5, 4, 6}, {3, 1, 4, 2, 5, 6}, {3, 1, 4, 5, 2, 6}, {3, 1, 5, 2, 4, 6}, {3, 1, 5, 4, 2, 6}, {3, 2, 1, 4, 5, 6}, {3, 2, 1, 5, 4, 6}, {3, 2, 4, 1, 5, 6}, {3, 2, 4, 5, 1, 6}, {3, 2, 5, 1, 4, 6}, {3, 2, 5, 4, 1, 6}, {3, 4, 1, 2, 5, 6}, {3, 4, 1, 5, 2, 6}, {3, 4, 2, 1, 5, 6}, {3, 4, 2, 5, 1, 6}, {3, 4, 5, 1, 2, 6}, {3, 4, 5, 2, 1, 6}, {3, 5, 1, 2, 4, 6}, {3, 5, 1, 4, 2, 6}, {3, 5, 2, 1, 4, 6}, {3, 5, 2, 4, 1, 6}, {3, 5, 4, 1, 2, 6}, {3, 5, 4, 2, 1, 6}, 
@@ -144,7 +146,8 @@ public class SimpleSolver {
         
 
         if(iterationIndex == solutions.length) {
-            return new int[0];
+            Integer[] empty = {};
+            return empty;
         }
 
         iterationIndex++;
@@ -154,19 +157,19 @@ public class SimpleSolver {
     /*
      * Problem of 5 cities, set up with distance matrix
     */
-    private double getDistance(int A, int B) {
+    private double getDistance(Integer A, Integer B) {
                    
         return this.distanceMatrix[A-1][B-1];        
     }
 
     /*
-     * Problem of 5 cities, set up with distance matrix
+     * Compute the distance of current solution
     */
-    public double getTotalDistance(int[] sol) {
+    public double getTotalDistance(Integer[] sol) {
                 
         double totalDistance = this.getDistance(sol[sol.length-1], sol[0]);
         
-        for(int i = 1; i < sol.length; i++){
+        for(Integer i = 1; i < sol.length; i++){
             totalDistance += this.getDistance(sol[i-1], sol[i]);
         }
 
