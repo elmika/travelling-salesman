@@ -55,7 +55,7 @@ public class JSONParsing {
             System.out.println("Could not find configuration file "+filename);
         }
 
-        System.out.println("Problem: "+problem+", Strategy (ignored): "+strategy);
+        System.out.println("Problem: "+problem+", Strategy: "+strategy);
 
         return new ProblemConfiguration(problem, strategy);
 

@@ -1,6 +1,6 @@
 {
     "problem": "bigger",
-    "resolutionStrategy": "random10",
+    "resolutionStrategy": "brute-force",
     "possibleProblems": ["trivial", "simple", "bigger"],
     "possibleResolutionStrategies": ["random10", "brute-force"]
 }

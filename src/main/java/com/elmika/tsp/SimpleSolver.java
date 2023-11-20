@@ -13,19 +13,27 @@ public class SimpleSolver {
         this.distanceMatrix = distanceMatrix;
     }
 
-    public List<Integer> solveTSP() {
-        // Implementation of TSP solving algorithm
-        // Return the optimal path as a List of Integer
-        return null;
-    }
-    
     /*
      * Call relevant internal function to solve our problem.
     */
-    public Integer[] findSolution() {
+    public Integer[] findSolution(String type) {
        
-        // return findBestRandomSolution();
-        return findBestSolution();
+        Integer[] sol;
+        switch(type){
+            case "brute-force":
+                System.out.println("Using Brute Force algorithm to find the best route.");
+                sol = findBestSolution(); 
+            break;
+            case "random10": 
+                System.out.println("Comparing 10 random solutions to find the best route.");  
+                sol = findBestRandomSolution(); 
+            break;
+            default:
+                System.out.println("Comparing 10 random solutions to find the best route.");
+                sol = findBestRandomSolution();
+        }
+
+        return sol;
     }
 
     /*
