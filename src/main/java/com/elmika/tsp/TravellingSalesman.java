@@ -5,22 +5,17 @@ public class TravellingSalesman {
     public static void main(String[] args) {
         System.out.println("Traveling Salesman Problem Solver");
 
-        double[][] problem;
-        String option = "bigger";
-        switch(option){
-            case "trivial": problem = ProblemFactory.createSimplestProblem(); break;
-            case "simple": problem = ProblemFactory.createSimpleProblem(); break;
-            case "bigger": problem = ProblemFactory.createBiggerProblem(); break;
-            default: problem = ProblemFactory.createSimplestProblem(); break;
-        }
+        // JSONParsing.test();
+        ProblemConfiguration config = JSONParsing.getConfig();
+        double[][] problem = ProblemFactory.createProblem(config.getProblem());        
 
         SimpleSolver solver = new SimpleSolver(problem);
-        int[] solution = solver.findSolution();
+        Integer[] solution = solver.findSolution(config.getResolutionStrategy());
 
         displaySolution(solution, solver);
     }
 
-    private static void displaySolution(int[] sol, SimpleSolver solver){
+    private static void displaySolution(Integer[] sol, SimpleSolver solver){
 
         String solString = ""+sol[0];
         for(int i = 1; i < sol.length; i++) {
