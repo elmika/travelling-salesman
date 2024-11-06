@@ -40,3 +40,14 @@ Then, run the application:
 ```bash
 docker run tsp-solver
 ```
+
+Or if you are editing the code:
+
+```bash
+docker run -it -v $(pwd):/app -w /app tsp-solver /bin/bash
+```
+and then
+```bash
+mvn clean package
+java -cp target/tsp-solver-0.1-SETUP.jar com.elmika.tsp.TravellingSalesman
+```
