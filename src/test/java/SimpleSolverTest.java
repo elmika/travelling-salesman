@@ -1,3 +1,5 @@
+
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,16 +30,17 @@ public class SimpleSolverTest {
         assertEquals(4, solver.getTotalDistance(result));
     }
 
-    private void test3xProblem() {
+    @Test
+    public void test3xProblem() {
         double[][] distanceMatrix = {
             {1, 1, 1},
             {1, 1, 1},
             {1, 1, 1}
         };
         SimpleSolver solver = new SimpleSolver(distanceMatrix);
-        // Integer[] result = solver.findSolution("brute-force");
+        Integer[] result = solver.findSolution("brute-force");
 
         // Assuming solve returns a cost
-        // assertEquals(3, solver.getTotalDistance(result));
+        assertEquals(3, solver.getTotalDistance(result));
     }
 }

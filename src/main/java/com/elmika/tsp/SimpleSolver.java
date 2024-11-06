@@ -70,9 +70,13 @@ public class SimpleSolver {
     public Integer[] findBestSolution() {
        
         Integer[] solution = findNextIteration();
-        double distance = getTotalDistance(solution);
+        if(solution.length == 0) {
+            return solution;
+        }
 
+        double distance = getTotalDistance(solution);
         Integer[] newSolution = findNextIteration();
+        
         while(newSolution.length != 0) {
             double newDistance = getTotalDistance(newSolution);
             if( newDistance < distance){
@@ -114,13 +118,13 @@ public class SimpleSolver {
         
         Integer problemSize = this.distanceMatrix.length;
 
-        if(problemSize <= 3 || problemSize >6){
+        if(problemSize <= 2 || problemSize >6){
             Integer[] empty = {};
-
             return empty;
         }
         Integer combinations;
         switch(problemSize) {
+            case 3: combinations = 2; break;
             case 4: combinations = 6; break;
             case 5: combinations = 24; break;
             case 6: combinations = 120; break;
@@ -130,6 +134,13 @@ public class SimpleSolver {
         Integer[][] solutions = new Integer[combinations][problemSize];
         // Still works for asymetric problem!
         switch(problemSize) {
+            case 3:
+                Integer[][] solutions3 = {
+                    {1, 2, 3}, 
+                    {1, 3, 2}
+                };
+                solutions = solutions3;
+            break;
             case 4:                
                 Integer[][] solutions4 = {
                     {1, 2, 3, 4}, {1, 2, 4, 3}, 
@@ -182,7 +193,11 @@ public class SimpleSolver {
      * Compute the distance of current solution
     */
     public double getTotalDistance(Integer[] sol) {
-                
+             
+        if(sol.length == 0) {
+            return 0;
+        }
+
         double totalDistance = this.getDistance(sol[sol.length-1], sol[0]);
         
         for(Integer i = 1; i < sol.length; i++){
