@@ -44,33 +44,26 @@ public class JSONParsing {
 
     }
 
-    public static ProblemConfiguration getConfig(){
-
-        log("Loading configuration.");
-
+    public static ProblemConfiguration getConfig() {
         String filename = "problemConfiguration.json";
         String problem = "simple";  // default values
         String strategy = "random10"; // default values
 
-        File f = new File(filename);
-        if (f.exists()){
-            try {
-                InputStream is = new FileInputStream(filename);
-                String jsonTxt = IOUtils.toString(is, "UTF-8");
-                JSONObject json = new JSONObject(jsonTxt);
-                problem = json.getString("problem");
-                strategy = json.getString("resolutionStrategy");
-                log("Custom configuration loaded.");
-            } catch(Exception e){
-                log("Exception has been thrown. Default configuration loaded.");
-            }
-        } else {
-            log("Could not find configuration file "+filename);
+        JSONObject json = read(filename);
+        if (json == null) {
+            log("Default configuration loaded");
+            return new ProblemConfiguration(problem, strategy);
         }
 
+        try {
+            problem = json.getString("problem");
+            strategy = json.getString("resolutionStrategy");
+        } catch(Exception e) {
+            log("Default configuration loaded");
+            return new ProblemConfiguration(problem, strategy);
+        }
+        
         log("Problem: "+problem+", Strategy: "+strategy);
-
         return new ProblemConfiguration(problem, strategy);
-
     }
 }
