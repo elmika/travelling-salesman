@@ -13,26 +13,35 @@ public class JSONParsing {
         System.out.println($message);
     }
 
+    public static JSONObject read(String filename) {
+        JSONObject json = null;
+        File f = new File(filename);
+        if (f.exists()){
+            try {     
+                InputStream is = new FileInputStream(filename);
+                String jsonTxt = IOUtils.toString(is, "UTF-8");
+                json = new JSONObject(jsonTxt);       
+            } catch(Exception e){
+                log("Exception has been thrown when reading json file.");
+            }
+        } else {
+            log("Could not find json file");
+        }
+
+        return json;
+    }
+
     public static void test() {     
 
         log("RUNNING TEST.");
-
-        File f = new File("file.json");
-        if (f.exists()){
-            try {     
-                log("File exists.");
-                InputStream is = new FileInputStream("file.json");
-                String jsonTxt = IOUtils.toString(is, "UTF-8");
-                log(jsonTxt);
-                JSONObject json = new JSONObject(jsonTxt);       
-                String a = json.getString("yes");
-                log(a);
-            } catch(Exception e){
-                log("Exception has been thrown");
-            }
-        } else {
-            log("Could not find file.json");
+        JSONObject json = read("file.json");
+        try {
+            String a = json.getString("yes");
+            log(a);
+        } catch(Exception e){
+            log("Exception has been thrown when retrieving json value.");
         }
+
     }
 
     public static ProblemConfiguration getConfig(){
