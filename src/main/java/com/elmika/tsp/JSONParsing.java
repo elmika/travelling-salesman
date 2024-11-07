@@ -9,31 +9,35 @@ import org.json.JSONObject;
 
 public class JSONParsing {
 
+    private static void log(String $message) {
+        System.out.println($message);
+    }
+
     public static void test() {     
 
-        System.out.println("RUNNING TEST.");
+        log("RUNNING TEST.");
 
         File f = new File("file.json");
         if (f.exists()){
             try {     
-                System.out.println("File exists.");
+                log("File exists.");
                 InputStream is = new FileInputStream("file.json");
                 String jsonTxt = IOUtils.toString(is, "UTF-8");
-                System.out.println(jsonTxt);
+                log(jsonTxt);
                 JSONObject json = new JSONObject(jsonTxt);       
                 String a = json.getString("yes");
-                System.out.println(a);
+                log(a);
             } catch(Exception e){
-                System.out.println("Exception has been thrown");
+                log("Exception has been thrown");
             }
         } else {
-            System.out.println("Could not find file.json");
+            log("Could not find file.json");
         }
     }
 
     public static ProblemConfiguration getConfig(){
 
-        System.out.println("Loading configuration.");
+        log("Loading configuration.");
 
         String filename = "problemConfiguration.json";
         String problem = "simple";  // default values
@@ -47,15 +51,15 @@ public class JSONParsing {
                 JSONObject json = new JSONObject(jsonTxt);
                 problem = json.getString("problem");
                 strategy = json.getString("resolutionStrategy");
-                System.out.println("Custom configuration loaded.");
+                log("Custom configuration loaded.");
             } catch(Exception e){
-                System.out.println("Exception has been thrown. Default configuration loaded.");
+                log("Exception has been thrown. Default configuration loaded.");
             }
         } else {
-            System.out.println("Could not find configuration file "+filename);
+            log("Could not find configuration file "+filename);
         }
 
-        System.out.println("Problem: "+problem+", Strategy: "+strategy);
+        log("Problem: "+problem+", Strategy: "+strategy);
 
         return new ProblemConfiguration(problem, strategy);
 
