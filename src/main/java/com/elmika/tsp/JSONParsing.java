@@ -9,55 +9,61 @@ import org.json.JSONObject;
 
 public class JSONParsing {
 
-    public static void test() {     
-
-        System.out.println("RUNNING TEST.");
-
-        File f = new File("file.json");
-        if (f.exists()){
-            try {     
-                System.out.println("File exists.");
-                InputStream is = new FileInputStream("file.json");
-                String jsonTxt = IOUtils.toString(is, "UTF-8");
-                System.out.println(jsonTxt);
-                JSONObject json = new JSONObject(jsonTxt);       
-                String a = json.getString("yes");
-                System.out.println(a);
-            } catch(Exception e){
-                System.out.println("Exception has been thrown");
-            }
-        } else {
-            System.out.println("Could not find file.json");
-        }
+    private static void log(String $message) {
+        System.out.println($message);
     }
 
-    public static ProblemConfiguration getConfig(){
+    public static JSONObject read(String filename) {
+        JSONObject json = null;
+        File f = new File(filename);
+        if (f.exists()){
+            try {     
+                InputStream is = new FileInputStream(filename);
+                String jsonTxt = IOUtils.toString(is, "UTF-8");
+                json = new JSONObject(jsonTxt);       
+            } catch(Exception e){
+                log("Exception has been thrown when reading json file.");
+            }
+        } else {
+            log("Could not find json file");
+        }
 
-        System.out.println("Loading configuration.");
+        return json;
+    }
 
+    public static void test() {     
+
+        log("RUNNING TEST.");
+        JSONObject json = read("file.json");
+        try {
+            String a = json.getString("yes");
+            log(a);
+        } catch(Exception e){
+            log("Exception has been thrown when retrieving json value.");
+        }
+
+    }
+
+    public static ProblemConfiguration getConfig() {
         String filename = "problemConfiguration.json";
         String problem = "simple";  // default values
         String strategy = "random10"; // default values
 
-        File f = new File(filename);
-        if (f.exists()){
-            try {
-                InputStream is = new FileInputStream(filename);
-                String jsonTxt = IOUtils.toString(is, "UTF-8");
-                JSONObject json = new JSONObject(jsonTxt);
-                problem = json.getString("problem");
-                strategy = json.getString("resolutionStrategy");
-                System.out.println("Custom configuration loaded.");
-            } catch(Exception e){
-                System.out.println("Exception has been thrown. Default configuration loaded.");
-            }
-        } else {
-            System.out.println("Could not find configuration file "+filename);
+        JSONObject json = read(filename);
+        if (json == null) {
+            log("Default configuration loaded");
+            return new ProblemConfiguration(problem, strategy);
         }
 
-        System.out.println("Problem: "+problem+", Strategy: "+strategy);
-
+        try {
+            problem = json.getString("problem");
+            strategy = json.getString("resolutionStrategy");
+        } catch(Exception e) {
+            log("Default configuration loaded");
+            return new ProblemConfiguration(problem, strategy);
+        }
+        
+        log("Problem: "+problem+", Strategy: "+strategy);
         return new ProblemConfiguration(problem, strategy);
-
     }
 }
