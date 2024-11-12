@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import com.elmika.tsp.PermutationsIterator;
 
-
 /* A permutation is correct if:
     1) Iterations provide (n-1)! combinations
     2) All combinations start with 1.
@@ -21,37 +20,37 @@ import com.elmika.tsp.PermutationsIterator;
     4) All combinations contain exactly once the values 1..n
  */
 public class PermutationsIteratorTest {
-    
-    private int countIterationsForN(int n){
+
+    private int countIterationsForN(int n) {
         int i = 0;
         PermutationsIterator iterator = new PermutationsIterator(n);
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             i++;
-            iterator.next();            
+            iterator.next();
         }
         return i;
     }
 
-    private boolean firstIterationValueIsAlwaysOne(int n){
-        int[] iteration;
+    private boolean firstIterationValueIsAlwaysOne(int n) {
+        Integer[] iteration;
         PermutationsIterator iterator = new PermutationsIterator(n);
-        if(iterator.hasNext()) {            
+        if (iterator.hasNext()) {
             iteration = iterator.next();
-            if(iteration[0] != 1) {
+            if (iteration[0] != 1) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean hasDuplicates(int n){
-        int[] newIteration;
+    private boolean hasDuplicates(int n) {
+        Integer[] newIteration;
         Set<List<Integer>> previousIterations = new HashSet<>();
         PermutationsIterator iterator = new PermutationsIterator(n);
 
         while (iterator.hasNext()) {
             newIteration = iterator.next();
-            List<Integer> list = Arrays.stream(newIteration).boxed().collect(Collectors.toList());
+            List<Integer> list = Arrays.stream(newIteration).collect(Collectors.toList());
             if (!previousIterations.add(list)) {
                 // If add returns false, there's a duplicate
                 return true;
@@ -61,10 +60,10 @@ public class PermutationsIteratorTest {
     }
 
     private boolean iterationsElementsValuesAreValid(int n) {
-        int[] iteration;
+        Integer[] iteration;
         PermutationsIterator iterator = new PermutationsIterator(n);
-        if (iterator.hasNext()) {            
-            iteration = iterator.next();            
+        if (iterator.hasNext()) {
+            iteration = iterator.next();
             if (!hasAllValuesFrom1ToN(iteration, n)) {
                 return false;
             }
@@ -72,7 +71,7 @@ public class PermutationsIteratorTest {
         return true;
     }
 
-    private boolean hasAllValuesFrom1ToN(int[] arr, int n) {
+    private boolean hasAllValuesFrom1ToN(Integer[] arr, int n) {
         if (arr.length != n) {
             // If the array length isn't n, it can't contain all values from 1 to n
             return false;
@@ -80,7 +79,7 @@ public class PermutationsIteratorTest {
 
         boolean[] seen = new boolean[n + 1];  // Create an array to track seen values
 
-        for (int num : arr) {
+        for (Integer num : arr) {
             if (num < 1 || num > n) {
                 // If a number is outside the range 1 to n, return false
                 return false;
@@ -107,30 +106,29 @@ public class PermutationsIteratorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8 })
+    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8})
     public void testFirstIterationValue(int k) {
-        assertTrue(firstIterationValueIsAlwaysOne(k));        
+        assertTrue(firstIterationValueIsAlwaysOne(k));
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8 })
+    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8})
     public void testNoDuplicates(int k) {
-        assertFalse(hasDuplicates(k));        
+        assertFalse(hasDuplicates(k));
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8 })
+    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8})
     public void testContainsCorrectValues(int k) {
         assertTrue(iterationsElementsValuesAreValid(k));
     }
 
     public void displayIterators() {
-        
-        for(int i=1; i<6; i++) {
-            System.out.println("Running Iterator with value: "+i);
+        for (int i = 1; i < 6; i++) {
+            System.out.println("Running Iterator with value: " + i);
             PermutationsIterator iterator = new PermutationsIterator(i);
-            while(iterator.hasNext()) {
-                int[] iteration = iterator.next();
+            while (iterator.hasNext()) {
+                Integer[] iteration = iterator.next();
                 System.out.println(Arrays.toString(iteration));
             }
         }

@@ -2,14 +2,14 @@ package com.elmika.tsp;
 
 public class PermutationsIterator {
     private int n;
-    private int[] current;
+    private Integer[] current;
     private boolean hasNext;
     
     public PermutationsIterator(int n) {
         this.n = n;
-        this.current = new int[n];
+        this.current = new Integer[n];
         // Initialize first permutation starting with 1
-        for(int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             current[i] = i + 1;
         }
         this.hasNext = true;
@@ -19,12 +19,12 @@ public class PermutationsIterator {
         return hasNext;
     }
     
-    public int[] next() {
+    public Integer[] next() {
         if (!hasNext) {
             return null;
         }
         
-        int[] result = current.clone();
+        Integer[] result = current.clone();
         
         // Find next permutation that starts with 1
         do {
@@ -46,7 +46,7 @@ public class PermutationsIterator {
             }
             
             // Swap elements at k and l
-            int temp = current[k];
+            Integer temp = current[k];
             current[k] = current[l];
             current[l] = temp;
             
@@ -64,5 +64,4 @@ public class PermutationsIterator {
         
         return result;
     }
-}    
-
+}
