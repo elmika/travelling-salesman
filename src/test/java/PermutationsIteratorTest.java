@@ -1,4 +1,6 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -104,34 +106,22 @@ public class PermutationsIteratorTest {
         assertEquals(120, countIterationsForN(6));
     }
 
-    @Test
-    public void testFirstIterationValue() {
-        assertTrue(firstIterationValueIsAlwaysOne(1));
-        assertTrue(firstIterationValueIsAlwaysOne(2));
-        assertTrue(firstIterationValueIsAlwaysOne(3));
-        assertTrue(firstIterationValueIsAlwaysOne(4));
-        assertTrue(firstIterationValueIsAlwaysOne(5));
-        assertTrue(firstIterationValueIsAlwaysOne(6));
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8 })
+    public void testFirstIterationValue(int k) {
+        assertTrue(firstIterationValueIsAlwaysOne(k));        
     }
 
-    @Test
-    public void testNoDuplicates() {
-        assertFalse(hasDuplicates(1));
-        assertFalse(hasDuplicates(2));
-        assertFalse(hasDuplicates(3));
-        assertFalse(hasDuplicates(4));
-        assertFalse(hasDuplicates(5));
-        assertFalse(hasDuplicates(6));
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8 })
+    public void testNoDuplicates(int k) {
+        assertFalse(hasDuplicates(k));        
     }
 
-    @Test
-    public void testContainsCorrectValues() {
-        assertTrue(iterationsElementsValuesAreValid(1));
-        assertTrue(iterationsElementsValuesAreValid(2));
-        assertTrue(iterationsElementsValuesAreValid(3));
-        assertTrue(iterationsElementsValuesAreValid(4));
-        assertTrue(iterationsElementsValuesAreValid(5));
-        assertTrue(iterationsElementsValuesAreValid(6));
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8 })
+    public void testContainsCorrectValues(int k) {
+        assertTrue(iterationsElementsValuesAreValid(k));
     }
 
     public void displayIterators() {
