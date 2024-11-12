@@ -7,10 +7,18 @@ import java.util.List;
 public class SimpleSolver {
     
     private double[][] distanceMatrix;
-    private Integer iterationIndex = 0;
+    private PermutationsIterator iterator;
 
     public SimpleSolver(double[][] distanceMatrix) {
-        this.distanceMatrix = distanceMatrix;
+        this.distanceMatrix = distanceMatrix;        
+    }
+
+    private PermutationsIterator getPermutationsIterator(){
+        if(this.iterator == null) {
+            Integer problemSize = this.distanceMatrix.length;        
+            this.iterator = new PermutationsIterator(problemSize);
+        }
+        return this.iterator;
     }
 
     /*
@@ -68,22 +76,24 @@ public class SimpleSolver {
      * Best solution with brute force.
     */
     public Integer[] findBestSolution() {
-       
-        Integer[] solution = findNextIteration();
-        if(solution.length == 0) {
+
+        iterator = getPermutationsIterator();
+
+        Integer[] solution = iterator.next();
+        if(!iterator.hasNext()) {
             return solution;
         }
 
         double distance = getTotalDistance(solution);
-        Integer[] newSolution = findNextIteration();
+        Integer[] newSolution = iterator.next();
         
-        while(newSolution.length != 0) {
+        while(iterator.hasNext()) {
             double newDistance = getTotalDistance(newSolution);
             if( newDistance < distance){
                 solution = newSolution;
                 distance = newDistance;
             }
-            newSolution = findNextIteration();
+            newSolution = iterator.next();
         }
 
         return solution;
@@ -109,76 +119,6 @@ public class SimpleSolver {
         }
 
         return intSolution;
-    }
-
-    /*
-     * Iterate over all possible path for 4 to 6 points... Starting from point 1!
-    */
-    private Integer[] findNextIteration() {
-        
-        Integer problemSize = this.distanceMatrix.length;
-
-        if(problemSize <= 2 || problemSize >6){
-            Integer[] empty = {};
-            return empty;
-        }
-        Integer combinations;
-        switch(problemSize) {
-            case 3: combinations = 2; break;
-            case 4: combinations = 6; break;
-            case 5: combinations = 24; break;
-            case 6: combinations = 120; break;
-            default: combinations = 0;                          
-        }
-
-        Integer[][] solutions = new Integer[combinations][problemSize];
-        // Still works for asymetric problem!
-        switch(problemSize) {
-            case 3:
-                Integer[][] solutions3 = {
-                    {1, 2, 3}, 
-                    {1, 3, 2}
-                };
-                solutions = solutions3;
-            break;
-            case 4:                
-                Integer[][] solutions4 = {
-                    {1, 2, 3, 4}, {1, 2, 4, 3}, 
-                    {1, 3, 2, 4}, {1, 3, 4, 2},
-                    {1, 4, 2, 3}, {1, 4, 3, 2}
-                };
-                solutions = solutions4;
-            break;
-            case 5:
-                Integer[][] solutions5 = {
-                    {1, 2, 3, 4, 5 }, {1, 2, 3, 5, 4 }, {1, 2, 4, 3, 5 }, {1, 2, 4, 5, 3 }, {1, 2, 5, 3, 4 }, 
-                    {1, 2, 5, 4, 3 }, {1, 3, 2, 4, 5 }, {1, 3, 2, 5, 4 }, {1, 3, 4, 2, 5 }, {1, 3, 4, 5, 2 }, 
-                    {1, 3, 5, 2, 4 }, {1, 3, 5, 4, 2 }, {1, 4, 2, 3, 5 }, {1, 4, 2, 5, 3 }, {1, 4, 3, 2, 5 }, 
-                    {1, 4, 3, 5, 2 }, {1, 4, 5, 2, 3 }, {1, 4, 5, 3, 2 }, {1, 5, 2, 3, 4 }, {1, 5, 2, 4, 3 }, 
-                    {1, 5, 3, 2, 4 }, {1, 5, 3, 4, 2 }, {1, 5, 4, 2, 3 }, {1, 5, 4, 3, 2 }
-                };
-                solutions = solutions5;
-            break;
-            case 6:                
-                Integer[][] solutions6 = {
-                    {1, 2, 3, 4, 5, 6}, {1, 2, 3, 5, 4, 6}, {1, 2, 4, 3, 5, 6}, {1, 2, 4, 5, 3, 6}, {1, 2, 5, 3, 4, 6}, {1, 2, 5, 4, 3, 6}, {1, 3, 2, 4, 5, 6}, {1, 3, 2, 5, 4, 6}, {1, 3, 4, 2, 5, 6}, {1, 3, 4, 5, 2, 6}, {1, 3, 5, 2, 4, 6}, {1, 3, 5, 4, 2, 6}, {1, 4, 2, 3, 5, 6}, {1, 4, 2, 5, 3, 6}, {1, 4, 3, 2, 5, 6}, {1, 4, 3, 5, 2, 6}, {1, 4, 5, 2, 3, 6}, {1, 4, 5, 3, 2, 6}, {1, 5, 2, 3, 4, 6}, {1, 5, 2, 4, 3, 6}, {1, 5, 3, 2, 4, 6}, {1, 5, 3, 4, 2, 6}, {1, 5, 4, 2, 3, 6}, {1, 5, 4, 3, 2, 6}, 
-                    {2, 1, 3, 4, 5, 6}, {2, 1, 3, 5, 4, 6}, {2, 1, 4, 3, 5, 6}, {2, 1, 4, 5, 3, 6}, {2, 1, 5, 3, 4, 6}, {2, 1, 5, 4, 3, 6}, {2, 3, 1, 4, 5, 6}, {2, 3, 1, 5, 4, 6}, {2, 3, 4, 1, 5, 6}, {2, 3, 4, 5, 1, 6}, {2, 3, 5, 1, 4, 6}, {2, 3, 5, 4, 1, 6}, {2, 4, 1, 3, 5, 6}, {2, 4, 1, 5, 3, 6}, {2, 4, 3, 1, 5, 6}, {2, 4, 3, 5, 1, 6}, {2, 4, 5, 1, 3, 6}, {2, 4, 5, 3, 1, 6}, {2, 5, 1, 3, 4, 6}, {2, 5, 1, 4, 3, 6}, {2, 5, 3, 1, 4, 6}, {2, 5, 3, 4, 1, 6}, {2, 5, 4, 1, 3, 6}, {2, 5, 4, 3, 1, 6}, 
-                    {3, 1, 2, 4, 5, 6}, {3, 1, 2, 5, 4, 6}, {3, 1, 4, 2, 5, 6}, {3, 1, 4, 5, 2, 6}, {3, 1, 5, 2, 4, 6}, {3, 1, 5, 4, 2, 6}, {3, 2, 1, 4, 5, 6}, {3, 2, 1, 5, 4, 6}, {3, 2, 4, 1, 5, 6}, {3, 2, 4, 5, 1, 6}, {3, 2, 5, 1, 4, 6}, {3, 2, 5, 4, 1, 6}, {3, 4, 1, 2, 5, 6}, {3, 4, 1, 5, 2, 6}, {3, 4, 2, 1, 5, 6}, {3, 4, 2, 5, 1, 6}, {3, 4, 5, 1, 2, 6}, {3, 4, 5, 2, 1, 6}, {3, 5, 1, 2, 4, 6}, {3, 5, 1, 4, 2, 6}, {3, 5, 2, 1, 4, 6}, {3, 5, 2, 4, 1, 6}, {3, 5, 4, 1, 2, 6}, {3, 5, 4, 2, 1, 6}, 
-                    {4, 1, 2, 3, 5, 6}, {4, 1, 2, 5, 3, 6}, {4, 1, 3, 2, 5, 6}, {4, 1, 3, 5, 2, 6}, {4, 1, 5, 2, 3, 6}, {4, 1, 5, 3, 2, 6}, {4, 2, 1, 3, 5, 6}, {4, 2, 1, 5, 3, 6}, {4, 2, 3, 1, 5, 6}, {4, 2, 3, 5, 1, 6}, {4, 2, 5, 1, 3, 6}, {4, 2, 5, 3, 1, 6}, {4, 3, 1, 2, 5, 6}, {4, 3, 1, 5, 2, 6}, {4, 3, 2, 1, 5, 6}, {4, 3, 2, 5, 1, 6}, {4, 3, 5, 1, 2, 6}, {4, 3, 5, 2, 1, 6}, {4, 5, 1, 2, 3, 6}, {4, 5, 1, 3, 2, 6}, {4, 5, 2, 1, 3, 6}, {4, 5, 2, 3, 1, 6}, {4, 5, 3, 1, 2, 6}, {4, 5, 3, 2, 1, 6}, 
-                    {5, 1, 2, 3, 4, 6}, {5, 1, 2, 4, 3, 6}, {5, 1, 3, 2, 4, 6}, {5, 1, 3, 4, 2, 6}, {5, 1, 4, 2, 3, 6}, {5, 1, 4, 3, 2, 6}, {5, 2, 1, 3, 4, 6}, {5, 2, 1, 4, 3, 6}, {5, 2, 3, 1, 4, 6}, {5, 2, 3, 4, 1, 6}, {5, 2, 4, 1, 3, 6}, {5, 2, 4, 3, 1, 6}, {5, 3, 1, 2, 4, 6}, {5, 3, 1, 4, 2, 6}, {5, 3, 2, 1, 4, 6}, {5, 3, 2, 4, 1, 6}, {5, 3, 4, 1, 2, 6}, {5, 3, 4, 2, 1, 6}, {5, 4, 1, 2, 3, 6}, {5, 4, 1, 3, 2, 6}, {5, 4, 2, 1, 3, 6}, {5, 4, 2, 3, 1, 6}, {5, 4, 3, 1, 2, 6}, {5, 4, 3, 2, 1, 6}
-                };
-                solutions = solutions6;
-            break;            
-        }
-        
-
-        if(iterationIndex == solutions.length) {
-            Integer[] empty = {};
-            return empty;
-        }
-
-        iterationIndex++;
-        return solutions[iterationIndex-1];
     }
 
     /*
