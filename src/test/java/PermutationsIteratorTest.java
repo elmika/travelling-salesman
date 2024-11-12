@@ -2,15 +2,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.json.JSONObject;
-
-import com.elmika.tsp.JSONParsing;
 import com.elmika.tsp.PermutationsIterator;
 
+
+/* A permutation is correct if:
+    1) Has (n-1)! combinations
+    2) All combinations start with 1.
+    3) No two combinations are equal.
+ */
 public class PermutationsIteratorTest {
     
     private int countIterationsForN(int n){
@@ -24,7 +32,6 @@ public class PermutationsIteratorTest {
     }
 
     private boolean firstIterationValueIsAlwaysOne(int n){
-        int i = 0;
         int[] iteration;
         PermutationsIterator iterator = new PermutationsIterator(n);
         if(iterator.hasNext()) {            
@@ -36,11 +43,20 @@ public class PermutationsIteratorTest {
         return true;
     }
 
-    private void printIterations(PermutationsIterator iterator){
-        while(iterator.hasNext()) {
-            int[] iteration = iterator.next();
-            System.out.println(Arrays.toString(iteration));
+    private boolean hasDuplicates(int n){
+        int[] newIteration;
+        Set<List<Integer>> previousIterations = new HashSet<>();
+        PermutationsIterator iterator = new PermutationsIterator(n);
+
+        while (iterator.hasNext()) {
+            newIteration = iterator.next();
+            List<Integer> list = Arrays.stream(newIteration).boxed().collect(Collectors.toList());
+            if (!previousIterations.add(list)) {
+                // If add returns false, there's a duplicate
+                return true;
+            }
         }
+        return false;
     }
 
     @Test
@@ -63,19 +79,25 @@ public class PermutationsIteratorTest {
         assertTrue(firstIterationValueIsAlwaysOne(6));
     }
 
-    // @Test
+    @Test
+    public void testNoDuplicates() {
+        assertFalse(hasDuplicates(1));
+        assertFalse(hasDuplicates(2));
+        assertFalse(hasDuplicates(3));
+        assertFalse(hasDuplicates(4));
+        assertFalse(hasDuplicates(5));
+        assertFalse(hasDuplicates(6));
+    }
+
     public void displayIterators() {
         
         for(int i=1; i<6; i++) {
             System.out.println("Running Iterator with value: "+i);
             PermutationsIterator iterator = new PermutationsIterator(i);
-            printIterations(iterator);
+            while(iterator.hasNext()) {
+                int[] iteration = iterator.next();
+                System.out.println(Arrays.toString(iteration));
+            }
         }
     }
-
-
-    // Is correct if:
-    // 1) Has (n-1)! combinations
-    // 2) All combinations start with 1.
-    // 3) No two combinations are equal.
 }
