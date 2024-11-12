@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
@@ -22,6 +23,19 @@ public class PermutationsIteratorTest {
         return i;
     }
 
+    private boolean firstIterationValueIsAlwaysOne(int n){
+        int i = 0;
+        int[] iteration;
+        PermutationsIterator iterator = new PermutationsIterator(n);
+        if(iterator.hasNext()) {            
+            iteration = iterator.next();
+            if(iteration[0] != 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void printIterations(PermutationsIterator iterator){
         while(iterator.hasNext()) {
             int[] iteration = iterator.next();
@@ -37,6 +51,16 @@ public class PermutationsIteratorTest {
         assertEquals(6, countIterationsForN(4));
         assertEquals(24, countIterationsForN(5));
         assertEquals(120, countIterationsForN(6));
+    }
+
+    @Test
+    public void testFirstIterationValue() {
+        assertTrue(firstIterationValueIsAlwaysOne(1));
+        assertTrue(firstIterationValueIsAlwaysOne(2));
+        assertTrue(firstIterationValueIsAlwaysOne(3));
+        assertTrue(firstIterationValueIsAlwaysOne(4));
+        assertTrue(firstIterationValueIsAlwaysOne(5));
+        assertTrue(firstIterationValueIsAlwaysOne(6));
     }
 
     // @Test
