@@ -77,21 +77,23 @@ public class SimpleSolver {
     */
     public Integer[] findBestSolution() {
 
-        Integer[] solution = findNextIteration();
-        if(solution.length == 0) {
+        iterator = getPermutationsIterator();
+
+        Integer[] solution = iterator.next();
+        if(!iterator.hasNext()) {
             return solution;
         }
 
         double distance = getTotalDistance(solution);
-        Integer[] newSolution = findNextIteration();
+        Integer[] newSolution = iterator.next();
         
-        while(newSolution.length != 0) {
+        while(iterator.hasNext()) {
             double newDistance = getTotalDistance(newSolution);
             if( newDistance < distance){
                 solution = newSolution;
                 distance = newDistance;
             }
-            newSolution = findNextIteration();
+            newSolution = iterator.next();
         }
 
         return solution;
@@ -117,20 +119,6 @@ public class SimpleSolver {
         }
 
         return intSolution;
-    }
-
-    /*
-     * Iterate over all possible path... Starting from point 1!
-    */
-    private Integer[] findNextIteration() {
-        
-        iterator = getPermutationsIterator();
-
-        if( ! iterator.hasNext()) {
-            Integer[] empty = {};
-            return empty;
-        }
-        return iterator.next();
     }
 
     /*
