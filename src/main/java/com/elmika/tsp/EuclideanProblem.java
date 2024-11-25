@@ -11,7 +11,7 @@ public class EuclideanProblem implements Problem {
 
     public EuclideanProblem(double[][] points) {
         if (!this.isValid2DPointArray(points)) {
-            throw new InvalidParameterException("Euclidean problems needs to be initialized with an array of Euclidean coordinates.");
+            throw new InvalidParameterException("Euclidean problems instanciation expects array of Euclidean coordinates.");
         }
         this.points = this.removeDuplicates(points);
     }
