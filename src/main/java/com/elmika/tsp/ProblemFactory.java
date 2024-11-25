@@ -6,10 +6,17 @@ public class ProblemFactory {
         
         Problem problem;
 
+        // Constants for problem types
+        final String TRIVIAL = "trivial";
+        final String SIMPLE = "simple";
+        final String BIGGER = "bigger";
+        final String EUCLIDEAN = "euclidean";
+
         switch(problemType){
-            case "trivial": problem = ProblemFactory.createSimplestProblem(); break;
-            case "simple": problem = ProblemFactory.createSimpleProblem(); break;
-            case "bigger": problem = ProblemFactory.createBiggerProblem(); break;
+            case TRIVIAL: problem = ProblemFactory.createSimplestProblem(); break;
+            case SIMPLE: problem = ProblemFactory.createSimpleProblem(); break;
+            case BIGGER: problem = ProblemFactory.createBiggerProblem(); break;
+            case EUCLIDEAN: problem = ProblemFactory.createEuclideanProblem(); break;
             default: problem = ProblemFactory.createSimplestProblem(); break;
         }
 
@@ -56,6 +63,22 @@ public class ProblemFactory {
             {5.0, 7.0,  3.0,  8.0,  6.0,  0.0}
         };
         return new DistanceMatrixProblem(distances);
+    }
+
+    /*
+     * Euclidean problem, 7 cities
+    */
+    private static Problem createEuclideanProblem() {
+        double[][] points =  {
+            {0.0,  2.0},
+            {2.0, 0.0},
+            {7.0, 3.0},
+            {3.0, 4.0},
+            {4.0, 2.0},
+            {5.0, 7.0},
+            {1.0, 7.0}
+        };
+        return new EuclideanProblem(points);
     }
 
 }
