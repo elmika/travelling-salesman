@@ -48,6 +48,28 @@ public class EuclideanProblemTest {
         return new EuclideanProblem(points);
     }
 
+    private Problem create16xProblem() {
+        double[][] points = { 
+            {0, 0},
+            {0, 1},
+            {1, 0},
+            {1, 1},
+            {10, 0},
+            {10, 1},
+            {11, 0},
+            {11, 1},
+            {0, 10},
+            {0, 11},
+            {1, 10},
+            {1, 11},
+            {10, 10},
+            {10, 11},
+            {11, 10},
+            {11, 11}
+        };
+        return new EuclideanProblem(points);
+    }
+
     @Test
     public void create4xProblemSizeIs4Test() {        
         Problem problem = this.create4xProblem();
@@ -105,8 +127,7 @@ public class EuclideanProblemTest {
 
     @Test
     public void create4xProblemDistanceOutOfRangeTest() {   
-        // Pending implementation.
-        /*
+
         Problem problem = this.create4xProblem();
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -120,12 +141,18 @@ public class EuclideanProblemTest {
         });
 
         assertEquals("Point index out of range for distance calculation.", otherException.getMessage());    
-         */     
+        
     }
   
     @Test
-    public void create15xProblemDistanceAreSymetricTest() {   
-        // Test symetry of distances for all combinations.
+    public void create15xProblemDistanceAreSymetricTest() {    
+        Problem problem = create16xProblem();
+
+        for(int i=1; i<= problem.getSize(); i++) {
+            for(int j=1; j<=i; j++) {
+                assertEquals(problem.getDistance(i,j), problem.getDistance(j,i));
+            }
+        }
     }
 
 }

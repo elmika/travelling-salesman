@@ -41,6 +41,11 @@ public class EuclideanProblem implements Problem {
     @Override
     public double getDistance(int A, int B) {
         double x1, y1, x2, y2;
+
+        if ( A > getSize() || B > getSize() || A <=0 || B <= 0) {
+            throw new InvalidParameterException("Point index out of range for distance calculation.");
+        }
+
         x1 = this.points[A - 1][0];
         y1 = this.points[A - 1][1];
         x2 = this.points[B - 1][0];
