@@ -1,5 +1,7 @@
 package com.elmika.tsp;
 
+import java.util.Random;
+
 public class ProblemFactory {
 
     public static Problem createProblem(String problemType) {
@@ -12,13 +14,18 @@ public class ProblemFactory {
         final String BIGGER = "bigger";
         final String EUCLIDEAN = "euclidean";
         final String CITIES = "cities";
+        final String FULLY_RANDOM = "fully-random";
+        final String PARTIALLY_RANDOM = "partially-random";
 
         switch(coreProblemType(problemType)){
             case TRIVIAL: problem = ProblemFactory.createSimplestProblem(); break;
             case SIMPLE: problem = ProblemFactory.createSimpleProblem(); break;
             case BIGGER: problem = ProblemFactory.createBiggerProblem(); break;
             case EUCLIDEAN: problem = ProblemFactory.createEuclideanProblem(); break;
-            case CITIES: problem = ProblemFactory.createEuclideanProblemOfSize(sizeOfProblemType(problemType)); break;            
+            case CITIES: problem = ProblemFactory.createEuclideanProblemOfSize(sizeOfProblemType(problemType)); break;
+            case FULLY_RANDOM: problem = ProblemFactory.createRandomProblemOfSize(sizeOfProblemType(problemType)); break;
+            case PARTIALLY_RANDOM: problem = ProblemFactory.createPredictableRandomProblemOfSize(sizeOfProblemType(problemType)); break;
+            
             default: problem = ProblemFactory.createSimplestProblem(); break;
         }
 
@@ -128,6 +135,41 @@ public class ProblemFactory {
         }
 
         return new EuclideanProblem(truncated);
+        
+    }
+
+    // Synctactic sugar
+    private static Problem createPredictableRandomProblemOfSize(int size) {
+        return createRandomProblemOfSize(size, true);
+    }
+
+    // Defaults to fully random.
+    private static Problem createRandomProblemOfSize(int size) {
+        return createRandomProblemOfSize(size, false);
+    }
+
+    
+
+    private static Problem createRandomProblemOfSize(int size, boolean fixedSeed) {
+        
+        if (size >150 || size <=0) {
+            throw new IllegalArgumentException("Cannot generate a Random problem of size "+size+".");
+        }
+        Random random;
+        if(fixedSeed) {
+            random = new Random(42);
+        } else {
+            random = new Random();
+        }
+        
+        double[][] coordinates = new double[size][2];
+        for (int j = 0; j < size; j++) {
+            coordinates[j][0] = (double) random.nextInt(101);
+            coordinates[j][1] = (double) random.nextInt(101);
+        }
+
+        // Fair enough, if we get twice the same coordinates, problem will be smaller...
+        return new EuclideanProblem(coordinates);
         
     }
 

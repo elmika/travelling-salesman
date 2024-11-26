@@ -1,7 +1,8 @@
 {
-    "problem": "cities12",
+    "problem": "partially-random5",
     "resolutionStrategy": "brute-force",
-    "possibleProblems": ["trivial", "simple", "bigger", "euclidean", "citiesX"],
+    "possibleProblems": ["trivial", "simple", "bigger", "euclidean", "citiesX", "fully-randomY", "partially-randomY"],
     "possibleResolutionStrategies": ["random", "random10", "random100", "brute-force"],
-    "X": "8-15"
+    "X": "8-15",
+    "Y": "1-150"
 }
