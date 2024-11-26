@@ -1,6 +1,7 @@
 {
-    "problem": "euclidean",
+    "problem": "cities12",
     "resolutionStrategy": "brute-force",
-    "possibleProblems": ["trivial", "simple", "bigger", "euclidean"],
-    "possibleResolutionStrategies": ["random", "random10", "random100", "brute-force"]
+    "possibleProblems": ["trivial", "simple", "bigger", "euclidean", "citiesX"],
+    "possibleResolutionStrategies": ["random", "random10", "random100", "brute-force"],
+    "X": "8-15"
 }
