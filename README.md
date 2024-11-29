@@ -16,7 +16,8 @@ ProjectRoot/
 │   │   ├── java/
 │   │   │   └── com/yourname/tsp/
 │   │   │       └── TravelingSalesman.java
-│   │   └── resources/
+│   │   └── resources/static
+│   │   │   └── index.html
 │   └── test/
 │       └── java/
 └── pom.xml
@@ -51,3 +52,7 @@ and then
 mvn clean package
 java -cp target/tsp-solver-0.1-SETUP.jar com.elmika.tsp.TravellingSalesman
 ```
+
+### Displaying solution in the browser
+
+Open the file index.html in a browser, and paste the list of points of the solution in the form.
