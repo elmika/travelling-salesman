@@ -1,8 +1,11 @@
 package com.elmika.tsp.problems;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class ProblemFactory {
+
+    private static Random random = new Random();
 
     public static Problem createProblem(String problemType) {
         
@@ -32,17 +35,21 @@ public class ProblemFactory {
         return problem;
     }
 
+    private static Random getRandomGenerator() {
+        return random;
+    }
+
     private static String coreProblemType(String type) {
         // Use a regular expression to remove trailing digits
-        return type.replaceAll("\\d+$", "");
+        return type.replaceAll("\\d{1,5}$", "");
     }
 
     private static int sizeOfProblemType(String type) {
         // Use a regular expression to extract trailing digits
-        String trailingDigits = type.replaceAll(".*?(\\d+)$", "$1");
+        String trailingDigits = type.replaceAll(".*?(\\d{1,5})$", "$1");
 
         // Check if a number was found and return as an integer
-        return trailingDigits.matches("\\d+") ? Integer.parseInt(trailingDigits) : null;
+        return trailingDigits.matches("\\d{1,5}") ? Integer.parseInt(trailingDigits) : null;
    
     }
 
@@ -128,13 +135,7 @@ public class ProblemFactory {
             {59, 4}
         };
 
-        // Truncate the array
-        double[][] truncated = new double[size][];
-        for (int j = 0; j < size; j++) {
-            truncated[j] = fullArray[j];
-        }
-
-        return new EuclideanProblem(truncated);
+        return new EuclideanProblem(Arrays.copyOf(fullArray, size));
         
     }
 
@@ -159,7 +160,7 @@ public class ProblemFactory {
         if(fixedSeed) {
             random = new Random(42);
         } else {
-            random = new Random();
+            random = getRandomGenerator();
         }
         
         double[][] coordinates = new double[size][2];
