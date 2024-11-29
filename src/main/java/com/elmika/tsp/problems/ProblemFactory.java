@@ -1,4 +1,4 @@
-package com.elmika.tsp;
+package com.elmika.tsp.problems;
 
 import java.util.Random;
 

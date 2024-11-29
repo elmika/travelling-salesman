@@ -1,4 +1,4 @@
-package com.elmika.tsp;
+package com.elmika.tsp.problems;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;
@@ -14,6 +14,12 @@ public class EuclideanProblem implements Problem {
             throw new InvalidParameterException("Euclidean problems instanciation expects array of Euclidean coordinates.");
         }
         this.points = this.removeDuplicates(points);
+    }
+
+    @Override
+    public double[] getPoint(int index) {
+        validatePointIndex(index);
+        return this.points[index-1];
     }
 
     private boolean isValid2DPointArray(double[][] array) {
@@ -38,13 +44,23 @@ public class EuclideanProblem implements Problem {
             .toArray(double[][]::new);
     }
 
+    private void validatePointIndex(int index) {
+
+        if(index <= 0) {
+            throw new InvalidParameterException("Point index out of range.");
+        }
+        if(index > getSize() ) {
+            throw new InvalidParameterException("Point index out of range.");
+        }
+        return;
+    }
+
     @Override
     public double getDistance(int A, int B) {
         double x1, y1, x2, y2;
 
-        if ( A > getSize() || B > getSize() || A <=0 || B <= 0) {
-            throw new InvalidParameterException("Point index out of range for distance calculation.");
-        }
+        validatePointIndex(A);
+        validatePointIndex(B);
 
         x1 = this.points[A - 1][0];
         y1 = this.points[A - 1][1];

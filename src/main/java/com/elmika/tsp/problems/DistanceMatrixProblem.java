@@ -1,4 +1,4 @@
-package com.elmika.tsp;
+package com.elmika.tsp.problems;
 
 public class DistanceMatrixProblem implements Problem {
     private double[][] distanceMatrix;
@@ -15,5 +15,10 @@ public class DistanceMatrixProblem implements Problem {
     @Override
     public int getSize() {
         return this.distanceMatrix.length;
+    }
+
+    @Override
+    public double[] getPoint(int i) {
+        return null;
     }
 }

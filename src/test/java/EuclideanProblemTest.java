@@ -2,8 +2,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.elmika.tsp.Problem;
-import com.elmika.tsp.EuclideanProblem;
+import com.elmika.tsp.problems.EuclideanProblem;
+import com.elmika.tsp.problems.Problem;
 
 public class EuclideanProblemTest {
 
@@ -134,13 +134,13 @@ public class EuclideanProblemTest {
             problem.getDistance(1,5);
         });
 
-        assertEquals("Point index out of range for distance calculation.", exception.getMessage());
+        assertEquals("Point index out of range.", exception.getMessage());
 
         IllegalArgumentException otherException = assertThrows(IllegalArgumentException.class, () -> {
             problem.getDistance(0,2);
         });
 
-        assertEquals("Point index out of range for distance calculation.", otherException.getMessage());    
+        assertEquals("Point index out of range.", otherException.getMessage());
         
     }
   

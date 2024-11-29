@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.elmika.tsp.problems.Problem;
+
 public class SimpleSolver {
 
     private Problem problem;
@@ -11,6 +13,10 @@ public class SimpleSolver {
 
     public SimpleSolver(Problem problem) {
         this.problem = problem;
+    }
+
+    protected Problem getProblem() {
+        return this.problem;
     }
 
     private PermutationsIterator getPermutationsIterator() {
