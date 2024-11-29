@@ -7,6 +7,10 @@ public class ProblemFactory {
 
     private static Random random = new Random();
 
+    private ProblemFactory() {
+        throw new IllegalStateException("Utility class");
+      }
+
     public static Problem createProblem(String problemType) {
         
         Problem problem;
@@ -165,8 +169,8 @@ public class ProblemFactory {
         
         double[][] coordinates = new double[size][2];
         for (int j = 0; j < size; j++) {
-            coordinates[j][0] = (double) random.nextInt(101);
-            coordinates[j][1] = (double) random.nextInt(101);
+            coordinates[j][0] = random.nextInt(101);
+            coordinates[j][1] = random.nextInt(101);
         }
 
         // Fair enough, if we get twice the same coordinates, problem will be smaller...
