@@ -21,14 +21,15 @@ public class SimpleSolver {
     public Integer[] findSolution(String type) {
 
         Integer[] sol;
+        Solver solver;
         switch (type) {
             case "brute-force":
-                Solver solver = new BruteForceSolver(problem);
-                sol = solver.findSolution();                
+                solver = new BruteForceSolver(problem);
+                sol = solver.findSolution();
                 break;
             case "random":
-                System.out.println("Finding one random solution.");
-                sol = findRandomSolution();
+                solver = new RandomSolver(problem);
+                sol = solver.findSolution();
                 break;
             case "random10":
                 System.out.println("Comparing 10 random solutions to find the best route.");
