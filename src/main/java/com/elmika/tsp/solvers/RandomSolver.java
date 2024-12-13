@@ -9,9 +9,16 @@ import com.elmika.tsp.problems.Problem;
 public class RandomSolver implements Solver {
 
     private Problem problem;
+    private Integer iterations;
 
     public RandomSolver(Problem problem) {
         this.problem = problem;
+        this.iterations = 1;
+    }
+
+    public RandomSolver(Problem problem, Integer iterations) {
+        this.problem = problem;
+        this.iterations = iterations;
     }
 
     protected Problem getProblem() {
@@ -20,8 +27,13 @@ public class RandomSolver implements Solver {
 
     @Override 
     public Integer[] findSolution() {
-        System.out.println("Finding one random solution.");
-        return findRandomSolution();
+        if (this.iterations == 1) {
+            System.out.println("Finding one random solution.");
+            return findRandomSolution();
+        } else {
+            System.out.println("Comparing "+iterations+" random solutions to find the best route.");
+            return findBestRandomSolution();
+        }
     }
 
     private Integer[] findRandomSolution() {
@@ -41,6 +53,23 @@ public class RandomSolver implements Solver {
         }
 
         return intSolution;
+    }
+
+    private Integer[] findBestRandomSolution() {
+        
+        Integer[] solution = this.findRandomSolution();
+        double distance = this.getTotalDistance(solution);
+
+        for (Integer i = 0; i < iterations; i++) {
+            Integer[] newSolution = findRandomSolution();
+            double newDistance = this.getTotalDistance(newSolution);
+            if (newDistance < distance) {
+                solution = newSolution;
+                distance = newDistance;
+            }
+        }
+
+        return solution;
     }
 
     public double getTotalDistance(Integer[] sol) {

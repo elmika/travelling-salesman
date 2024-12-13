@@ -1,9 +1,5 @@
 package com.elmika.tsp.solvers;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.elmika.tsp.problems.Problem;
 
 public class SimpleSolver {
@@ -32,55 +28,19 @@ public class SimpleSolver {
                 sol = solver.findSolution();
                 break;
             case "random10":
-                System.out.println("Comparing 10 random solutions to find the best route.");
-                sol = findBestRandomSolution(10);
+                solver = new RandomSolver(problem, 10);
+                sol = solver.findSolution();
                 break;
             case "random100":
-                System.out.println("Comparing 100 random solutions to find the best route.");
-                sol = findBestRandomSolution(100);
-                break;
+            solver = new RandomSolver(problem, 100);
+            sol = solver.findSolution();
+            break;
             default:
-                System.out.println("Comparing 10 random solutions to find the best route.");
-                sol = findBestRandomSolution(10);
+            solver = new RandomSolver(problem, 20);
+            sol = solver.findSolution();
         }
 
         return sol;
-    }
-
-    private Integer[] findBestRandomSolution(Integer iterations) {
-
-        Integer[] solution = this.findRandomSolution();
-        double distance = this.getTotalDistance(solution);
-
-        for (Integer i = 0; i < iterations; i++) {
-            Integer[] newSolution = findRandomSolution();
-            double newDistance = this.getTotalDistance(newSolution);
-            if (newDistance < distance) {
-                solution = newSolution;
-                distance = newDistance;
-            }
-        }
-
-        return solution;
-    }
-
-    private Integer[] findRandomSolution() {
-
-        Integer[] solution = new Integer[this.problem.getSize()];
-        for (int i = 0; i < this.problem.getSize(); i++) {
-            solution[i] = i + 1;
-        }
-
-        List<Integer> intList = Arrays.asList(solution);
-
-        Collections.shuffle(intList);
-
-        Integer[] intSolution = new Integer[intList.size()];
-        for (int i = 0; i < intList.size(); i++) {
-            intSolution[i] = intList.get(i);
-        }
-
-        return intSolution;
     }
 
     public double getTotalDistance(Integer[] sol) {
