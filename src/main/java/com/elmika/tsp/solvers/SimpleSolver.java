@@ -1,4 +1,4 @@
-package com.elmika.tsp;
+package com.elmika.tsp.solvers;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +9,6 @@ import com.elmika.tsp.problems.Problem;
 public class SimpleSolver {
 
     private Problem problem;
-    private PermutationsIterator iterator;
 
     public SimpleSolver(Problem problem) {
         this.problem = problem;
@@ -19,21 +18,13 @@ public class SimpleSolver {
         return this.problem;
     }
 
-    private PermutationsIterator getPermutationsIterator() {
-        if (this.iterator == null) {
-            int problemSize = this.problem.getSize();
-            this.iterator = new PermutationsIterator(problemSize);
-        }
-        return this.iterator;
-    }
-
     public Integer[] findSolution(String type) {
 
         Integer[] sol;
         switch (type) {
             case "brute-force":
-                System.out.println("Using Brute Force algorithm to find the best route.");
-                sol = findBestSolution();
+                Solver solver = new BruteForceSolver(problem);
+                sol = solver.findSolution();                
                 break;
             case "random":
                 System.out.println("Finding one random solution.");
@@ -67,30 +58,6 @@ public class SimpleSolver {
                 solution = newSolution;
                 distance = newDistance;
             }
-        }
-
-        return solution;
-    }
-
-    public Integer[] findBestSolution() {
-
-        iterator = getPermutationsIterator();
-
-        Integer[] solution = iterator.next();
-        if (!iterator.hasNext()) {
-            return solution;
-        }
-
-        double distance = getTotalDistance(solution);
-        Integer[] newSolution = iterator.next();
-
-        while (iterator.hasNext()) {
-            double newDistance = getTotalDistance(newSolution);
-            if (newDistance < distance) {
-                solution = newSolution;
-                distance = newDistance;
-            }
-            newSolution = iterator.next();
         }
 
         return solution;

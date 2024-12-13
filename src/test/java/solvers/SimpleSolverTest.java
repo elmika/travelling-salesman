@@ -1,3 +1,4 @@
+package solvers;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -5,8 +6,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.elmika.tsp.problems.Problem;
+import com.elmika.tsp.solvers.SimpleSolver;
 import com.elmika.tsp.problems.DistanceMatrixProblem;
-import com.elmika.tsp.SimpleSolver;
 
 public class SimpleSolverTest {
 

@@ -1,4 +1,4 @@
-package com.elmika.tsp;
+package com.elmika.tsp.solvers;
 
 import com.elmika.tsp.problems.Problem;
 
