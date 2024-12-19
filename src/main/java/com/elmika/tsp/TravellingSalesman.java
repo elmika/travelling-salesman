@@ -1,11 +1,13 @@
 package com.elmika.tsp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ValueObjects.Point;
 import com.elmika.tsp.problems.EuclideanProblem;
 import com.elmika.tsp.problems.Problem;
 import com.elmika.tsp.problems.ProblemFactory;
@@ -50,13 +52,13 @@ public class TravellingSalesman {
 
     private static void displayEuclideanSolution(Integer[] sol, SimpleEuclideanSolver solver){
 
-        double[][] coordinates = solver.getSolutionCoordinates(sol);
+        Point[] coordinates = solver.getSolutionCoordinates(sol);
 
         // Convert array to list of Coordinate objects
         // Convert array to list of maps (x, y pairs)
         List<Map<String, Double>> coordinateList = new ArrayList<>();
-        for (double[] coord : coordinates) {
-            coordinateList.add(Map.of("x", coord[0], "y", coord[1]));
+        for (Point coord : coordinates) {
+            coordinateList.add(Map.of("x", coord.getX(), "y", coord.getY()));
         }
 
         // Convert list to JSON string

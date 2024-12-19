@@ -5,19 +5,33 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.ValueObjects.Point;
+
 public class EuclideanProblem implements Problem {
     
-    private double[][] points;
+    private Point[] points;
 
-    public EuclideanProblem(double[][] points) {
-        if (!this.isValid2DPointArray(points)) {
-            throw new InvalidParameterException("Euclidean problems instanciation expects array of Euclidean coordinates.");
-        }
+    public EuclideanProblem(Point[] points) {
+        
         this.points = this.removeDuplicates(points);
     }
 
+    /** We use polymorphism to maintain compatibitily with previous version. */
+    public EuclideanProblem(double[][] coordinates) {
+        if (!this.isValid2DPointArray(coordinates)) {
+            throw new InvalidParameterException("Euclidean problems instanciation expects array of Euclidean coordinates.");
+        }
+        coordinates = this.removeDuplicates(coordinates);
+       
+        Point[] points = Arrays.stream(coordinates)
+            .map(coord -> new Point(coord[0], coord[1]))
+            .toArray(Point[]::new);
+
+        this.points = points;
+    }
+
     @Override
-    public double[] getPoint(int index) {
+    public Point getPoint(int index) {
         validatePointIndex(index);
         return this.points[index-1];
     }
@@ -44,6 +58,17 @@ public class EuclideanProblem implements Problem {
             .toArray(double[][]::new);
     }
 
+    private Point[] removeDuplicates(Point[] points) {
+        
+        // Convert to Set to remove duplicates
+        Set<Point> uniquePoints = new HashSet<>(Arrays.asList(points));
+
+        // Convert back to array if needed
+        Point[] result = uniquePoints.toArray(new Point[0]);
+
+        return result;
+    }
+
     private void validatePointIndex(int index) {
 
         if(index <= 0) {
@@ -62,10 +87,13 @@ public class EuclideanProblem implements Problem {
         validatePointIndex(A);
         validatePointIndex(B);
 
-        x1 = this.points[A - 1][0];
-        y1 = this.points[A - 1][1];
-        x2 = this.points[B - 1][0];
-        y2 = this.points[B - 1][1];
+        Point pointA = this.points[A - 1];
+        Point pointB = this.points[B - 1];
+
+        x1 = pointA.getX();
+        y1 = pointA.getY();
+        x2 = pointB.getX();
+        y2 = pointB.getY();
 
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }

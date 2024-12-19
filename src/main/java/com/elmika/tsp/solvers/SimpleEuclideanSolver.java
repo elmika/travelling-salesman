@@ -1,5 +1,6 @@
 package com.elmika.tsp.solvers;
 
+import com.ValueObjects.Point;
 import com.elmika.tsp.problems.Problem;
 
 public class SimpleEuclideanSolver extends SimpleSolver {
@@ -8,9 +9,9 @@ public class SimpleEuclideanSolver extends SimpleSolver {
         super(problem);
     }
 
-    public double[][] getSolutionCoordinates(Integer[] sol) {      
+    public Point[] getSolutionCoordinates(Integer[] sol) {      
 
-        double[][] solutionCoordinates = new double[sol.length][2];;
+        Point[] solutionCoordinates = new Point[sol.length];;
         for (int i = 0; i < sol.length; i++) {
             solutionCoordinates[i] = this.getProblem().getPoint(sol[i]);
         }

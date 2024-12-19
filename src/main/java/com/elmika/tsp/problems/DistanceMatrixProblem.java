@@ -1,5 +1,7 @@
 package com.elmika.tsp.problems;
 
+import com.ValueObjects.Point;
+
 public class DistanceMatrixProblem implements Problem {
     private double[][] distanceMatrix;
 
@@ -18,7 +20,7 @@ public class DistanceMatrixProblem implements Problem {
     }
 
     @Override
-    public double[] getPoint(int i) {
+    public Point getPoint(int i) {
         return null;
     }
 }

@@ -1,7 +1,9 @@
 package com.elmika.tsp.problems;
 
+import com.ValueObjects.Point;
+
 public interface Problem {
     double getDistance(int A, int B);
     int getSize();
-    double[] getPoint(int i);
+    Point getPoint(int i);
 }
