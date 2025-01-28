@@ -1,13 +1,12 @@
 package com.elmika.tsp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ValueObjects.Point;
+import com.elmika.tsp.ValueObjects.Point;
 import com.elmika.tsp.problems.EuclideanProblem;
 import com.elmika.tsp.problems.Problem;
 import com.elmika.tsp.problems.ProblemFactory;

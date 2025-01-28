@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.ValueObjects.Point;
+import com.elmika.tsp.ValueObjects.Point;
 
 public class EuclideanProblem implements Problem {
     

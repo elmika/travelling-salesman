@@ -1,6 +1,6 @@
 package com.elmika.tsp.solvers;
 
-import com.ValueObjects.Point;
+import com.elmika.tsp.ValueObjects.Point;
 import com.elmika.tsp.problems.Problem;
 
 public class SimpleEuclideanSolver extends SimpleSolver {
