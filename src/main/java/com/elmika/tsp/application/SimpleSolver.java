@@ -4,10 +4,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.elmika.tsp.domain.Problem;
 import com.elmika.tsp.domain.Solution;
 
 public class SimpleSolver {
+
+    private static final Logger log = LoggerFactory.getLogger(SimpleSolver.class);
 
     private final Problem problem;
     private PermutationsIterator iterator;
@@ -27,23 +32,23 @@ public class SimpleSolver {
         Integer[] sol;
         switch (type) {
             case "brute-force":
-                System.out.println("Using Brute Force algorithm to find the best route.");
+                log.info("Using Brute Force algorithm to find the best route.");
                 sol = findBestSolution();
                 break;
             case "random":
-                System.out.println("Finding one random solution.");
+                log.info("Finding one random solution.");
                 sol = findRandomSolution();
                 break;
             case "random10":
-                System.out.println("Comparing 10 random solutions to find the best route.");
+                log.info("Comparing 10 random solutions to find the best route.");
                 sol = findBestRandomSolution(10);
                 break;
             case "random100":
-                System.out.println("Comparing 100 random solutions to find the best route.");
+                log.info("Comparing 100 random solutions to find the best route.");
                 sol = findBestRandomSolution(100);
                 break;
             default:
-                System.out.println("Comparing 10 random solutions to find the best route.");
+                log.info("Comparing 10 random solutions to find the best route.");
                 sol = findBestRandomSolution(10);
         }
         double distance = getTotalDistance(sol);

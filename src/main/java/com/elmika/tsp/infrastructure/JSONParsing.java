@@ -6,14 +6,14 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.elmika.tsp.application.ProblemConfiguration;
 
 public class JSONParsing {
 
-    private static void log(String message) {
-        System.out.println(message);
-    }
+    private static final Logger log = LoggerFactory.getLogger(JSONParsing.class);
 
     public static JSONObject read(String filename) {
         JSONObject json = null;
@@ -24,22 +24,22 @@ public class JSONParsing {
                 String jsonTxt = IOUtils.toString(is, "UTF-8");
                 json = new JSONObject(jsonTxt);
             } catch (Exception e) {
-                log("Exception has been thrown when reading json file.");
+                log.warn("Exception when reading json file: {}", e.getMessage());
             }
         } else {
-            log("Could not find json file");
+            log.warn("Could not find json file: {}", filename);
         }
         return json;
     }
 
     public static void test() {
-        log("RUNNING TEST.");
+        log.info("RUNNING TEST.");
         JSONObject json = read("file.json");
         try {
             String a = json.getString("yes");
-            log(a);
+            log.info(a);
         } catch (Exception e) {
-            log("Exception has been thrown when retrieving json value.");
+            log.warn("Exception when retrieving json value: {}", e.getMessage());
         }
     }
 
@@ -50,17 +50,17 @@ public class JSONParsing {
 
         JSONObject json = read(filename);
         if (json == null) {
-            log("Default configuration loaded");
+            log.info("Default configuration loaded");
             return new ProblemConfiguration(problem, strategy);
         }
         try {
             problem = json.getString("problem");
             strategy = json.getString("resolutionStrategy");
         } catch (Exception e) {
-            log("Default configuration loaded");
+            log.info("Default configuration loaded");
             return new ProblemConfiguration(problem, strategy);
         }
-        log("Problem: " + problem + ", Strategy: " + strategy);
+        log.info("Problem: {}, Strategy: {}", problem, strategy);
         return new ProblemConfiguration(problem, strategy);
     }
 }
