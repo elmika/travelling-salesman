@@ -1,7 +1,8 @@
 package com.elmika.tsp.application;
 
-import com.elmika.tsp.application.solver.SolverStrategy;
+import com.elmika.tsp.application.solver.RandomSolver;
 import com.elmika.tsp.application.solver.SimpleSolverStrategy;
+import com.elmika.tsp.application.solver.SolverStrategy;
 import com.elmika.tsp.domain.Problem;
 import com.elmika.tsp.domain.Solution;
 
@@ -18,6 +19,18 @@ public class SolveTspUseCase implements TspSolver {
     }
 
     private static SolverStrategy resolveStrategy(String strategy) {
-        return new SimpleSolverStrategy(strategy != null ? strategy : "random10");
+        String name = strategy != null ? strategy : "random10";
+        switch (name) {
+            case "random":
+                return new RandomSolver(1);
+            case "random10":
+                return new RandomSolver(10);
+            case "random100":
+                return new RandomSolver(100);
+            case "brute-force":
+                return new SimpleSolverStrategy("brute-force");
+            default:
+                return new RandomSolver(10);
+        }
     }
 }
