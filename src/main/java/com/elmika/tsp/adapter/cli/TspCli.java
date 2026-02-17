@@ -3,6 +3,7 @@ package com.elmika.tsp.adapter.cli;
 import com.elmika.tsp.application.ConfigLoader;
 import com.elmika.tsp.application.ProblemConfiguration;
 import com.elmika.tsp.application.ProblemProvider;
+import com.elmika.tsp.application.SolverConfiguration;
 import com.elmika.tsp.application.TspSolver;
 import com.elmika.tsp.domain.Problem;
 import com.elmika.tsp.domain.Solution;
@@ -26,7 +27,8 @@ public class TspCli {
     public void run() {
         System.out.println("Traveling Salesman Problem Solver");
 
-        ProblemConfiguration config = configLoader.loadConfiguration();
+        ProblemConfiguration raw = configLoader.loadConfiguration();
+        SolverConfiguration config = SolverConfiguration.createFrom(raw);
         Problem problem = problemProvider.create(config.getProblem());
         Solution solution = solver.solve(problem, config.getResolutionStrategy());
 
