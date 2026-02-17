@@ -36,15 +36,15 @@ public class EuclideanProblem implements Problem {
     }
 
     private Point getPoint(int index) {
-        return this.points[index];
+        if (index > this.getSize() || index <= 0) {
+            throw new IllegalArgumentException("Point index out of range: " + index);
+        }
+        return this.points[index-1];
     }
 
     @Override
     public double getDistance(int A, int B) {
-        if (A > getSize() || B > getSize() || A <= 0 || B <= 0) {
-            throw new IllegalArgumentException("Point index out of range for distance calculation.");
-        }
-        return getPoint(A - 1).distanceTo(getPoint(B - 1));
+        return this.getPoint(A).distanceTo(this.getPoint(B));
     }
 
     @Override
