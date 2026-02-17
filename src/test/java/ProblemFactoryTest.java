@@ -1,8 +1,8 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.elmika.tsp.Problem;
-import com.elmika.tsp.ProblemFactory;
+import com.elmika.tsp.domain.Problem;
+import com.elmika.tsp.infrastructure.ProblemFactory;
 
 public class ProblemFactoryTest {
 
@@ -12,4 +12,3 @@ public class ProblemFactoryTest {
         assertEquals(7, problem.getSize());
     }
 }
-

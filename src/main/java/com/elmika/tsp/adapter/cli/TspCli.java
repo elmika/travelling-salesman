@@ -1,9 +1,15 @@
-package com.elmika.tsp;
+package com.elmika.tsp.adapter.cli;
+
+import com.elmika.tsp.application.ConfigLoader;
+import com.elmika.tsp.application.ProblemConfiguration;
+import com.elmika.tsp.application.ProblemProvider;
+import com.elmika.tsp.application.TspSolver;
+import com.elmika.tsp.domain.Problem;
+import com.elmika.tsp.domain.Solution;
 
 /**
  * Driving adapter: CLI entry point. Loads configuration, obtains problem,
  * runs the use case, and prints the solution to stdout.
- * Receives ConfigLoader, ProblemProvider, and TspSolver via constructor (composition root wires these in main).
  */
 public class TspCli {
 

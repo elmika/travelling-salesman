@@ -7,20 +7,16 @@ In this project, we implement some problems and algorithms to resolve them.
 
 ## Project Structure
 
-This is a typical Maven structure:
+Hexagonal architecture with Maven:
 
 ```
-ProjectRoot/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/yourname/tsp/
-│   │   │       └── TravelingSalesman.java
-│   │   └── resources/
-│   └── test/
-│       └── java/
-└── pom.xml
-└── Dockerfile
+src/main/java/com/elmika/tsp/
+├── domain/           Problem, Solution, EuclideanProblem, DistanceMatrixProblem
+├── application/      ConfigLoader, ProblemProvider, TspSolver, SolveTspUseCase,
+│                     SimpleSolver, PermutationsIterator, ProblemConfiguration
+├── infrastructure/   JsonFileConfigLoader, InMemoryProblemFactory,
+│                     JSONParsing, ProblemFactory
+└── adapter/cli/      TspCli, TravellingSalesman (main)
 ```
 
 ## Running with Docker
@@ -51,7 +47,7 @@ docker run -it -v $(pwd):/app -w /app tsp-solver /bin/bash
 and then
 ```bash
 mvn clean package
-java -cp target/tsp-solver-0.1-SETUP.jar com.elmika.tsp.TravellingSalesman
+java -jar target/tsp-solver-0.1-SETUP.jar
 ```
 
 ### Executing the tests

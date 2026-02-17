@@ -1,8 +1,11 @@
-package com.elmika.tsp;
+package com.elmika.tsp.infrastructure;
+
+import com.elmika.tsp.application.ConfigLoader;
+import com.elmika.tsp.application.ProblemConfiguration;
 
 /**
  * Driven adapter for ConfigLoader. Loads configuration from problemConfiguration.json
- * via JSONParsing. Delegates to existing file-based logic.
+ * via JSONParsing.
  */
 public class JsonFileConfigLoader implements ConfigLoader {
 

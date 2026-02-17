@@ -1,11 +1,11 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.elmika.tsp.Problem;
-import com.elmika.tsp.DistanceMatrixProblem;
-import com.elmika.tsp.SolveTspUseCase;
-import com.elmika.tsp.Solution;
-import com.elmika.tsp.TspSolver;
+import com.elmika.tsp.application.SolveTspUseCase;
+import com.elmika.tsp.application.TspSolver;
+import com.elmika.tsp.domain.DistanceMatrixProblem;
+import com.elmika.tsp.domain.Problem;
+import com.elmika.tsp.domain.Solution;
 
 public class SolveTspUseCaseTest {
 

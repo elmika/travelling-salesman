@@ -1,4 +1,4 @@
-package com.elmika.tsp;
+package com.elmika.tsp.domain;
 
 public class DistanceMatrixProblem implements Problem {
     private double[][] distanceMatrix;

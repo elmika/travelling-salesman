@@ -54,6 +54,11 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.elmika.tsp.adapter.cli.TravellingSalesman</mainClass>
+                                </transformer>
+                            </transformers>
                         </configuration>
                     </execution>
                 </executions>

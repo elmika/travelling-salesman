@@ -1,18 +1,17 @@
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.elmika.tsp.Problem;
-import com.elmika.tsp.DistanceMatrixProblem;
-import com.elmika.tsp.SimpleSolver;
-import com.elmika.tsp.Solution;
+import com.elmika.tsp.application.SimpleSolver;
+import com.elmika.tsp.domain.DistanceMatrixProblem;
+import com.elmika.tsp.domain.Problem;
+import com.elmika.tsp.domain.Solution;
 
 public class SimpleSolverTest {
 
     private Problem create4xProblem() {
-        double[][] distanceMatrix = { 
+        double[][] distanceMatrix = {
             {1, 1, 1, 1},
             {1, 1, 1, 1},
             {1, 1, 1, 1},

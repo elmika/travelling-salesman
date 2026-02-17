@@ -1,4 +1,4 @@
-package com.elmika.tsp;
+package com.elmika.tsp.application;
 
 /**
  * Port for loading problem configuration (problem type and resolution strategy).

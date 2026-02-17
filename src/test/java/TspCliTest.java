@@ -1,13 +1,13 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.elmika.tsp.ConfigLoader;
-import com.elmika.tsp.ProblemConfiguration;
-import com.elmika.tsp.ProblemProvider;
-import com.elmika.tsp.Problem;
-import com.elmika.tsp.DistanceMatrixProblem;
-import com.elmika.tsp.SolveTspUseCase;
-import com.elmika.tsp.TspCli;
+import com.elmika.tsp.adapter.cli.TspCli;
+import com.elmika.tsp.application.ConfigLoader;
+import com.elmika.tsp.application.ProblemConfiguration;
+import com.elmika.tsp.application.ProblemProvider;
+import com.elmika.tsp.application.SolveTspUseCase;
+import com.elmika.tsp.domain.DistanceMatrixProblem;
+import com.elmika.tsp.domain.Problem;
 
 public class TspCliTest {
 
@@ -20,6 +20,6 @@ public class TspCliTest {
         };
         TspCli cli = new TspCli(configLoader, problemProvider, new SolveTspUseCase());
 
-        assertDoesNotThrow(() -> cli.run());
+        assertDoesNotThrow(cli::run);
     }
 }

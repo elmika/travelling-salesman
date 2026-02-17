@@ -1,9 +1,11 @@
-package com.elmika.tsp;
+package com.elmika.tsp.infrastructure;
+
+import com.elmika.tsp.application.ProblemProvider;
+import com.elmika.tsp.domain.Problem;
 
 /**
  * Driven adapter for ProblemProvider. Creates problems from built-in types
- * (trivial, simple, bigger, euclidean, citiesN, fully-randomN, partially-randomN)
- * via ProblemFactory. Delegates to existing in-memory creation logic.
+ * via ProblemFactory.
  */
 public class InMemoryProblemFactory implements ProblemProvider {
 

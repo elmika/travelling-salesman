@@ -1,4 +1,4 @@
-package com.elmika.tsp;
+package com.elmika.tsp.domain;
 
 public interface Problem {
     double getDistance(int A, int B);
