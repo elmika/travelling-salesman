@@ -44,13 +44,7 @@ public class EuclideanProblem implements Problem {
         if (A > getSize() || B > getSize() || A <= 0 || B <= 0) {
             throw new IllegalArgumentException("Point index out of range for distance calculation.");
         }
-        Point p1 = getPoint(A - 1);
-        Point p2 = getPoint(B - 1);
-        double x1 = p1.getX();
-        double y1 = p1.getY();
-        double x2 = p2.getX();
-        double y2 = p2.getY();
-        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        return getPoint(A - 1).distanceTo(getPoint(B - 1));
     }
 
     @Override

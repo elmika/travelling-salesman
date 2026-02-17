@@ -26,6 +26,21 @@ public final class Point {
         return y;
     }
 
+    /**
+     * Euclidean distance from this point to another.
+     *
+     * @param other the other point (must not be null)
+     * @return the distance
+     */
+    public double distanceTo(Point other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other point must not be null.");
+        }
+        double dx = other.x - this.x;
+        double dy = other.y - this.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

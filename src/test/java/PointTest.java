@@ -32,5 +32,25 @@ public class PointTest {
         assertThrows(IllegalArgumentException.class, () -> new Point(Double.POSITIVE_INFINITY, 0.0));
         assertThrows(IllegalArgumentException.class, () -> new Point(0.0, Double.NEGATIVE_INFINITY));
     }
+
+    @Test
+    public void distanceToSelfIsZero() {
+        Point p = new Point(3.0, 4.0);
+        assertEquals(0.0, p.distanceTo(p));
+    }
+
+    @Test
+    public void distanceToOtherPoint() {
+        Point p1 = new Point(0.0, 0.0);
+        Point p2 = new Point(3.0, 4.0);
+        assertEquals(5.0, p1.distanceTo(p2));
+        assertEquals(5.0, p2.distanceTo(p1));
+    }
+
+    @Test
+    public void distanceToNullThrows() {
+        Point p = new Point(0.0, 0.0);
+        assertThrows(IllegalArgumentException.class, () -> p.distanceTo(null));
+    }
 }
 
