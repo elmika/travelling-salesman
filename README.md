@@ -35,6 +35,8 @@ To build the Docker image, run:
 docker build -t tsp-solver .
 ```
 
+### Running the application
+
 Then, run the application:
 
 ```bash
@@ -50,4 +52,13 @@ and then
 ```bash
 mvn clean package
 java -cp target/tsp-solver-0.1-SETUP.jar com.elmika.tsp.TravellingSalesman
+```
+
+### Executing the tests
+
+The project has automated tests run by JUnit 5 via Maven.
+
+```
+docker build -t tsp-solver .
+docker run tsp-solver mvn test
 ```
