@@ -21,7 +21,7 @@ public class SimpleSolver {
         return this.iterator;
     }
 
-    public Integer[] findSolution(String type) {
+    public Solution findSolution(String type) {
 
         Integer[] sol;
         switch (type) {
@@ -46,7 +46,8 @@ public class SimpleSolver {
                 sol = findBestRandomSolution(10);
         }
 
-        return sol;
+        double distance = getTotalDistance(sol);
+        return new Solution(sol, distance);
     }
 
     private Integer[] findBestRandomSolution(Integer iterations) {

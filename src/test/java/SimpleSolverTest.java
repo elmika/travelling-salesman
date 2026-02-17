@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.elmika.tsp.Problem;
 import com.elmika.tsp.DistanceMatrixProblem;
 import com.elmika.tsp.SimpleSolver;
+import com.elmika.tsp.Solution;
 
 public class SimpleSolverTest {
 
@@ -25,9 +26,9 @@ public class SimpleSolverTest {
     public void testSolvingStrategies(String testType) {
         Problem problem = this.create4xProblem();
         SimpleSolver solver = new SimpleSolver(problem);
-        Integer[] result = solver.findSolution(testType);
+        Solution result = solver.findSolution(testType);
 
-        assertEquals(4.0, solver.getTotalDistance(result));
+        assertEquals(4.0, result.getTotalDistance());
     }
 
     @Test
@@ -39,8 +40,8 @@ public class SimpleSolverTest {
         };
         Problem problem = new DistanceMatrixProblem(distanceMatrix);
         SimpleSolver solver = new SimpleSolver(problem);
-        Integer[] result = solver.findSolution("brute-force");
+        Solution result = solver.findSolution("brute-force");
 
-        assertEquals(3.0, solver.getTotalDistance(result));
+        assertEquals(3.0, result.getTotalDistance());
     }
 }
