@@ -5,9 +5,11 @@ TSP is a classic algorithmic problem in the field of computer science and operat
 In this project, we implement some problems and algorithms to resolve them.
 
 
-## Project Structure
+## Architecture
 
-Hexagonal architecture with Maven:
+The project follows **Hexagonal Architecture**. See [ARCHITECTURE.md](ARCHITECTURE.md) for the target architecture diagram and dependency rules.
+
+## Project Structure
 
 ```
 src/main/java/com/elmika/tsp/
