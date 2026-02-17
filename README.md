@@ -39,6 +39,7 @@ Then, run the application:
 
 ```bash
 docker run tsp-solver
+# This uses the shaded JAR manifest to locate the main class.
 ```
 
 Or if you are editing the code:
