@@ -61,3 +61,15 @@ The project has automated tests run by JUnit 5 via Maven.
 docker build -t tsp-solver .
 docker run tsp-solver mvn test
 ```
+
+### Smoke testing the packaged application
+
+For a quick smoke test that the shaded JAR builds and starts correctly, you can use the helper script:
+
+```bash
+# Locally, if you have Java and Maven:
+./smoke-test.sh
+
+# Or inside Docker:
+docker run tsp-solver ./smoke-test.sh
+```
