@@ -56,3 +56,12 @@ Here are some general considerations from a staff-engineer perspective:
 2. Align exception type and tests in `EuclideanProblem`.
 3. Introduce a `Solution` type and use it as the solver’s return value.
 4. Move toward hexagonal architecture (ports/adapters) if you want better testability and flexibility.
+
+## SizeOfProblem future improvements
+
+- Risk: Treating “no digits” as size 0 means misconfigured values like "cities" or "fully-random" without a number will now produce an IllegalArgumentException via the existing size checks, rather than any implicit default. If you intended a default size in those cases, we’d need to adjust sizeOfProblemType or createProblem accordingly.
+
+- Future improvement ideas:
+
+    - Add more targeted tests for invalid size strings (e.g. "cities0", "cities-1", "citiesXYZ") to explicitly document/lock in behavior.
+    - If you later want user-friendly config errors, we could have sizeOfProblemType throw a descriptive exception when no digits are present instead of returning 0.

@@ -42,7 +42,7 @@ public class ProblemFactory {
         String trailingDigits = type.replaceAll(".*?(\\d+)$", "$1");
 
         // Check if a number was found and return as an integer
-        return trailingDigits.matches("\\d+") ? Integer.parseInt(trailingDigits) : null;
+        return trailingDigits.matches("\\d+") ? Integer.parseInt(trailingDigits) : 0;
    
     }
 
