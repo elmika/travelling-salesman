@@ -1,4 +1,4 @@
-package com.elmika.tsp;
+package com.elmika.tsp.domain;
 
 import java.util.Arrays;
 
@@ -28,4 +28,3 @@ public class Solution {
         return "Solution{route=" + Arrays.toString(route) + ", totalDistance=" + totalDistance + "}";
     }
 }
-

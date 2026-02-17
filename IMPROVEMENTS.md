@@ -4,7 +4,6 @@
 - EuclideanProblem uses InvalidParameterException but tests expect IllegalArgumentException (potential mismatch)
 - JSONParsingTest depends on file.json; JSONParsing.getConfig() for problemConfiguration.json is not tested
 
-
 ## Some more general considerations
 
 Here are some general considerations from a staff-engineer perspective:
@@ -61,18 +60,12 @@ Here are some general considerations from a staff-engineer perspective:
 
 - Risk: Treating “no digits” as size 0 means misconfigured values like "cities" or "fully-random" without a number will now produce an IllegalArgumentException via the existing size checks, rather than any implicit default. If you intended a default size in those cases, we’d need to adjust sizeOfProblemType or createProblem accordingly.
 
-- Future improvement ideas:
+Future improvement ideas:
 
-    - Add more targeted tests for invalid size strings (e.g. "cities0", "cities-1", "citiesXYZ") to explicitly document/lock in behavior.
-    - If you later want user-friendly config errors, we could have sizeOfProblemType throw a descriptive exception when no digits are present instead of returning 0.
+- Add more targeted tests for invalid size strings (e.g. "cities0", "cities-1", "citiesXYZ") to explicitly document/lock in behavior.
+- If you later want user-friendly config errors, we could have sizeOfProblemType throw a descriptive exception when no digits are present instead of returning 0.
 
-## Solution object introduction:Risks and future improvements
-
-**Risks:**
-
-- Any other code (outside what we’ve seen) that calls SimpleSolver.findSolution expecting an Integer[] will now fail to compile and must be updated to use Solution. A quick search for findSolution( should reveal any such call sites.
-
-**Future improvements:**
+## Solution object introduction: Future improvements
 
 - Consider adding factory methods or builders on Solution if you later want to attach metadata (e.g., algorithm type, iteration count, time to compute).
 - You might deprecate or reduce visibility of SimpleSolver.getTotalDistance(Integer[]) once you’re sure nothing external needs it, pushing callers to rely solely on Solution.
