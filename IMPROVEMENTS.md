@@ -1,18 +1,35 @@
-## Gaps
+## Gaps (remaining)
 
 - No tests for DistanceMatrixProblem or TravellingSalesman main flow
-- JSONParsingTest depends on file.json; JSONParsing.getConfig() for problemConfiguration.json is not tested
+- JSONParsingTest depends on `file.json` in project root; `JSONParsing.getConfig()` for `problemConfiguration.json` is not tested
+- ProblemFactory has one test; more per problem type would reduce regression risk
 
-## Addressed (refactor 2025)
+## Addressed (past refactors)
 
-- **Solution introduction**: `Solution` value object introduced; solvers return `Solution`.
-- **sizeOfProblemType behavior**: Returns `0` for no trailing digits; `ProblemTypeParser.validateProblemType()` enforces valid sizes at config load time.
-- **Config validation**: `SolverConfiguration.createFrom()` validates `problem` and `resolutionStrategy`; fails fast with clear messages.
-- **Solver extraction**: `BruteForceSolver` and `RandomSolver` implement `SolverStrategy`; `SimpleSolver` removed.
+- **sizeOfProblemType** – `ProblemTypeParser.sizeOfProblemType()` returns `0` for no trailing digits
+- **Exception mismatch** – `EuclideanProblem` and geometry types throw `IllegalArgumentException`
+- **Solution model** – `Solution` value object introduced; solvers return it directly
+- **displaySolution** – Uses `StringBuilder` in `TspCli`
+- **org.json** – Project uses Jackson; no org.json dependency
+- **SimpleSolver** – Removed; `BruteForceSolver` and `RandomSolver` implement `SolverStrategy`
+- **ProblemFactory size parsing** – `ProblemTypeParser` validates size at problem creation; `SolverConfiguration` validates strategy and non-blank problem
+- **ProblemFactory size limits** – Documented in `ProblemTypeParser` (cities 1–15, random 1–150)
+
+---
+
+## Highest value items to address next
+
+| Priority | Item | Why |
+|----------|------|-----|
+| 1 | **Silent fallback to defaults** | `getConfig()` falls back to defaults on missing/malformed file; hides misconfiguration in production |
+| 2 | **JSONParsingTest brittleness** | Depends on `file.json` in root; move to `src/test/resources/` or temp file |
+| 3 | **DistanceMatrixProblem validation** | No validation of matrix shape/indices; invalid input → `ArrayIndexOutOfBoundsException` |
+| 4 | **maven-surefire-plugin 3.0.0-M5** | Milestone release; upgrade for CI stability |
+| 5 | **Static wiring** | `JSONParsing`, `ProblemFactory` are static; harder to test and swap implementations |
+
+---
 
 ## Some more general considerations
-
-Here are some general considerations from a staff-engineer perspective:
 
 ### Strengths
 
@@ -23,81 +40,56 @@ Here are some general considerations from a staff-engineer perspective:
 
 ---
 
-### Technical issues
+### Technical issues (open)
 
-1. ~~**`ProblemFactory.sizeOfProblemType`**~~ – **Addressed**: Now `ProblemTypeParser.sizeOfProblemType()` returns `0` for no trailing digits; validation in `SolverConfiguration`.
-2. ~~**Exception mismatch**~~ – **Addressed**: `EuclideanProblem` and geometry types throw `IllegalArgumentException`.
-3. **`JSONParsing`** – On error it logs to stdout and returns `null`; callers can NPE. A failing `getConfig()` should throw or return a clear error type rather than `null`.
-4. **`displaySolution`** – Uses string concatenation in a loop; `StringBuilder` would be more appropriate for any non-trivial output.
+1. **`JSONParsing`** – On missing/malformed config, falls back to defaults without surfacing an error. Callers receive a valid config; production misconfiguration can go unnoticed.
+2. **`getConfig()` fallback** – Consider fail-fast or explicit error type instead of silent defaults.
 
 ---
 
 ### Design and maintainability
 
-- **Static wiring** – `JSONParsing.getConfig()`, `ProblemFactory.createProblem()` are static. Injecting ports (as in the hexagonal plan) will make testing and swapping implementations easier.
-- ~~**No explicit Solution model**~~ – **Addressed**: `Solution` value object introduced.
-- **ProblemFactory size limits** – `cities` 8–15, random 1–150 (see `ProblemTypeParser`); limits are in code and validated at config load.
+- **Static wiring** – `JSONParsing.getConfig()`, `ProblemFactory.createProblem()` are static. Injecting ports would improve testability and flexibility.
+- **ProblemFactory size limits** – Documented in `ProblemTypeParser`; could be made configurable if needed.
 
 ---
 
 ### Testing and resilience
 
-- **`JSONParsingTest`** – Depends on `file.json` in the project root. Prefer a test resource (e.g. `src/test/resources/`) or a temporary file to avoid coupling to a real config file.
-- **No tests for ProblemFactory** – Creation logic is nontrivial (parsing, limits). At least one test per problem type would reduce regression risk.
-- **Silent fallback** – `getConfig()` falling back to defaults on error can hide misconfiguration. A warning or metric on fallback would help.
+- **`JSONParsingTest`** – Depends on `file.json` in project root. Prefer `src/test/resources/` or temporary file.
+- **ProblemFactory** – One test; more per problem type would reduce regression risk.
+- **Silent fallback** – `getConfig()` fallback hides misconfiguration; consider warning or metric.
 
 ---
 
 ### Dependencies and security
 
-- **org.json:20090211** – Very old. Consider `jakarta.json` or Jackson if you want maintained JSON support and fewer security concerns.
-- **maven-surefire-plugin:3.0.0-M5** – Milestone release. Worth moving to a stable Surefire version for predictable CI runs.
+- **maven-surefire-plugin:3.0.0-M5** – Milestone release; upgrade to stable for predictable CI.
 
 ---
-
-### Suggested order of work
-
-1. Fix the `sizeOfProblemType` return-type/null handling.
-2. Align exception type and tests in `EuclideanProblem`.
-3. Introduce a `Solution` type and use it as the solver’s return value.
-4. Move toward hexagonal architecture (ports/adapters) if you want better testability and flexibility.
-
-## SizeOfProblem future improvements
-
-- Risk: Treating “no digits” as size 0 means misconfigured values like "cities" or "fully-random" without a number will now produce an IllegalArgumentException via the existing size checks, rather than any implicit default. If you intended a default size in those cases, we’d need to adjust sizeOfProblemType or createProblem accordingly.
-
-Future improvement ideas:
-
-- Add more targeted tests for invalid size strings (e.g. "cities0", "cities-1", "citiesXYZ") to explicitly document/lock in behavior.
-- If you later want user-friendly config errors, we could have sizeOfProblemType throw a descriptive exception when no digits are present instead of returning 0.
-
-## Solution object introduction: Future improvements
-
-- Consider adding factory methods or builders on Solution if you later want to attach metadata (e.g., algorithm type, iteration count, time to compute).
-- ~~**SimpleSolver**~~ – **Addressed**: Removed; BruteForceSolver and RandomSolver return Solution directly.
-
-If you’re happy with this design and your local mvn test run passes, we can next look at further cleanups (e.g., better error handling around JSONParsing, more tests for ProblemFactory, or starting on the hexagonal architecture refactor) in similarly small, focused steps.
-
----
-
-## Additional risks and improvement ideas (current state)
 
 ### Configuration robustness
 
-- **Silent fallback to defaults**: `JSONParsing.getConfig()` logs and falls back to default `ProblemConfiguration` values when `problemConfiguration.json` is missing or malformed. This is convenient locally but can hide misconfiguration in production.
-- **Improvement**: Consider elevating log severity, surfacing a clear error (e.g. custom exception or result type) for non-development environments, or adding metrics around “default config used” events.
+- **Silent fallback to defaults**: `JSONParsing.getConfig()` logs and falls back when `problemConfiguration.json` is missing or malformed. Convenient locally; can hide production misconfiguration.
+- **Improvement**: Elevate log severity, surface clear error for non-dev environments, or add metrics around "default config used".
+
+---
 
 ### Scaling and performance
 
-- **Brute-force strategy**: `BruteForceSolver`’s `"brute-force"` strategy enumerates permutations (with fixed starting city) and will not scale beyond small `Problem.getSize()`; factorial growth makes it impractical for larger instances.
-- **Improvement**: For larger problem sizes, introduce heuristics (e.g. nearest neighbor, 2-opt, simulated annealing) or explicitly document supported size ranges for each strategy.
+- **Brute-force strategy**: `BruteForceSolver` enumerates permutations; factorial growth limits scalability.
+- **Improvement**: Introduce heuristics (nearest neighbor, 2-opt, simulated annealing) or document supported size ranges.
+
+---
 
 ### Validation and correctness
 
-- **DistanceMatrixProblem validation**: `DistanceMatrixProblem` assumes valid indices and a square matrix; invalid inputs lead to array-index exceptions.
-- ~~**ProblemFactory size parsing**~~ – **Addressed**: `ProblemTypeParser.validateProblemType()` called from `SolverConfiguration.createFrom()`; invalid sizes fail at config load with clear messages.
+- **DistanceMatrixProblem validation**: Assumes valid indices and square matrix; invalid input causes array-index exceptions.
+- **Improvement**: Validate matrix shape and indices; throw descriptive exceptions.
+
+---
 
 ### Hexagonal architecture and wiring
 
-- **Static utilities in infrastructure**: `JSONParsing` and `ProblemFactory` are static and referenced directly from ports’ implementations. This works but makes tests depend on global state and concrete file names.
-- **Improvement**: Over time, move more logic behind explicit ports (e.g. `ConfigurationRepository`, `ProblemCatalog`) and inject them into the application layer. This will improve testability, enable alternative backends, and better align with the hexagonal architecture described in `ARCHITECTURE.md`.
+- **Static utilities**: `JSONParsing` and `ProblemFactory` are static; tests depend on global state and concrete file names.
+- **Improvement**: Move logic behind explicit ports (`ConfigurationRepository`, `ProblemCatalog`) and inject into application layer.
