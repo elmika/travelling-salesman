@@ -42,11 +42,20 @@ public class JSONParsing {
      * falling back to defaults when the file is missing or malformed.
      */
     public static ProblemConfiguration getConfig() {
-        String filename = "problemConfiguration.json";
+        return getConfig(Paths.get("problemConfiguration.json"));
+    }
+
+    /**
+     * Loads configuration from the given path into a typed DTO,
+     * falling back to defaults when the file is missing or malformed.
+     *
+     * @param path the path to the configuration file
+     * @return the configuration, or defaults if the file cannot be read or parsed
+     */
+    public static ProblemConfiguration getConfig(Path path) {
         String problem = "simple";
         String strategy = "random10";
 
-        Path path = Paths.get(filename);
         if (!Files.exists(path)) {
             log.info("Default configuration loaded");
             return new ProblemConfiguration(problem, strategy);
@@ -56,7 +65,7 @@ public class JSONParsing {
         try {
             configFile = MAPPER.readValue(path.toFile(), ProblemConfigFile.class);
         } catch (IOException e) {
-            log.warn("Exception when parsing config file {}: {}", filename, e.getMessage());
+            log.warn("Exception when parsing config file {}: {}", path, e.getMessage());
             log.info("Default configuration loaded");
             return new ProblemConfiguration(problem, strategy);
         }

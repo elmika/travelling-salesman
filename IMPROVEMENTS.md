@@ -1,8 +1,8 @@
 ## Gaps (remaining)
 
-- No tests for DistanceMatrixProblem or TravellingSalesman main flow
-- JSONParsingTest depends on `file.json` in project root; `JSONParsing.getConfig()` for `problemConfiguration.json` is not tested
-- ProblemFactory has one test; more per problem type would reduce regression risk
+- DistanceMatrixProblem validation: no validation of matrix shape/indices; invalid input → `ArrayIndexOutOfBoundsException`
+- Silent fallback to defaults: `getConfig()` falls back without surfacing misconfiguration
+- maven-surefire-plugin:3.0.0-M5 is a milestone release; upgrade for CI stability
 
 ## Addressed (past refactors)
 
@@ -14,6 +14,10 @@
 - **SimpleSolver** – Removed; `BruteForceSolver` and `RandomSolver` implement `SolverStrategy`
 - **ProblemFactory size parsing** – `ProblemTypeParser` validates size at problem creation; `SolverConfiguration` validates strategy and non-blank problem
 - **ProblemFactory size limits** – Documented in `ProblemTypeParser` (cities 1–15, random 1–150)
+- **DistanceMatrixProblem tests** – `DistanceMatrixProblemTest` covers `getSize`, `getDistance`, symmetry, diagonal
+- **TravellingSalesman main flow** – `TravellingSalesmanTest` wires CLI, config, problem factory, solver; asserts run completes
+- **JSONParsingTest brittleness** – Uses `src/test/resources/file.json`; `getConfig(Path)` overload added; tests for valid, missing, malformed config
+- **ProblemFactory coverage** – Tests added for all problem types: trivial, simple, bigger, euclidean, cities7, fully-random10, partially-random5
 
 ---
 
@@ -22,10 +26,9 @@
 | Priority | Item | Why |
 |----------|------|-----|
 | 1 | **Silent fallback to defaults** | `getConfig()` falls back to defaults on missing/malformed file; hides misconfiguration in production |
-| 2 | **JSONParsingTest brittleness** | Depends on `file.json` in root; move to `src/test/resources/` or temp file |
-| 3 | **DistanceMatrixProblem validation** | No validation of matrix shape/indices; invalid input → `ArrayIndexOutOfBoundsException` |
-| 4 | **maven-surefire-plugin 3.0.0-M5** | Milestone release; upgrade for CI stability |
-| 5 | **Static wiring** | `JSONParsing`, `ProblemFactory` are static; harder to test and swap implementations |
+| 2 | **DistanceMatrixProblem validation** | No validation of matrix shape/indices; invalid input → `ArrayIndexOutOfBoundsException` |
+| 3 | **maven-surefire-plugin 3.0.0-M5** | Milestone release; upgrade for CI stability |
+| 4 | **Static wiring** | `JSONParsing`, `ProblemFactory` are static; harder to test and swap implementations |
 
 ---
 
@@ -34,7 +37,7 @@
 ### Strengths
 
 - **Separation of concerns**: `Problem` interface with Euclidean vs distance-matrix implementations keeps distance logic isolated.
-- **Tests**: JUnit 5 with parameterized tests; tests cover core logic (solver, permutations, Euclidean).
+- **Tests**: JUnit 5 with parameterized tests; tests cover core logic (solver, permutations, Euclidean), DistanceMatrixProblem, main CLI flow, JSON config, and all ProblemFactory types.
 - **Config-driven**: Problem and strategy selected via JSON instead of hardcoding.
 - **Docker setup**: Simple, repeatable environment for build and run.
 
@@ -56,8 +59,6 @@
 
 ### Testing and resilience
 
-- **`JSONParsingTest`** – Depends on `file.json` in project root. Prefer `src/test/resources/` or temporary file.
-- **ProblemFactory** – One test; more per problem type would reduce regression risk.
 - **Silent fallback** – `getConfig()` fallback hides misconfiguration; consider warning or metric.
 
 ---
