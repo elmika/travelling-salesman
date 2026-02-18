@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import com.elmika.tsp.domain.Point;
+import com.elmika.tsp.domain.geometry.Point;
 
 public class PointTest {
 

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.elmika.tsp.domain.geometry.Point;
+
 public class EuclideanProblem implements Problem {
 
     private final Point[] points;

@@ -1,4 +1,4 @@
-package com.elmika.tsp.domain;
+package com.elmika.tsp.domain.geometry;
 
 import java.util.Objects;
 
@@ -63,4 +63,3 @@ public final class Point {
         return "Point{" + "x=" + x + ", y=" + y + '}';
     }
 }
-
