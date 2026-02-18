@@ -8,7 +8,7 @@
 - **Solution introduction**: `Solution` value object introduced; solvers return `Solution`.
 - **sizeOfProblemType behavior**: Returns `0` for no trailing digits; `ProblemTypeParser.validateProblemType()` enforces valid sizes at config load time.
 - **Config validation**: `SolverConfiguration.createFrom()` validates `problem` and `resolutionStrategy`; fails fast with clear messages.
-- **Solver extraction**: `BruteForceSolver` and `RandomSolver` implement `SolverStrategy`; `SimpleSolver` deprecated.
+- **Solver extraction**: `BruteForceSolver` and `RandomSolver` implement `SolverStrategy`; `SimpleSolver` removed.
 
 ## Some more general considerations
 
@@ -74,7 +74,7 @@ Future improvement ideas:
 ## Solution object introduction: Future improvements
 
 - Consider adding factory methods or builders on Solution if you later want to attach metadata (e.g., algorithm type, iteration count, time to compute).
-- You might deprecate or reduce visibility of SimpleSolver (deprecated; use BruteForceSolver/RandomSolver) once you’re sure nothing external needs it, pushing callers to rely solely on Solution.
+- ~~**SimpleSolver**~~ – **Addressed**: Removed; BruteForceSolver and RandomSolver return Solution directly.
 
 If you’re happy with this design and your local mvn test run passes, we can next look at further cleanups (e.g., better error handling around JSONParsing, more tests for ProblemFactory, or starting on the hexagonal architecture refactor) in similarly small, focused steps.
 
