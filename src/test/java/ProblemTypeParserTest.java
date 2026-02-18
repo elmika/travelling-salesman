@@ -3,7 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import com.elmika.tsp.infrastructure.ProblemTypeParser;
+import com.elmika.tsp.application.ProblemTypeParser;
 
 public class ProblemTypeParserTest {
 
@@ -36,9 +36,9 @@ public class ProblemTypeParserTest {
 
     @Test
     public void validateSizeForTypeCitiesAcceptsValidRange() {
-        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 1);
-        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 15);
         ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 8);
+        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 15);
+        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 10);
     }
 
     @Test
@@ -46,7 +46,31 @@ public class ProblemTypeParserTest {
         assertThrows(IllegalArgumentException.class,
             () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 0));
         assertThrows(IllegalArgumentException.class,
+            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 7));
+        assertThrows(IllegalArgumentException.class,
             () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 16));
+    }
+
+    @Test
+    public void cities0HasSizeZeroAndFailsValidation() {
+        int size = ProblemTypeParser.sizeOfProblemType("cities0");
+        assertEquals(0, size);
+        assertThrows(IllegalArgumentException.class,
+            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, size));
+    }
+
+    @Test
+    public void fullyRandom151ExceedsMaxAndFailsValidation() {
+        int size = ProblemTypeParser.sizeOfProblemType("fully-random151");
+        assertEquals(151, size);
+        assertThrows(IllegalArgumentException.class,
+            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.FULLY_RANDOM, size));
+    }
+
+    @Test
+    public void citiesXYZHasNoTrailingDigits() {
+        assertEquals("citiesXYZ", ProblemTypeParser.coreProblemType("citiesXYZ"));
+        assertEquals(0, ProblemTypeParser.sizeOfProblemType("citiesXYZ"));
     }
 
     @Test

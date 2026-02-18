@@ -1,8 +1,14 @@
 ## Gaps
 
-- No tests for ProblemFactory, DistanceMatrixProblem, or TravellingSalesman main flow
-- EuclideanProblem uses InvalidParameterException but tests expect IllegalArgumentException (potential mismatch)
+- No tests for DistanceMatrixProblem or TravellingSalesman main flow
 - JSONParsingTest depends on file.json; JSONParsing.getConfig() for problemConfiguration.json is not tested
+
+## Addressed (refactor 2025)
+
+- **Solution introduction**: `Solution` value object introduced; solvers return `Solution`.
+- **sizeOfProblemType behavior**: Returns `0` for no trailing digits; `ProblemTypeParser.validateProblemType()` enforces valid sizes at config load time.
+- **Config validation**: `SolverConfiguration.createFrom()` validates `problem` and `resolutionStrategy`; fails fast with clear messages.
+- **Solver extraction**: `BruteForceSolver` and `RandomSolver` implement `SolverStrategy`; `SimpleSolver` deprecated.
 
 ## Some more general considerations
 
@@ -19,8 +25,8 @@ Here are some general considerations from a staff-engineer perspective:
 
 ### Technical issues
 
-1. **`ProblemFactory.sizeOfProblemType`** – Returns `null` for `int`, which does not compile. Either the return type is actually `Integer` or this should return a sentinel (e.g. `-1` or `0`) and handle it explicitly.
-2. **Exception mismatch** – `EuclideanProblem` throws `InvalidParameterException`, but tests expect `IllegalArgumentException`. One of them should be aligned.
+1. ~~**`ProblemFactory.sizeOfProblemType`**~~ – **Addressed**: Now `ProblemTypeParser.sizeOfProblemType()` returns `0` for no trailing digits; validation in `SolverConfiguration`.
+2. ~~**Exception mismatch**~~ – **Addressed**: `EuclideanProblem` and geometry types throw `IllegalArgumentException`.
 3. **`JSONParsing`** – On error it logs to stdout and returns `null`; callers can NPE. A failing `getConfig()` should throw or return a clear error type rather than `null`.
 4. **`displaySolution`** – Uses string concatenation in a loop; `StringBuilder` would be more appropriate for any non-trivial output.
 
@@ -29,8 +35,8 @@ Here are some general considerations from a staff-engineer perspective:
 ### Design and maintainability
 
 - **Static wiring** – `JSONParsing.getConfig()`, `ProblemFactory.createProblem()` are static. Injecting ports (as in the hexagonal plan) will make testing and swapping implementations easier.
-- **No explicit Solution model** – `Integer[]` plus `getTotalDistance()` couples solver and presentation. A `Solution` value object would clarify the contract and simplify changes.
-- **ProblemFactory size limits** – `cities` limited to 15, random to 150. Either document why or make limits configurable.
+- ~~**No explicit Solution model**~~ – **Addressed**: `Solution` value object introduced.
+- **ProblemFactory size limits** – `cities` 8–15, random 1–150 (see `ProblemTypeParser`); limits are in code and validated at config load.
 
 ---
 
@@ -68,7 +74,7 @@ Future improvement ideas:
 ## Solution object introduction: Future improvements
 
 - Consider adding factory methods or builders on Solution if you later want to attach metadata (e.g., algorithm type, iteration count, time to compute).
-- You might deprecate or reduce visibility of SimpleSolver.getTotalDistance(Integer[]) once you’re sure nothing external needs it, pushing callers to rely solely on Solution.
+- You might deprecate or reduce visibility of SimpleSolver (deprecated; use BruteForceSolver/RandomSolver) once you’re sure nothing external needs it, pushing callers to rely solely on Solution.
 
 If you’re happy with this design and your local mvn test run passes, we can next look at further cleanups (e.g., better error handling around JSONParsing, more tests for ProblemFactory, or starting on the hexagonal architecture refactor) in similarly small, focused steps.
 
@@ -83,14 +89,13 @@ If you’re happy with this design and your local mvn test run passes, we can ne
 
 ### Scaling and performance
 
-- **Brute-force strategy**: `SimpleSolver`’s `"brute-force"` strategy enumerates permutations (with fixed starting city) and will not scale beyond small `Problem.getSize()`; factorial growth makes it impractical for larger instances.
+- **Brute-force strategy**: `BruteForceSolver`’s `"brute-force"` strategy enumerates permutations (with fixed starting city) and will not scale beyond small `Problem.getSize()`; factorial growth makes it impractical for larger instances.
 - **Improvement**: For larger problem sizes, introduce heuristics (e.g. nearest neighbor, 2-opt, simulated annealing) or explicitly document supported size ranges for each strategy.
 
 ### Validation and correctness
 
 - **DistanceMatrixProblem validation**: `DistanceMatrixProblem` assumes valid indices and a square matrix; invalid inputs lead to array-index exceptions.
-- **ProblemFactory size parsing**: `ProblemFactory.sizeOfProblemType` uses `0` to represent “no numeric suffix”, which then feeds into size checks for `"cities"`, `"fully-random"`, and `"partially-random"`. Mis-typed problem names can therefore fail at runtime rather than at configuration-parse time.
-- **Improvement**: Add explicit validation and more descriptive exceptions for invalid sizes and matrix shapes, and consider making configuration parsing fail fast for unknown problem types or missing sizes where they are required.
+- ~~**ProblemFactory size parsing**~~ – **Addressed**: `ProblemTypeParser.validateProblemType()` called from `SolverConfiguration.createFrom()`; invalid sizes fail at config load with clear messages.
 
 ### Hexagonal architecture and wiring
 

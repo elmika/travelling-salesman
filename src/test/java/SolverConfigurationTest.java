@@ -62,6 +62,22 @@ public class SolverConfigurationTest {
     }
 
     @Test
+    public void createFromInvalidProblemSizeCitiesThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("cities7", "brute-force")));
+        assertTrue(e.getMessage().contains("cities"));
+        assertTrue(e.getMessage().contains("out of range"));
+    }
+
+    @Test
+    public void createFromInvalidProblemSizeRandomThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("fully-random151", "random10")));
+        assertTrue(e.getMessage().contains("random"));
+        assertTrue(e.getMessage().contains("out of range"));
+    }
+
+    @Test
     public void equalsAndHashCode() {
         SolverConfiguration a = SolverConfiguration.createFrom(
             new ProblemConfiguration("trivial", "brute-force"));

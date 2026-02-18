@@ -8,7 +8,7 @@ public class ProblemFactoryTest {
 
     @Test
     public void citiesTypeUsesTrailingDigitsAsSize() {
-        Problem problem = ProblemFactory.createProblem("cities7");
-        assertEquals(7, problem.getSize());
+        Problem problem = ProblemFactory.createProblem("cities10");
+        assertEquals(10, problem.getSize());
     }
 }

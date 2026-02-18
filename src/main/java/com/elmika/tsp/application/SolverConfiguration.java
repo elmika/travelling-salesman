@@ -43,6 +43,8 @@ public final class SolverConfiguration {
                 "Examples: trivial, simple, cities10, fully-random50.");
         }
 
+        ProblemTypeParser.validateProblemType(problem);
+
         String strategy = raw.getResolutionStrategy();
         if (strategy != null) {
             strategy = strategy.trim();

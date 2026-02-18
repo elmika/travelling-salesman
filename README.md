@@ -14,11 +14,15 @@ The project follows **Hexagonal Architecture**. See [ARCHITECTURE.md](ARCHITECTU
 ```
 src/main/java/com/elmika/tsp/
 ├── domain/           Problem, Solution, EuclideanProblem, DistanceMatrixProblem
+│   └── geometry/     Point
 ├── application/      ConfigLoader, ProblemProvider, TspSolver, SolveTspUseCase,
-│                     SimpleSolver, PermutationsIterator, ProblemConfiguration
+│                     SolverStrategy, BruteForceSolver, RandomSolver,
+│                     SolverConfiguration, ProblemTypeParser, PermutationsIterator
 ├── infrastructure/   JsonFileConfigLoader, InMemoryProblemFactory,
 │                     JSONParsing, ProblemFactory
-└── adapter/cli/      TspCli, TravellingSalesman (main)
+└── adapter/          TspCli, TravellingSalesman (main)
+    ├── cli/
+    └── view/         RouteCoordinatesView, RouteCoordinatesMapper, RouteCoordinatesJsonExporter
 ```
 
 ## Running with Docker
