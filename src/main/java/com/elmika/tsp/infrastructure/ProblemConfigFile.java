@@ -2,6 +2,8 @@ package com.elmika.tsp.infrastructure;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Typed representation of the problemConfiguration.json file.
  * Only a subset of fields are currently used by the application.
@@ -15,7 +17,11 @@ public class ProblemConfigFile {
     // for future use but are not yet interpreted by the core application.
     private List<String> possibleProblems;
     private List<String> possibleResolutionStrategies;
+
+    @JsonProperty("X")
     private String X;
+
+    @JsonProperty("Y")
     private String Y;
 
     public String getProblem() {

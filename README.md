@@ -38,8 +38,10 @@ docker build -t tsp-solver .
 Then, run the application:
 
 ```bash
-docker run tsp-solver
-# This uses the shaded JAR manifest to locate the main class.
+docker run --rm \
+  -v "$(pwd)/problemConfiguration.json":/app/problemConfiguration.json:ro \
+  tsp-solver
+# This uses the shaded JAR manifest to locate the main class and the config file from your working directory.
 ```
 
 Or if you are editing the code:
@@ -57,14 +59,14 @@ java -jar target/tsp-solver-0.1-SETUP.jar
 
 The project has automated tests run by JUnit 5 via Maven.
 
-```
+```bash
 docker build -t tsp-solver .
 docker run tsp-solver mvn test
 ```
 
 ## Visualizing a route
 
-This repository includes a small static viewer to visualize a solved TSP route.
+This repository includes a small static viewer (`index.html`) to visualize a solved TSP route.
 
 - **Expected JSON format**: the viewer expects the JSON produced from a `RouteCoordinatesView`
   via `RouteCoordinatesJsonExporter.toJson(view)`, for example:
@@ -81,16 +83,46 @@ This repository includes a small static viewer to visualize a solved TSP route.
   The route is interpreted as an ordered list of cities and is visually closed by
   drawing a final segment from the last city back to the first.
 
-- **Using the viewer**:
-  1. Place `index.html` and your `route.json` (or another JSON filename) in the project root.
-  2. Start a simple HTTP server from the project root, for example:
+- **Generating `route.json` from the CLI (Docker)**:
+
+  When you run the CLI with an Euclidean problem type, the application will export the last
+  solved route to `output/route.json` (overwriting any existing file). This file is ignored
+  by Git. To do this entirely inside Docker and keep the output available for the viewer:
+
+  1. Build the solver image (as above):
 
      ```bash
-     python -m http.server 8000
+     docker build -t tsp-solver .
      ```
 
-  3. Open `http://localhost:8000/index.html` in your browser.
-  4. Enter the JSON filename if it is not `route.json`, then click **Load route** to see the path.
+  2. Run the solver container with a named volume for the output and your local configuration:
+
+     ```bash
+     docker volume create tsp-output
+
+     docker run --rm \
+       -v "$(pwd)/problemConfiguration.json":/app/problemConfiguration.json:ro \
+       -v tsp-output:/app/output \
+       tsp-solver
+     ```
+
+     The CLI will write `/app/output/route.json` into the `tsp-output` volume.
+
+- **Serving the viewer via Docker only (nginx)**:
+
+  To visualize the generated route without any local HTTP server:
+
+  ```bash
+  docker run --rm -p 8000:80 \
+    -v tsp-output:/usr/share/nginx/html/output:ro \
+    -v "$(pwd)/index.html":/usr/share/nginx/html/index.html:ro \
+    nginx:alpine
+  ```
+
+  Then open `http://localhost:8000/index.html` in your browser and, in the viewer, use
+  `output/route.json` as the JSON filename before clicking **Load route**. This setup keeps
+  both the solver and the viewer inside Docker while sharing the generated route via the
+  `tsp-output` Docker volume.
 
 
 ### Smoke testing the packaged application
@@ -101,6 +133,8 @@ For a quick smoke test that the shaded JAR builds and starts correctly, you can 
 # Locally, if you have Java and Maven:
 ./smoke-test.sh
 
-# Or inside Docker:
-docker run tsp-solver ./smoke-test.sh
+# Or inside Docker (reusing your local problemConfiguration.json):
+docker run --rm \
+  -v "$(pwd)/problemConfiguration.json":/app/problemConfiguration.json:ro \
+  tsp-solver ./smoke-test.sh
 ```

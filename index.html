@@ -94,7 +94,7 @@
     Simple static visualizer for routes exported from RouteCoordinatesJsonExporter.
 
     Usage:
-      1. Place this file and a JSON file (default name: route.json) in the same directory.
+      1. Place this file where your web server can serve it, together with the JSON file.
       2. The JSON should look like:
          {
            "coordinates": [
@@ -103,9 +103,8 @@
            ]
          }
          (this matches RouteCoordinatesView / RouteCoordinatesJsonExporter output)
-      3. Open this file in a browser. Depending on your browser, you may need to serve
-         the directory with a simple HTTP server (e.g. `python -m http.server`).
-      4. Enter the JSON filename if different from route.json and click "Load route".
+      3. When using the Docker-based setup from the README, the solver writes the file to
+         `output/route.json`. In that case, use `output/route.json` as the JSON filename.
   -->
 </head>
 <body>
@@ -114,7 +113,7 @@
     <p>Load a JSON file exported from the solver and visualize the route on a canvas.</p>
     <div class="controls">
       <label for="fileInput">JSON file:</label>
-      <input id="fileInput" type="text" value="route.json" aria-label="Route JSON filename">
+      <input id="fileInput" type="text" value="output/route.json" aria-label="Route JSON filename">
       <button id="loadButton" type="button">Load route</button>
     </div>
     <div id="status" aria-live="polite"></div>

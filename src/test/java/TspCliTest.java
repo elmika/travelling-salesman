@@ -1,13 +1,21 @@
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
 
 import com.elmika.tsp.adapter.cli.TspCli;
 import com.elmika.tsp.application.ConfigLoader;
 import com.elmika.tsp.application.ProblemConfiguration;
 import com.elmika.tsp.application.ProblemProvider;
 import com.elmika.tsp.application.SolveTspUseCase;
+import com.elmika.tsp.application.TspSolver;
 import com.elmika.tsp.domain.DistanceMatrixProblem;
+import com.elmika.tsp.domain.EuclideanProblem;
 import com.elmika.tsp.domain.Problem;
+import com.elmika.tsp.domain.Solution;
 
 public class TspCliTest {
 
@@ -21,5 +29,29 @@ public class TspCliTest {
         TspCli cli = new TspCli(configLoader, problemProvider, new SolveTspUseCase());
 
         assertDoesNotThrow(cli::run);
+    }
+
+    @Test
+    public void runExportsRouteJsonForEuclideanProblem() throws Exception {
+        Path outputDir = Path.of("output");
+        Path routeFile = outputDir.resolve("route.json");
+        Files.deleteIfExists(routeFile);
+
+        ConfigLoader configLoader = () -> new ProblemConfiguration("euclidean", "brute-force");
+        ProblemProvider problemProvider = type -> {
+            double[][] points = {
+                {0.0, 0.0},
+                {3.0, 4.0}
+            };
+            return new EuclideanProblem(points);
+        };
+        TspSolver solver = (problem, strategy) ->
+            new Solution(new Integer[] {1, 2}, 0.0);
+
+        TspCli cli = new TspCli(configLoader, problemProvider, solver);
+
+        cli.run();
+
+        assertTrue(Files.exists(routeFile));
     }
 }
