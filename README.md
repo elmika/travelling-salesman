@@ -62,6 +62,37 @@ docker build -t tsp-solver .
 docker run tsp-solver mvn test
 ```
 
+## Visualizing a route
+
+This repository includes a small static viewer to visualize a solved TSP route.
+
+- **Expected JSON format**: the viewer expects the JSON produced from a `RouteCoordinatesView`
+  via `RouteCoordinatesJsonExporter.toJson(view)`, for example:
+
+  ```json
+  {
+    "coordinates": [
+      { "x": 0.0, "y": 0.0 },
+      { "x": 3.0, "y": 4.0 }
+    ]
+  }
+  ```
+
+  The route is interpreted as an ordered list of cities and is visually closed by
+  drawing a final segment from the last city back to the first.
+
+- **Using the viewer**:
+  1. Place `index.html` and your `route.json` (or another JSON filename) in the project root.
+  2. Start a simple HTTP server from the project root, for example:
+
+     ```bash
+     python -m http.server 8000
+     ```
+
+  3. Open `http://localhost:8000/index.html` in your browser.
+  4. Enter the JSON filename if it is not `route.json`, then click **Load route** to see the path.
+
+
 ### Smoke testing the packaged application
 
 For a quick smoke test that the shaded JAR builds and starts correctly, you can use the helper script:
