@@ -41,8 +41,9 @@ Then, run the application:
 docker run --rm \
   -v "$(pwd)/problemConfiguration.json":/app/problemConfiguration.json:ro \
   tsp-solver
-# This uses the shaded JAR manifest to locate the main class and the config file from your working directory.
 ```
+
+Docker runs the same shaded JAR (`target/tsp-solver-0.1-SETUP.jar`) and main class (`com.elmika.tsp.adapter.cli.TravellingSalesman`) as when you run `java -jar target/tsp-solver-0.1-SETUP.jar` locally. The config file is mounted from your working directory.
 
 Or if you are editing the code:
 
