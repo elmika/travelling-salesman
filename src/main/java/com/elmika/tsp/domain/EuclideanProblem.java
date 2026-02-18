@@ -35,7 +35,7 @@ public class EuclideanProblem implements Problem {
             .toArray(Point[]::new);
     }
 
-    private Point getPoint(int index) {
+    public Point getPoint(int index) {
         if (index > this.getSize() || index <= 0) {
             throw new IllegalArgumentException("Point index out of range: " + index);
         }
