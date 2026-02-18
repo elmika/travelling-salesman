@@ -92,10 +92,10 @@ public class EuclideanProblemTest {
     public void create4xProblemDistanceOutOfRangeTest() {
         Problem problem = this.create4xProblem();
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> problem.getDistance(1, 5));
-        assertEquals("Point index out of range for distance calculation.", exception.getMessage());
+        assertEquals("Point index out of range: 5", exception.getMessage());
 
         IllegalArgumentException otherException = assertThrows(IllegalArgumentException.class, () -> problem.getDistance(0, 2));
-        assertEquals("Point index out of range for distance calculation.", otherException.getMessage());
+        assertEquals("Point index out of range: 0", otherException.getMessage());
     }
 
     @Test

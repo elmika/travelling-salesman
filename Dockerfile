@@ -11,4 +11,4 @@ COPY . /app
 RUN mvn clean package
 
 # Run the application
-CMD ["java", "-cp", "target/tsp-solver-0.1-SETUP.jar", "com.elmika.tsp.TravellingSalesman"]
+CMD ["java", "-jar", "target/tsp-solver-0.1-SETUP.jar"]

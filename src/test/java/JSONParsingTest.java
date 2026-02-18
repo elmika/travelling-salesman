@@ -1,27 +1,23 @@
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.json.JSONObject;
+import org.junit.jupiter.api.Test;
 
 import com.elmika.tsp.infrastructure.JSONParsing;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class JSONParsingTest {
 
     @Test
     public void testReadJsonFile() {
-        JSONObject json = JSONParsing.read("file.json");
+        JsonNode json = JSONParsing.read("file.json");
 
-        if (json == null) {
-            throw new AssertionError("Could not read the json file.");
-        }
+        assertNotNull(json, "Could not read the json file.");
 
-        try {
-            String a = json.getString("yes");
-            String b = json.getString("test");
-            assertEquals("Sample json value", b);
-            assertEquals("Why not", a);
-        } catch (Exception e) {
-            throw new AssertionError("Could not read the json configuration values.");
-        }
+        String a = json.path("yes").asText();
+        String b = json.path("test").asText();
+
+        assertEquals("Sample json value", b);
+        assertEquals("Why not", a);
     }
 }

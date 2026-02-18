@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Traveling Salesman Route Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
+
+    .panel {
+      background: #fff;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+      max-width: 800px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    label {
+      font-size: 0.9rem;
+    }
+
+    input[type="text"] {
+      padding: 0.4rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      min-width: 180px;
+    }
+
+    button {
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      border: none;
+      background: #1976d2;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    button:hover {
+      background: #1565c0;
+    }
+
+    #status {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      min-height: 1.2em;
+    }
+
+    #status.error {
+      color: #c62828;
+    }
+
+    #status.ok {
+      color: #2e7d32;
+    }
+
+    .canvas-wrapper {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      max-width: 820px;
+      overflow-x: auto;
+    }
+
+    canvas {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fafafa;
+      display: block;
+    }
+  </style>
+  <!--
+    Simple static visualizer for routes exported from RouteCoordinatesJsonExporter.
+
+    Usage:
+      1. Place this file where your web server can serve it, together with the JSON file.
+      2. The JSON should look like:
+         {
+           "coordinates": [
+             { "x": 0.0, "y": 0.0 },
+             { "x": 3.0, "y": 4.0 }
+           ]
+         }
+         (this matches RouteCoordinatesView / RouteCoordinatesJsonExporter output)
+      3. When using the Docker-based setup from the README, the solver writes the file to
+         `output/route.json`. In that case, use `output/route.json` as the JSON filename.
+  -->
+</head>
+<body>
+  <div class="panel">
+    <h1>Traveling Salesman Route Viewer</h1>
+    <p>Load a JSON file exported from the solver and visualize the route on a canvas.</p>
+    <div class="controls">
+      <label for="fileInput">JSON file:</label>
+      <input id="fileInput" type="text" value="output/route.json" aria-label="Route JSON filename">
+      <button id="loadButton" type="button">Load route</button>
+    </div>
+    <div id="status" aria-live="polite"></div>
+  </div>
+
+  <div class="canvas-wrapper">
+    <canvas id="routeCanvas" width="800" height="500"></canvas>
+  </div>
+
+  <script>
+    (function () {
+      const canvas = document.getElementById('routeCanvas');
+      const ctx = canvas.getContext('2d');
+      const fileInput = document.getElementById('fileInput');
+      const loadButton = document.getElementById('loadButton');
+      const statusEl = document.getElementById('status');
+
+      function setStatus(message, type) {
+        statusEl.textContent = message || '';
+        statusEl.classList.remove('error', 'ok');
+        if (type) {
+          statusEl.classList.add(type);
+        }
+      }
+
+      function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      function drawRoute(data) {
+        if (!data || !Array.isArray(data.coordinates)) {
+          throw new Error('JSON must have a "coordinates" array.');
+        }
+        const coords = data.coordinates;
+        if (coords.length === 0) {
+          throw new Error('"coordinates" array is empty.');
+        }
+
+        const points = coords.map((c, index) => {
+          if (typeof c.x !== 'number' || typeof c.y !== 'number') {
+            throw new Error('Coordinate at index ' + index + ' must have numeric x and y.');
+          }
+          return { x: c.x, y: c.y };
+        });
+
+        let minX = points[0].x;
+        let maxX = points[0].x;
+        let minY = points[0].y;
+        let maxY = points[0].y;
+
+        for (let i = 1; i < points.length; i++) {
+          const p = points[i];
+          if (p.x < minX) minX = p.x;
+          if (p.x > maxX) maxX = p.x;
+          if (p.y < minY) minY = p.y;
+          if (p.y > maxY) maxY = p.y;
+        }
+
+        const padding = 20;
+        const width = canvas.width - padding * 2;
+        const height = canvas.height - padding * 2;
+
+        const spanX = maxX - minX || 1;
+        const spanY = maxY - minY || 1;
+        const scale = Math.min(width / spanX, height / spanY);
+
+        function toCanvas(p) {
+          const cx = padding + (p.x - minX) * scale;
+          const cy = canvas.height - padding - (p.y - minY) * scale;
+          return { x: cx, y: cy };
+        }
+
+        clearCanvas();
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#1976d2';
+        ctx.beginPath();
+        const first = toCanvas(points[0]);
+        ctx.moveTo(first.x, first.y);
+        for (let i = 1; i < points.length; i++) {
+          const cp = toCanvas(points[i]);
+          ctx.lineTo(cp.x, cp.y);
+        }
+        // Close the route by returning to the starting city.
+        ctx.lineTo(first.x, first.y);
+        ctx.stroke();
+
+        for (let i = 0; i < points.length; i++) {
+          const cp = toCanvas(points[i]);
+          ctx.beginPath();
+          ctx.arc(cp.x, cp.y, i === 0 ? 5 : 4, 0, Math.PI * 2);
+          ctx.fillStyle = i === 0 ? '#c62828' : '#ffb300';
+          ctx.fill();
+          ctx.strokeStyle = '#424242';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        setStatus('Loaded ' + points.length + ' coordinates.', 'ok');
+      }
+
+      async function loadRoute() {
+        const filename = (fileInput.value || 'route.json').trim();
+        if (!filename) {
+          setStatus('Please provide a JSON file name.', 'error');
+          return;
+        }
+
+        setStatus('Loading ' + filename + ' ...');
+        clearCanvas();
+
+        try {
+          const response = await fetch(filename, { cache: 'no-store' });
+          if (!response.ok) {
+            throw new Error('Could not load file: ' + response.status + ' ' + response.statusText);
+          }
+          const json = await response.json();
+          drawRoute(json);
+        } catch (err) {
+          setStatus(err.message || String(err), 'error');
+        }
+      }
+
+      loadButton.addEventListener('click', loadRoute);
+    })();
+  </script>
+</body>
+</html>
+

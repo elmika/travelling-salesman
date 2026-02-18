@@ -71,3 +71,28 @@ Future improvement ideas:
 - You might deprecate or reduce visibility of SimpleSolver.getTotalDistance(Integer[]) once you’re sure nothing external needs it, pushing callers to rely solely on Solution.
 
 If you’re happy with this design and your local mvn test run passes, we can next look at further cleanups (e.g., better error handling around JSONParsing, more tests for ProblemFactory, or starting on the hexagonal architecture refactor) in similarly small, focused steps.
+
+---
+
+## Additional risks and improvement ideas (current state)
+
+### Configuration robustness
+
+- **Silent fallback to defaults**: `JSONParsing.getConfig()` logs and falls back to default `ProblemConfiguration` values when `problemConfiguration.json` is missing or malformed. This is convenient locally but can hide misconfiguration in production.
+- **Improvement**: Consider elevating log severity, surfacing a clear error (e.g. custom exception or result type) for non-development environments, or adding metrics around “default config used” events.
+
+### Scaling and performance
+
+- **Brute-force strategy**: `SimpleSolver`’s `"brute-force"` strategy enumerates permutations (with fixed starting city) and will not scale beyond small `Problem.getSize()`; factorial growth makes it impractical for larger instances.
+- **Improvement**: For larger problem sizes, introduce heuristics (e.g. nearest neighbor, 2-opt, simulated annealing) or explicitly document supported size ranges for each strategy.
+
+### Validation and correctness
+
+- **DistanceMatrixProblem validation**: `DistanceMatrixProblem` assumes valid indices and a square matrix; invalid inputs lead to array-index exceptions.
+- **ProblemFactory size parsing**: `ProblemFactory.sizeOfProblemType` uses `0` to represent “no numeric suffix”, which then feeds into size checks for `"cities"`, `"fully-random"`, and `"partially-random"`. Mis-typed problem names can therefore fail at runtime rather than at configuration-parse time.
+- **Improvement**: Add explicit validation and more descriptive exceptions for invalid sizes and matrix shapes, and consider making configuration parsing fail fast for unknown problem types or missing sizes where they are required.
+
+### Hexagonal architecture and wiring
+
+- **Static utilities in infrastructure**: `JSONParsing` and `ProblemFactory` are static and referenced directly from ports’ implementations. This works but makes tests depend on global state and concrete file names.
+- **Improvement**: Over time, move more logic behind explicit ports (e.g. `ConfigurationRepository`, `ProblemCatalog`) and inject them into the application layer. This will improve testability, enable alternative backends, and better align with the hexagonal architecture described in `ARCHITECTURE.md`.

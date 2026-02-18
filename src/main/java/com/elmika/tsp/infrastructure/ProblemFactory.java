@@ -9,35 +9,30 @@ import com.elmika.tsp.domain.Problem;
 public class ProblemFactory {
 
     public static Problem createProblem(String problemType) {
-        Problem problem;
-        final String TRIVIAL = "trivial";
-        final String SIMPLE = "simple";
-        final String BIGGER = "bigger";
-        final String EUCLIDEAN = "euclidean";
-        final String CITIES = "cities";
-        final String FULLY_RANDOM = "fully-random";
-        final String PARTIALLY_RANDOM = "partially-random";
+        String core = ProblemTypeParser.coreProblemType(problemType);
+        int size = ProblemTypeParser.sizeOfProblemType(problemType);
 
-        switch (coreProblemType(problemType)) {
-            case TRIVIAL: problem = createSimplestProblem(); break;
-            case SIMPLE: problem = createSimpleProblem(); break;
-            case BIGGER: problem = createBiggerProblem(); break;
-            case EUCLIDEAN: problem = createEuclideanProblem(); break;
-            case CITIES: problem = createEuclideanProblemOfSize(sizeOfProblemType(problemType)); break;
-            case FULLY_RANDOM: problem = createRandomProblemOfSize(sizeOfProblemType(problemType)); break;
-            case PARTIALLY_RANDOM: problem = createPredictableRandomProblemOfSize(sizeOfProblemType(problemType)); break;
-            default: problem = createSimplestProblem(); break;
+        switch (core) {
+            case ProblemTypeParser.TRIVIAL:
+                return createSimplestProblem();
+            case ProblemTypeParser.SIMPLE:
+                return createSimpleProblem();
+            case ProblemTypeParser.BIGGER:
+                return createBiggerProblem();
+            case ProblemTypeParser.EUCLIDEAN:
+                return createEuclideanProblem();
+            case ProblemTypeParser.CITIES:
+                ProblemTypeParser.validateSizeForType(core, size);
+                return createEuclideanProblemOfSize(size);
+            case ProblemTypeParser.FULLY_RANDOM:
+                ProblemTypeParser.validateSizeForType(core, size);
+                return createRandomProblemOfSize(size);
+            case ProblemTypeParser.PARTIALLY_RANDOM:
+                ProblemTypeParser.validateSizeForType(core, size);
+                return createPredictableRandomProblemOfSize(size);
+            default:
+                return createSimplestProblem();
         }
-        return problem;
-    }
-
-    private static String coreProblemType(String type) {
-        return type.replaceAll("\\d+$", "");
-    }
-
-    private static int sizeOfProblemType(String type) {
-        String trailingDigits = type.replaceAll(".*?(\\d+)$", "$1");
-        return trailingDigits.matches("\\d+") ? Integer.parseInt(trailingDigits) : 0;
     }
 
     private static Problem createSimpleProblem() {
@@ -82,9 +77,6 @@ public class ProblemFactory {
     }
 
     private static Problem createEuclideanProblemOfSize(int size) {
-        if (size > 15 || size <= 0) {
-            throw new IllegalArgumentException("Cannot generate an Euclidean problem of size " + size + ".");
-        }
         double[][] fullArray = {
             {37, 95}, {73, 59}, {15, 15}, {5, 86}, {60, 70},
             {2, 96}, {83, 21}, {18, 18}, {30, 52}, {43, 29},
@@ -106,9 +98,6 @@ public class ProblemFactory {
     }
 
     private static Problem createRandomProblemOfSize(int size, boolean fixedSeed) {
-        if (size > 150 || size <= 0) {
-            throw new IllegalArgumentException("Cannot generate a Random problem of size " + size + ".");
-        }
         Random random = fixedSeed ? new Random(42) : new Random();
         double[][] coordinates = new double[size][2];
         for (int j = 0; j < size; j++) {

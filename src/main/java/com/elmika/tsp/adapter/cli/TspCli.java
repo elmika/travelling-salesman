@@ -1,9 +1,20 @@
 package com.elmika.tsp.adapter.cli;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import com.elmika.tsp.adapter.view.RouteCoordinatesJsonExporter;
+import com.elmika.tsp.adapter.view.RouteCoordinatesMapper;
+import com.elmika.tsp.adapter.view.RouteCoordinatesView;
 import com.elmika.tsp.application.ConfigLoader;
 import com.elmika.tsp.application.ProblemConfiguration;
 import com.elmika.tsp.application.ProblemProvider;
+import com.elmika.tsp.application.SolverConfiguration;
 import com.elmika.tsp.application.TspSolver;
+import com.elmika.tsp.domain.EuclideanProblem;
 import com.elmika.tsp.domain.Problem;
 import com.elmika.tsp.domain.Solution;
 
@@ -26,11 +37,31 @@ public class TspCli {
     public void run() {
         System.out.println("Traveling Salesman Problem Solver");
 
-        ProblemConfiguration config = configLoader.loadConfiguration();
+        ProblemConfiguration raw = configLoader.loadConfiguration();
+        SolverConfiguration config = SolverConfiguration.createFrom(raw);
         Problem problem = problemProvider.create(config.getProblem());
         Solution solution = solver.solve(problem, config.getResolutionStrategy());
 
+        exportRouteIfEuclidean(problem, solution);
         displaySolution(solution);
+    }
+
+    private void exportRouteIfEuclidean(Problem problem, Solution solution) {
+        if (!(problem instanceof EuclideanProblem)) {
+            return;
+        }
+        try {
+            RouteCoordinatesView view = RouteCoordinatesMapper.toView(problem, solution);
+            String json = RouteCoordinatesJsonExporter.toJson(view);
+
+            Path outputDir = Paths.get("output");
+            Files.createDirectories(outputDir);
+            Files.writeString(outputDir.resolve("route.json"), json, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            System.err.println("Could not write output/route.json: " + e.getMessage());
+        } catch (RuntimeException e) {
+            System.err.println("Could not export route.json: " + e.getMessage());
+        }
     }
 
     private void displaySolution(Solution solution) {
