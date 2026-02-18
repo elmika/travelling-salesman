@@ -10,6 +10,12 @@ import org.slf4j.LoggerFactory;
 import com.elmika.tsp.domain.Problem;
 import com.elmika.tsp.domain.Solution;
 
+/**
+ * @deprecated Use {@link com.elmika.tsp.application.solver.BruteForceSolver} or
+ *             {@link com.elmika.tsp.application.solver.RandomSolver} via
+ *             {@link com.elmika.tsp.application.SolveTspUseCase} instead.
+ */
+@Deprecated
 public class SimpleSolver {
 
     private static final Logger log = LoggerFactory.getLogger(SimpleSolver.class);

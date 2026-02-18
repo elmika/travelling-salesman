@@ -6,8 +6,11 @@ import com.elmika.tsp.domain.Solution;
 
 /**
  * Delegates to SimpleSolver with a fixed strategy name.
- * Used to adapt the existing solver to the SolverStrategy interface.
+ *
+ * @deprecated SolveTspUseCase uses BruteForceSolver and RandomSolver directly.
+ *             Use those strategies instead.
  */
+@Deprecated
 public class SimpleSolverStrategy implements SolverStrategy {
 
     private final String strategyName;
