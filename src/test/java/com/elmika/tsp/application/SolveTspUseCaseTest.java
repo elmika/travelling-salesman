@@ -1,10 +1,10 @@
+package com.elmika.tsp.application;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.elmika.tsp.application.SolveTspUseCase;
-import com.elmika.tsp.application.TspSolver;
 import com.elmika.tsp.domain.DistanceMatrixProblem;
 import com.elmika.tsp.domain.Problem;
 import com.elmika.tsp.domain.Solution;

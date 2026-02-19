@@ -1,10 +1,10 @@
+package com.elmika.tsp.domain.geometry;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
-
-import com.elmika.tsp.domain.geometry.Point;
 
 public class PointTest {
 
@@ -53,4 +53,3 @@ public class PointTest {
         assertThrows(IllegalArgumentException.class, () -> p.distanceTo(null));
     }
 }
-

@@ -1,9 +1,8 @@
+package com.elmika.tsp.domain;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
-
-import com.elmika.tsp.domain.DistanceMatrixProblem;
-import com.elmika.tsp.domain.Problem;
 
 public class DistanceMatrixProblemTest {
 

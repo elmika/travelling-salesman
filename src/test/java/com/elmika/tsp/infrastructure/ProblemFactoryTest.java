@@ -1,3 +1,5 @@
+package com.elmika.tsp.infrastructure;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -5,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import com.elmika.tsp.domain.EuclideanProblem;
 import com.elmika.tsp.domain.Problem;
-import com.elmika.tsp.infrastructure.ProblemFactory;
 
 public class ProblemFactoryTest {
 

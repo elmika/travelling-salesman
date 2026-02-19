@@ -1,3 +1,5 @@
+package com.elmika.tsp.infrastructure;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -10,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import com.elmika.tsp.application.ProblemConfiguration;
-import com.elmika.tsp.infrastructure.JSONParsing;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class JSONParsingTest {

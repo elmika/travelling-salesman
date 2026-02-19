@@ -1,3 +1,5 @@
+package com.elmika.tsp.adapter.cli;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -6,7 +8,6 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 
-import com.elmika.tsp.adapter.cli.TspCli;
 import com.elmika.tsp.application.ConfigLoader;
 import com.elmika.tsp.application.ProblemConfiguration;
 import com.elmika.tsp.application.ProblemProvider;
