@@ -1,11 +1,11 @@
 ## Gaps (remaining)
 
 - DistanceMatrixProblem validation: no validation of matrix shape/indices; invalid input → `ArrayIndexOutOfBoundsException`
-- maven-surefire-plugin:3.0.0-M5 is a milestone release; upgrade for CI stability
 
 ## Addressed (past refactors)
 
 - **Silent fallback to defaults** – `JSONParsing.getConfig()` throws `ConfigLoadException` when the config file is missing or malformed; no silent defaults
+- **maven-surefire-plugin** – Upgraded from 3.0.0-M5 to 3.5.4 (stable) for CI stability
 - **sizeOfProblemType** – `ProblemTypeParser.sizeOfProblemType()` returns `0` for no trailing digits
 - **Exception mismatch** – `EuclideanProblem` and geometry types throw `IllegalArgumentException`
 - **Solution model** – `Solution` value object introduced; solvers return it directly
@@ -26,8 +26,7 @@
 | Priority | Item | Why |
 |----------|------|-----|
 | 1 | **DistanceMatrixProblem validation** | No validation of matrix shape/indices; invalid input → `ArrayIndexOutOfBoundsException` |
-| 2 | **maven-surefire-plugin 3.0.0-M5** | Milestone release; upgrade for CI stability |
-| 3 | **Static wiring** | `JSONParsing`, `ProblemFactory` are static; harder to test and swap implementations |
+| 2 | **Static wiring** | `JSONParsing`, `ProblemFactory` are static; harder to test and swap implementations |
 
 ---
 
@@ -63,7 +62,7 @@
 
 ### Dependencies and security
 
-- **maven-surefire-plugin:3.0.0-M5** – Milestone release; upgrade to stable for predictable CI.
+- ~~**maven-surefire-plugin:3.0.0-M5** – Milestone release~~ Addressed: upgraded to 3.5.4 (stable).
 
 ---
 
