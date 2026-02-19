@@ -1,11 +1,10 @@
+package com.elmika.tsp.application;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
-
-import com.elmika.tsp.application.ProblemConfiguration;
-import com.elmika.tsp.application.SolverConfiguration;
 
 public class SolverConfigurationTest {
 
@@ -59,6 +58,22 @@ public class SolverConfigurationTest {
             () -> SolverConfiguration.createFrom(new ProblemConfiguration("simple", "greedy")));
         assertTrue(e.getMessage().contains("greedy"));
         assertTrue(e.getMessage().contains("Allowed"));
+    }
+
+    @Test
+    public void createFromInvalidProblemSizeCitiesThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("cities7", "brute-force")));
+        assertTrue(e.getMessage().contains("cities"));
+        assertTrue(e.getMessage().contains("out of range"));
+    }
+
+    @Test
+    public void createFromInvalidProblemSizeRandomThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("fully-random151", "random10")));
+        assertTrue(e.getMessage().contains("random"));
+        assertTrue(e.getMessage().contains("out of range"));
     }
 
     @Test

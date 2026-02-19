@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.elmika.tsp.domain.EuclideanProblem;
-import com.elmika.tsp.domain.Point;
+import com.elmika.tsp.domain.geometry.Point;
 import com.elmika.tsp.domain.Problem;
 import com.elmika.tsp.domain.Solution;
 

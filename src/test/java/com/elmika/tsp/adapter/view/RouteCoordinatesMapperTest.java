@@ -1,3 +1,5 @@
+package com.elmika.tsp.adapter.view;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -5,8 +7,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.elmika.tsp.adapter.view.RouteCoordinatesMapper;
-import com.elmika.tsp.adapter.view.RouteCoordinatesView;
 import com.elmika.tsp.domain.DistanceMatrixProblem;
 import com.elmika.tsp.domain.EuclideanProblem;
 import com.elmika.tsp.domain.Problem;
@@ -49,4 +49,3 @@ public class RouteCoordinatesMapperTest {
             () -> RouteCoordinatesMapper.toView(problem, solution));
     }
 }
-

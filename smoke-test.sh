@@ -19,7 +19,12 @@ if [[ ! -f "${JAR}" ]]; then
 fi
 
 echo "Running smoke test with ${JAR}..."
-java -jar "${JAR}" | head -n 5
+OUTPUT=$(java -jar "${JAR}" 2>&1 | head -n 5)
+echo "${OUTPUT}"
+if ! echo "${OUTPUT}" | grep -q "Traveling Salesman Problem Solver"; then
+  echo "Smoke test failed: expected header 'Traveling Salesman Problem Solver' not found." >&2
+  exit 1
+fi
 
 echo "Smoke test completed."
 

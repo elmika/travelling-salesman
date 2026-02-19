@@ -42,10 +42,10 @@ flowchart TB
 
 | Layer | Role | Key types |
 |-------|------|-----------|
-| **Domain** | Pure business concepts, no I/O | `Problem`, `Solution`, `EuclideanProblem`, `DistanceMatrixProblem` |
-| **Application** | Ports (interfaces) and use cases | `TspSolver`, `ConfigLoader`, `ProblemProvider`, `SolveTspUseCase`, `SimpleSolver`, `PermutationsIterator` |
+| **Domain** | Pure business concepts, no I/O | `Problem`, `Solution`, `EuclideanProblem`, `DistanceMatrixProblem`, `domain.geometry.Point` |
+| **Application** | Ports (interfaces), use cases, validation | `TspSolver`, `ConfigLoader`, `ProblemProvider`, `SolveTspUseCase`, `SolverStrategy`, `BruteForceSolver`, `RandomSolver`, `SolverConfiguration`, `ProblemTypeParser`, `PermutationsIterator` |
 | **Infrastructure** | Adapters that implement ports | `JsonFileConfigLoader`, `InMemoryProblemFactory`, `JSONParsing`, `ProblemFactory` |
-| **Adapter (driving)** | Entry point, wires and runs the app | `TspCli`, `TravellingSalesman` (composition root) |
+| **Adapter (driving)** | Entry point, wiring, presentation | `TspCli`, `TravellingSalesman` (composition root), `RouteCoordinatesMapper`, `RouteCoordinatesView`, `RouteCoordinatesJsonExporter` |
 
 ## Dependency Rule
 
@@ -57,6 +57,7 @@ flowchart TB
 ## Flow
 
 1. **TravellingSalesman.main** (composition root) instantiates adapters and the use case, then calls `TspCli.run()`.
-2. **TspCli** loads configuration via `ConfigLoader`, creates a problem via `ProblemProvider`, invokes `TspSolver.solve()`, and prints the solution.
-3. **SolveTspUseCase** delegates to `SimpleSolver`, which returns a `Solution`.
-4. All file I/O and JSON parsing stays in infrastructure; the application core stays pure.
+2. **TspCli** loads configuration via `ConfigLoader`, validates it via `SolverConfiguration.createFrom()`, creates a problem via `ProblemProvider`, invokes `TspSolver.solve()`, and prints the solution.
+3. **SolveTspUseCase** resolves the strategy name to a `SolverStrategy` (`BruteForceSolver` or `RandomSolver`) and delegates to it. Each strategy returns a `Solution`.
+4. For Euclidean problems, **TspCli** exports the route to `output/route.json` via `RouteCoordinatesMapper` and `RouteCoordinatesJsonExporter` for optional visualization (e.g., `index.html`).
+5. All file I/O and JSON parsing stays in infrastructure; the application core stays pure.

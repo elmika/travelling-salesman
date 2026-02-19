@@ -1,4 +1,4 @@
-package com.elmika.tsp.infrastructure;
+package com.elmika.tsp.application;
 
 /**
  * Parses and validates problem type strings (e.g. "cities10", "fully-random100", "partially-random5").
@@ -14,8 +14,8 @@ public final class ProblemTypeParser {
     public static final String FULLY_RANDOM = "fully-random";
     public static final String PARTIALLY_RANDOM = "partially-random";
 
-    /** Valid size range for "citiesN": 1 to 15. */
-    public static final int CITIES_SIZE_MIN = 1;
+    /** Valid size range for "citiesN": 8 to 15 (aligned with problemConfiguration.json X: 8–15). */
+    public static final int CITIES_SIZE_MIN = 8;
     public static final int CITIES_SIZE_MAX = 15;
 
     /** Valid size range for "fully-randomN" and "partially-randomN": 1 to 150. */
@@ -55,13 +55,38 @@ public final class ProblemTypeParser {
         if (CITIES.equals(coreType)) {
             if (size < CITIES_SIZE_MIN || size > CITIES_SIZE_MAX) {
                 throw new IllegalArgumentException(
-                    "Cannot generate an Euclidean problem of size " + size + ".");
+                    "Configuration error: 'problem' size " + size + " is out of range for cities. " +
+                    "Allowed range: " + CITIES_SIZE_MIN + "–" + CITIES_SIZE_MAX + ". " +
+                    "Example: cities10.");
             }
         } else if (FULLY_RANDOM.equals(coreType) || PARTIALLY_RANDOM.equals(coreType)) {
             if (size < RANDOM_SIZE_MIN || size > RANDOM_SIZE_MAX) {
                 throw new IllegalArgumentException(
-                    "Cannot generate a Random problem of size " + size + ".");
+                    "Configuration error: 'problem' size " + size + " is out of range for random. " +
+                    "Allowed range: " + RANDOM_SIZE_MIN + "–" + RANDOM_SIZE_MAX + ". " +
+                    "Example: fully-random50.");
             }
+        }
+    }
+
+    /**
+     * Validates that the problem type string is valid (known type and size in range).
+     * @throws IllegalArgumentException if the problem type is invalid
+     */
+    public static void validateProblemType(String problemType) {
+        if (problemType == null || problemType.isBlank()) {
+            return; // SolverConfiguration handles null/blank
+        }
+        String core = coreProblemType(problemType);
+        int size = sizeOfProblemType(problemType);
+
+        if (CITIES.equals(core) || FULLY_RANDOM.equals(core) || PARTIALLY_RANDOM.equals(core)) {
+            if (size == 0) {
+                throw new IllegalArgumentException(
+                    "Configuration error: 'problem' '" + problemType + "' requires a numeric suffix. " +
+                    "Examples: cities10, fully-random50, partially-random5.");
+            }
+            validateSizeForType(core, size);
         }
     }
 }

@@ -1,3 +1,5 @@
+package com.elmika.tsp.adapter.view;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -6,8 +8,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.elmika.tsp.adapter.view.RouteCoordinatesJsonExporter;
-import com.elmika.tsp.adapter.view.RouteCoordinatesView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

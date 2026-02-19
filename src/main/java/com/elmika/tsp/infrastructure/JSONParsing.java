@@ -8,9 +8,10 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.elmika.tsp.application.ConfigLoadException;
+import com.elmika.tsp.application.ProblemConfiguration;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.elmika.tsp.application.ProblemConfiguration;
 
 public class JSONParsing {
 
@@ -38,34 +39,44 @@ public class JSONParsing {
     }
 
     /**
-     * Loads configuration from problemConfiguration.json into a typed DTO,
-     * falling back to defaults when the file is missing or malformed.
+     * Loads configuration from problemConfiguration.json.
+     *
+     * @throws ConfigLoadException if the file is missing or malformed
      */
     public static ProblemConfiguration getConfig() {
-        String filename = "problemConfiguration.json";
-        String problem = "simple";
-        String strategy = "random10";
+        return getConfig(Paths.get("problemConfiguration.json"));
+    }
 
-        Path path = Paths.get(filename);
+    /**
+     * Loads configuration from the given path.
+     *
+     * @param path the path to the configuration file
+     * @return the configuration
+     * @throws ConfigLoadException if the file is missing or malformed
+     */
+    public static ProblemConfiguration getConfig(Path path) {
         if (!Files.exists(path)) {
-            log.info("Default configuration loaded");
-            return new ProblemConfiguration(problem, strategy);
+            throw new ConfigLoadException("Configuration file not found: " + path.toAbsolutePath());
         }
 
         ProblemConfigFile configFile;
         try {
             configFile = MAPPER.readValue(path.toFile(), ProblemConfigFile.class);
         } catch (IOException e) {
-            log.warn("Exception when parsing config file {}: {}", filename, e.getMessage());
-            log.info("Default configuration loaded");
-            return new ProblemConfiguration(problem, strategy);
+            throw new ConfigLoadException("Failed to parse configuration file " + path + ": " + e.getMessage(), e);
         }
 
-        if (configFile.getProblem() != null && !configFile.getProblem().isBlank()) {
-            problem = configFile.getProblem();
+        String problem = configFile.getProblem();
+        String strategy = configFile.getResolutionStrategy();
+        if (problem == null || problem.isBlank()) {
+            problem = "simple";
+        } else {
+            problem = problem.trim();
         }
-        if (configFile.getResolutionStrategy() != null && !configFile.getResolutionStrategy().isBlank()) {
-            strategy = configFile.getResolutionStrategy();
+        if (strategy == null || strategy.isBlank()) {
+            strategy = "random10";
+        } else {
+            strategy = strategy.trim();
         }
 
         log.info("Problem: {}, Strategy: {}", problem, strategy);

@@ -1,9 +1,8 @@
+package com.elmika.tsp.domain;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import com.elmika.tsp.domain.EuclideanProblem;
-import com.elmika.tsp.domain.Problem;
 
 public class EuclideanProblemTest {
 
