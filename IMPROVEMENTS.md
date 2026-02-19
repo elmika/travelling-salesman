@@ -1,11 +1,11 @@
 ## Gaps (remaining)
 
 - DistanceMatrixProblem validation: no validation of matrix shape/indices; invalid input → `ArrayIndexOutOfBoundsException`
-- Silent fallback to defaults: `getConfig()` falls back without surfacing misconfiguration
 - maven-surefire-plugin:3.0.0-M5 is a milestone release; upgrade for CI stability
 
 ## Addressed (past refactors)
 
+- **Silent fallback to defaults** – `JSONParsing.getConfig()` throws `ConfigLoadException` when the config file is missing or malformed; no silent defaults
 - **sizeOfProblemType** – `ProblemTypeParser.sizeOfProblemType()` returns `0` for no trailing digits
 - **Exception mismatch** – `EuclideanProblem` and geometry types throw `IllegalArgumentException`
 - **Solution model** – `Solution` value object introduced; solvers return it directly
@@ -16,7 +16,7 @@
 - **ProblemFactory size limits** – Documented in `ProblemTypeParser` (cities 1–15, random 1–150)
 - **DistanceMatrixProblem tests** – `DistanceMatrixProblemTest` covers `getSize`, `getDistance`, symmetry, diagonal
 - **TravellingSalesman main flow** – `TravellingSalesmanTest` wires CLI, config, problem factory, solver; asserts run completes
-- **JSONParsingTest brittleness** – Uses `src/test/resources/file.json`; `getConfig(Path)` overload added; tests for valid, missing, malformed config
+- **JSONParsingTest brittleness** – Uses `src/test/resources/file.json`; `getConfig(Path)` overload; tests for valid config and ConfigLoadException on missing/malformed file
 - **ProblemFactory coverage** – Tests added for all problem types: trivial, simple, bigger, euclidean, cities7, fully-random10, partially-random5
 
 ---
@@ -25,10 +25,9 @@
 
 | Priority | Item | Why |
 |----------|------|-----|
-| 1 | **Silent fallback to defaults** | `getConfig()` falls back to defaults on missing/malformed file; hides misconfiguration in production |
-| 2 | **DistanceMatrixProblem validation** | No validation of matrix shape/indices; invalid input → `ArrayIndexOutOfBoundsException` |
-| 3 | **maven-surefire-plugin 3.0.0-M5** | Milestone release; upgrade for CI stability |
-| 4 | **Static wiring** | `JSONParsing`, `ProblemFactory` are static; harder to test and swap implementations |
+| 1 | **DistanceMatrixProblem validation** | No validation of matrix shape/indices; invalid input → `ArrayIndexOutOfBoundsException` |
+| 2 | **maven-surefire-plugin 3.0.0-M5** | Milestone release; upgrade for CI stability |
+| 3 | **Static wiring** | `JSONParsing`, `ProblemFactory` are static; harder to test and swap implementations |
 
 ---
 
@@ -45,8 +44,7 @@
 
 ### Technical issues (open)
 
-1. **`JSONParsing`** – On missing/malformed config, falls back to defaults without surfacing an error. Callers receive a valid config; production misconfiguration can go unnoticed.
-2. **`getConfig()` fallback** – Consider fail-fast or explicit error type instead of silent defaults.
+1. ~~**`JSONParsing`** – On missing/malformed config, falls back to defaults without surfacing an error.~~ Addressed: `getConfig()` throws `ConfigLoadException` on missing or malformed file.
 
 ---
 
@@ -59,7 +57,7 @@
 
 ### Testing and resilience
 
-- **Silent fallback** – `getConfig()` fallback hides misconfiguration; consider warning or metric.
+- ~~**Silent fallback** – `getConfig()` fallback hides misconfiguration~~ Addressed: throws `ConfigLoadException`.
 
 ---
 
@@ -71,8 +69,7 @@
 
 ### Configuration robustness
 
-- **Silent fallback to defaults**: `JSONParsing.getConfig()` logs and falls back when `problemConfiguration.json` is missing or malformed. Convenient locally; can hide production misconfiguration.
-- **Improvement**: Elevate log severity, surface clear error for non-dev environments, or add metrics around "default config used".
+- ~~**Silent fallback to defaults**: `JSONParsing.getConfig()` logs and falls back when `problemConfiguration.json` is missing or malformed.~~ Addressed: now throws `ConfigLoadException` instead of defaulting.
 
 ---
 

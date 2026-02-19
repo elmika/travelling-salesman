@@ -2,6 +2,8 @@ package com.elmika.tsp.infrastructure;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -11,6 +13,7 @@ import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import com.elmika.tsp.application.ConfigLoadException;
 import com.elmika.tsp.application.ProblemConfiguration;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -43,25 +46,25 @@ public class JSONParsingTest {
     }
 
     @Test
-    public void getConfigWithMissingFileReturnsDefaults(@TempDir Path tempDir) {
+    public void getConfigWithMissingFileThrowsConfigLoadException(@TempDir Path tempDir) {
         Path nonExistent = tempDir.resolve("nonexistent.json");
 
-        ProblemConfiguration config = JSONParsing.getConfig(nonExistent);
+        ConfigLoadException e = assertThrows(ConfigLoadException.class,
+            () -> JSONParsing.getConfig(nonExistent));
 
-        assertNotNull(config);
-        assertEquals("simple", config.getProblem());
-        assertEquals("random10", config.getResolutionStrategy());
+        assertTrue(e.getMessage().contains("not found"));
+        assertTrue(e.getMessage().contains("nonexistent.json"));
     }
 
     @Test
-    public void getConfigWithMalformedFileReturnsDefaults(@TempDir Path tempDir) throws Exception {
+    public void getConfigWithMalformedFileThrowsConfigLoadException(@TempDir Path tempDir) throws Exception {
         Path configFile = tempDir.resolve("problemConfiguration.json");
         Files.writeString(configFile, "not valid json {", StandardCharsets.UTF_8);
 
-        ProblemConfiguration config = JSONParsing.getConfig(configFile);
+        ConfigLoadException e = assertThrows(ConfigLoadException.class,
+            () -> JSONParsing.getConfig(configFile));
 
-        assertNotNull(config);
-        assertEquals("simple", config.getProblem());
-        assertEquals("random10", config.getResolutionStrategy());
+        assertTrue(e.getMessage().contains("parse"));
+        assertNotNull(e.getCause());
     }
 }
