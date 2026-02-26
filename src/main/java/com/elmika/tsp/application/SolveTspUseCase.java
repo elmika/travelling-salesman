@@ -1,6 +1,7 @@
 package com.elmika.tsp.application;
 
 import com.elmika.tsp.application.solver.BruteForceSolver;
+import com.elmika.tsp.application.solver.NearestNeighborSolver;
 import com.elmika.tsp.application.solver.RandomSolver;
 import com.elmika.tsp.application.solver.SolverStrategy;
 import com.elmika.tsp.domain.Problem;
@@ -29,6 +30,8 @@ public class SolveTspUseCase implements TspSolver {
                 return new RandomSolver(100);
             case "brute-force":
                 return new BruteForceSolver();
+            case "nearest-neighbor":
+                return new NearestNeighborSolver();
             default:
                 return new RandomSolver(10);
         }
