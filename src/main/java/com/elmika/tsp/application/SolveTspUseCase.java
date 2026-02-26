@@ -4,6 +4,7 @@ import com.elmika.tsp.application.solver.BruteForceSolver;
 import com.elmika.tsp.application.solver.CrossingEliminationSolver;
 import com.elmika.tsp.application.solver.GreedyEdgeSolver;
 import com.elmika.tsp.application.solver.NearestNeighborSolver;
+import com.elmika.tsp.application.solver.OrOptSolver;
 import com.elmika.tsp.application.solver.RandomSolver;
 import com.elmika.tsp.application.solver.SolverStrategy;
 import com.elmika.tsp.application.solver.TwoOptSolver;
@@ -43,6 +44,10 @@ public class SolveTspUseCase implements TspSolver {
                 return new GreedyEdgeSolver();
             case "greedy-edge-2opt":
                 return new TwoOptSolver(new GreedyEdgeSolver());
+            case "nearest-neighbor-oropt":
+                return new OrOptSolver(new NearestNeighborSolver());
+            case "greedy-edge-oropt":
+                return new OrOptSolver(new GreedyEdgeSolver());
             default:
                 return new RandomSolver(10);
         }

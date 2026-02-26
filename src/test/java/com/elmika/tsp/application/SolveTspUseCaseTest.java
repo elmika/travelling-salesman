@@ -40,7 +40,7 @@ public class SolveTspUseCaseTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"brute-force", "random", "random10", "random100", "nearest-neighbor", "nearest-neighbor-2opt", "greedy-edge", "greedy-edge-2opt"})
+    @ValueSource(strings = {"brute-force", "random", "random10", "random100", "nearest-neighbor", "nearest-neighbor-2opt", "greedy-edge", "greedy-edge-2opt", "nearest-neighbor-oropt", "greedy-edge-oropt"})
     public void solveReturnsSolutionForAllStrategies(String strategy) {
         Problem problem = create4xProblem();
         TspSolver useCase = new SolveTspUseCase();
