@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.elmika.tsp.domain.DistanceMatrixProblem;
+import com.elmika.tsp.domain.EuclideanProblem;
 import com.elmika.tsp.domain.Problem;
 import com.elmika.tsp.domain.Solution;
 
@@ -48,6 +49,18 @@ public class SolveTspUseCaseTest {
 
         assertEquals(4.0, result.getTotalDistance());
         assertEquals(4, result.getRoute().length);
+    }
+
+    @Test
+    public void solveReturnsSolutionForNearestNeighborUncrossing() {
+        double[][] coords = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
+        EuclideanProblem problem = new EuclideanProblem(coords);
+        TspSolver useCase = new SolveTspUseCase();
+
+        Solution result = useCase.solve(problem, "nearest-neighbor-uncrossing");
+
+        assertEquals(4, result.getRoute().length);
+        assertEquals(4.0, result.getTotalDistance(), 1e-9);
     }
 
     @Test

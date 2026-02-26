@@ -10,7 +10,7 @@ import java.util.Set;
 public final class SolverConfiguration {
 
     private static final Set<String> ALLOWED_STRATEGIES = Set.of(
-        "brute-force", "random", "random10", "random100", "nearest-neighbor", "nearest-neighbor-2opt"
+        "brute-force", "random", "random10", "random100", "nearest-neighbor", "nearest-neighbor-2opt", "nearest-neighbor-uncrossing"
     );
 
     private final String problem;
@@ -52,13 +52,13 @@ public final class SolverConfiguration {
         if (strategy == null || strategy.isBlank()) {
             throw new IllegalArgumentException(
                 "Configuration error: 'resolutionStrategy' must not be null or blank. " +
-                "Allowed: brute-force, random, random10, random100, nearest-neighbor, nearest-neighbor-2opt.");
+                "Allowed: brute-force, random, random10, random100, nearest-neighbor, nearest-neighbor-2opt, nearest-neighbor-uncrossing.");
         }
 
         if (!ALLOWED_STRATEGIES.contains(strategy)) {
             throw new IllegalArgumentException(
                 "Configuration error: unknown resolution strategy '" + strategy + "'. " +
-                "Allowed: brute-force, random, random10, random100, nearest-neighbor, nearest-neighbor-2opt.");
+                "Allowed: brute-force, random, random10, random100, nearest-neighbor, nearest-neighbor-2opt, nearest-neighbor-uncrossing.");
         }
 
         return new SolverConfiguration(problem, strategy);
