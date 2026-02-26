@@ -1,11 +1,20 @@
 package com.elmika.tsp.application;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Value object representing a valid solver configuration.
  * Only obtain via {@link #createFrom(ProblemConfiguration)}; invalid input throws.
+ *
+ * <p>{@code resolutionStrategy} in the config file may contain a single strategy name
+ * or multiple names separated by commas and/or whitespace. When multiple strategies are
+ * present, {@link #isBenchmark()} returns true and {@link #getResolutionStrategies()}
+ * returns all of them; in that case the CLI runs a full benchmark comparison.
  */
 public final class SolverConfiguration {
 
@@ -17,11 +26,11 @@ public final class SolverConfiguration {
     );
 
     private final String problem;
-    private final String resolutionStrategy;
+    private final List<String> resolutionStrategies;
 
-    private SolverConfiguration(String problem, String resolutionStrategy) {
+    private SolverConfiguration(String problem, List<String> resolutionStrategies) {
         this.problem = problem;
-        this.resolutionStrategy = resolutionStrategy;
+        this.resolutionStrategies = resolutionStrategies;
     }
 
     /**
@@ -48,31 +57,53 @@ public final class SolverConfiguration {
 
         ProblemTypeParser.validateProblemType(problem);
 
-        String strategy = raw.getResolutionStrategy();
-        if (strategy != null) {
-            strategy = strategy.trim();
+        String strategyRaw = raw.getResolutionStrategy();
+        if (strategyRaw != null) {
+            strategyRaw = strategyRaw.trim();
         }
-        if (strategy == null || strategy.isBlank()) {
+        if (strategyRaw == null || strategyRaw.isBlank()) {
             throw new IllegalArgumentException(
                 "Configuration error: 'resolutionStrategy' must not be null or blank. " +
-                "Allowed: brute-force, random, random10, random100, nearest-neighbor, nearest-neighbor-2opt, nearest-neighbor-uncrossing, greedy-edge, greedy-edge-2opt, nearest-neighbor-oropt, greedy-edge-oropt, nearest-neighbor-sa, greedy-edge-sa.");
+                "Allowed: " + allowedStrategiesHint() + ".");
         }
 
-        if (!ALLOWED_STRATEGIES.contains(strategy)) {
-            throw new IllegalArgumentException(
-                "Configuration error: unknown resolution strategy '" + strategy + "'. " +
-                "Allowed: brute-force, random, random10, random100, nearest-neighbor, nearest-neighbor-2opt, nearest-neighbor-uncrossing, greedy-edge, greedy-edge-2opt, nearest-neighbor-oropt, greedy-edge-oropt, nearest-neighbor-sa, greedy-edge-sa.");
+        List<String> strategies = Arrays.stream(strategyRaw.split("[,\\s]+"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+
+        for (String s : strategies) {
+            if (!ALLOWED_STRATEGIES.contains(s)) {
+                throw new IllegalArgumentException(
+                    "Configuration error: unknown resolution strategy '" + s + "'. " +
+                    "Allowed: " + allowedStrategiesHint() + ".");
+            }
         }
 
-        return new SolverConfiguration(problem, strategy);
+        return new SolverConfiguration(problem, strategies);
     }
 
     public String getProblem() {
         return problem;
     }
 
+    /** Returns the single configured strategy. Use only when {@link #isBenchmark()} is false. */
     public String getResolutionStrategy() {
-        return resolutionStrategy;
+        return resolutionStrategies.get(0);
+    }
+
+    /** Returns all configured strategies. Contains exactly one entry in single-run mode. */
+    public List<String> getResolutionStrategies() {
+        return Collections.unmodifiableList(resolutionStrategies);
+    }
+
+    /** Returns true when more than one strategy is configured, triggering benchmark mode. */
+    public boolean isBenchmark() {
+        return resolutionStrategies.size() > 1;
+    }
+
+    private static String allowedStrategiesHint() {
+        return String.join(", ", ALLOWED_STRATEGIES);
     }
 
     @Override
@@ -80,11 +111,11 @@ public final class SolverConfiguration {
         if (this == o) return true;
         if (!(o instanceof SolverConfiguration)) return false;
         SolverConfiguration that = (SolverConfiguration) o;
-        return problem.equals(that.problem) && resolutionStrategy.equals(that.resolutionStrategy);
+        return problem.equals(that.problem) && resolutionStrategies.equals(that.resolutionStrategies);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(problem, resolutionStrategy);
+        return Objects.hash(problem, resolutionStrategies);
     }
 }

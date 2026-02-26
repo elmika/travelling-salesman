@@ -1,8 +1,14 @@
 {
-    "problem": "fully-random50",
-    "resolutionStrategy": "random100",
+    "problem": "fully-random150",
+    "resolutionStrategy": "nearest-neighbor-uncrossing, nearest-neighbor-2opt, random100, nearest-neighbor, greedy-edge, nearest-neighbor-2opt, greedy-edge-2opt, greedy-edge-sa, greedy-edge-oropt",
     "possibleProblems": ["trivial", "simple", "bigger", "euclidean", "citiesX", "fully-randomY", "partially-randomY"],
-    "possibleResolutionStrategies": ["random", "random10", "random100", "brute-force"],
+    "possibleResolutionStrategies": [
+        "brute-force",
+        "random", "random10", "random100",
+        "nearest-neighbor", "nearest-neighbor-2opt", "nearest-neighbor-uncrossing",
+        "nearest-neighbor-oropt", "nearest-neighbor-sa",
+        "greedy-edge", "greedy-edge-2opt", "greedy-edge-oropt", "greedy-edge-sa"
+    ],
     "X": "8-15",
     "Y": "1-150"
 }

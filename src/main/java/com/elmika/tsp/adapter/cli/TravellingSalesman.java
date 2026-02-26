@@ -1,5 +1,6 @@
 package com.elmika.tsp.adapter.cli;
 
+import com.elmika.tsp.application.BenchmarkTspUseCase;
 import com.elmika.tsp.application.SolveTspUseCase;
 import com.elmika.tsp.application.TspSolver;
 import com.elmika.tsp.application.ConfigLoader;
@@ -17,7 +18,7 @@ public class TravellingSalesman {
         ProblemProvider problemProvider = new InMemoryProblemFactory();
         TspSolver solver = new SolveTspUseCase();
 
-        TspCli cli = new TspCli(configLoader, problemProvider, solver);
+        TspCli cli = new TspCli(configLoader, problemProvider, solver, new BenchmarkTspUseCase(solver));
         cli.run();
     }
 }

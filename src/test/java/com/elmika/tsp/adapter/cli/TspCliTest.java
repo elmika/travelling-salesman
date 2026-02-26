@@ -8,6 +8,7 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 
+import com.elmika.tsp.application.BenchmarkTspUseCase;
 import com.elmika.tsp.application.ConfigLoader;
 import com.elmika.tsp.application.ProblemConfiguration;
 import com.elmika.tsp.application.ProblemProvider;
@@ -28,6 +29,19 @@ public class TspCliTest {
             return new DistanceMatrixProblem(distances);
         };
         TspCli cli = new TspCli(configLoader, problemProvider, new SolveTspUseCase());
+
+        assertDoesNotThrow(cli::run);
+    }
+
+    @Test
+    public void runBenchmarkModeCompletesWithMultipleStrategies() {
+        ConfigLoader configLoader = () -> new ProblemConfiguration("trivial", "brute-force, nearest-neighbor");
+        ProblemProvider problemProvider = type -> {
+            double[][] distances = {{0, 1, 1, 1}, {1, 0, 1, 1}, {1, 1, 0, 1}, {1, 1, 1, 0}};
+            return new DistanceMatrixProblem(distances);
+        };
+        TspSolver solver = new SolveTspUseCase();
+        TspCli cli = new TspCli(configLoader, problemProvider, solver, new BenchmarkTspUseCase(solver));
 
         assertDoesNotThrow(cli::run);
     }
