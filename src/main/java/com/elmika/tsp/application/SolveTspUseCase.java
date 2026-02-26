@@ -6,6 +6,7 @@ import com.elmika.tsp.application.solver.GreedyEdgeSolver;
 import com.elmika.tsp.application.solver.NearestNeighborSolver;
 import com.elmika.tsp.application.solver.OrOptSolver;
 import com.elmika.tsp.application.solver.RandomSolver;
+import com.elmika.tsp.application.solver.SimulatedAnnealingSolver;
 import com.elmika.tsp.application.solver.SolverStrategy;
 import com.elmika.tsp.application.solver.TwoOptSolver;
 import com.elmika.tsp.domain.Problem;
@@ -48,6 +49,10 @@ public class SolveTspUseCase implements TspSolver {
                 return new OrOptSolver(new NearestNeighborSolver());
             case "greedy-edge-oropt":
                 return new OrOptSolver(new GreedyEdgeSolver());
+            case "nearest-neighbor-sa":
+                return new SimulatedAnnealingSolver(new NearestNeighborSolver());
+            case "greedy-edge-sa":
+                return new SimulatedAnnealingSolver(new GreedyEdgeSolver());
             default:
                 return new RandomSolver(10);
         }

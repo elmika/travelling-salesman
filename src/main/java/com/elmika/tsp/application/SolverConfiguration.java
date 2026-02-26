@@ -12,7 +12,8 @@ public final class SolverConfiguration {
     private static final Set<String> ALLOWED_STRATEGIES = Set.of(
         "brute-force", "random", "random10", "random100", "nearest-neighbor", "nearest-neighbor-2opt",
         "nearest-neighbor-uncrossing", "greedy-edge", "greedy-edge-2opt",
-        "nearest-neighbor-oropt", "greedy-edge-oropt"
+        "nearest-neighbor-oropt", "greedy-edge-oropt",
+        "nearest-neighbor-sa", "greedy-edge-sa"
     );
 
     private final String problem;
@@ -54,13 +55,13 @@ public final class SolverConfiguration {
         if (strategy == null || strategy.isBlank()) {
             throw new IllegalArgumentException(
                 "Configuration error: 'resolutionStrategy' must not be null or blank. " +
-                "Allowed: brute-force, random, random10, random100, nearest-neighbor, nearest-neighbor-2opt, nearest-neighbor-uncrossing, greedy-edge, greedy-edge-2opt, nearest-neighbor-oropt, greedy-edge-oropt.");
+                "Allowed: brute-force, random, random10, random100, nearest-neighbor, nearest-neighbor-2opt, nearest-neighbor-uncrossing, greedy-edge, greedy-edge-2opt, nearest-neighbor-oropt, greedy-edge-oropt, nearest-neighbor-sa, greedy-edge-sa.");
         }
 
         if (!ALLOWED_STRATEGIES.contains(strategy)) {
             throw new IllegalArgumentException(
                 "Configuration error: unknown resolution strategy '" + strategy + "'. " +
-                "Allowed: brute-force, random, random10, random100, nearest-neighbor, nearest-neighbor-2opt, nearest-neighbor-uncrossing, greedy-edge, greedy-edge-2opt, nearest-neighbor-oropt, greedy-edge-oropt.");
+                "Allowed: brute-force, random, random10, random100, nearest-neighbor, nearest-neighbor-2opt, nearest-neighbor-uncrossing, greedy-edge, greedy-edge-2opt, nearest-neighbor-oropt, greedy-edge-oropt, nearest-neighbor-sa, greedy-edge-sa.");
         }
 
         return new SolverConfiguration(problem, strategy);
