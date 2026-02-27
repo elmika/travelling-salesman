@@ -81,10 +81,10 @@ public class SimulatedAnnealingSolver implements SolverStrategy {
                 continue;
             }
 
-            double improvement = twoOptImprovement(problem, current, i, j);
+            double improvement = SolverUtils.twoOptImprovement(problem, current, i, j);
 
             if (improvement > 0 || random.nextDouble() < Math.exp(improvement / temp)) {
-                reverse(current, i + 1, j);
+                SolverUtils.reverse(current, i + 1, j);
                 currentCost -= improvement;
                 if (currentCost < bestCost) {
                     bestCost = currentCost;
@@ -96,26 +96,5 @@ public class SimulatedAnnealingSolver implements SolverStrategy {
         }
 
         return new Solution(best, bestCost);
-    }
-
-    /**
-     * Returns the improvement (positive = shorter tour) from reversing route[i+1..j].
-     *   old edges: (route[i], route[i+1]) and (route[j], route[j+1 mod n])
-     *   new edges: (route[i], route[j])   and (route[i+1], route[j+1 mod n])
-     */
-    private static double twoOptImprovement(Problem problem, Integer[] route, int i, int j) {
-        int n = route.length;
-        int a = route[i],         b = route[(i + 1) % n];
-        int c = route[j],         d = route[(j + 1) % n];
-        return problem.getDistance(a, b) + problem.getDistance(c, d)
-             - problem.getDistance(a, c) - problem.getDistance(b, d);
-    }
-
-    private static void reverse(Integer[] route, int from, int to) {
-        while (from < to) {
-            Integer tmp = route[from];
-            route[from++] = route[to];
-            route[to--] = tmp;
-        }
     }
 }

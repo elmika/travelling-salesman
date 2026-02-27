@@ -49,34 +49,14 @@ public class TwoOptSolver implements SolverStrategy {
                     if (i == 0 && j == n - 1) {
                         continue; // edges share route[0], not a valid 2-opt pair
                     }
-                    double delta = improvement(problem, route, i, j);
+                    double delta = SolverUtils.twoOptImprovement(problem, route, i, j);
                     if (delta > 0) {
-                        reverse(route, i + 1, j);
+                        SolverUtils.reverse(route, i + 1, j);
                         improved = true;
                     }
                 }
             }
         }
         return new Solution(route, SolverUtils.totalDistance(problem, route));
-    }
-
-    /**
-     * Returns the distance saved by swapping the two edges at positions i and j.
-     * A positive value means the swap improves the tour.
-     */
-    private static double improvement(Problem problem, Integer[] route, int i, int j) {
-        int n = route.length;
-        int a = route[i],         b = route[(i + 1) % n];
-        int c = route[j],         d = route[(j + 1) % n];
-        return problem.getDistance(a, b) + problem.getDistance(c, d)
-             - problem.getDistance(a, c) - problem.getDistance(b, d);
-    }
-
-    private static void reverse(Integer[] route, int from, int to) {
-        while (from < to) {
-            Integer tmp = route[from];
-            route[from++] = route[to];
-            route[to--] = tmp;
-        }
     }
 }

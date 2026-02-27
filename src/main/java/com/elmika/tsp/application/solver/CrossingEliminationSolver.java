@@ -64,7 +64,7 @@ public class CrossingEliminationSolver implements SolverStrategy {
                     Point c = problem.getPoint(route[j]);
                     Point d = problem.getPoint(route[(j + 1) % n]);
                     if (cross(a, b, c, d)) {
-                        reverse(route, i + 1, j);
+                        SolverUtils.reverse(route, i + 1, j);
                         improved = true;
                     }
                 }
@@ -96,13 +96,5 @@ public class CrossingEliminationSolver implements SolverStrategy {
         if (d > 0) return  1;
         if (d < 0) return -1;
         return 0;
-    }
-
-    private static void reverse(Integer[] route, int from, int to) {
-        while (from < to) {
-            Integer tmp = route[from];
-            route[from++] = route[to];
-            route[to--] = tmp;
-        }
     }
 }

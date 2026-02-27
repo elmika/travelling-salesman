@@ -1,6 +1,6 @@
 {
     "problem": "fully-random150",
-    "resolutionStrategy": "nearest-neighbor-uncrossing, nearest-neighbor-2opt, random100, nearest-neighbor, greedy-edge, nearest-neighbor-2opt, greedy-edge-2opt, greedy-edge-sa, greedy-edge-oropt",
+    "resolutionStrategy": "nearest-neighbor-uncrossing, nearest-neighbor-2opt, random100, nearest-neighbor, greedy-edge, greedy-edge-2opt, greedy-edge-sa, greedy-edge-oropt",
     "possibleProblems": ["trivial", "simple", "bigger", "euclidean", "citiesX", "fully-randomY", "partially-randomY"],
     "possibleResolutionStrategies": [
         "brute-force",
