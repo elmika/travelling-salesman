@@ -53,7 +53,7 @@ public class GreedyEdgeSolver implements SolverStrategy {
         }
 
         Integer[] route = buildRoute(neighbors, n);
-        return new Solution(route, totalDistance(problem, route));
+        return new Solution(route, SolverUtils.totalDistance(problem, route));
     }
 
     /**
@@ -123,16 +123,5 @@ public class GreedyEdgeSolver implements SolverStrategy {
 
     private static void union(int[] parent, int a, int b) {
         parent[find(parent, a)] = find(parent, b);
-    }
-
-    private static double totalDistance(Problem problem, Integer[] route) {
-        if (route.length == 0) {
-            return 0;
-        }
-        double total = problem.getDistance(route[route.length - 1], route[0]);
-        for (int i = 1; i < route.length; i++) {
-            total += problem.getDistance(route[i - 1], route[i]);
-        }
-        return total;
     }
 }

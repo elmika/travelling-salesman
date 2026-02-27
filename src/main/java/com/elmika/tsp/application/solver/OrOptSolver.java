@@ -86,7 +86,7 @@ public class OrOptSolver implements SolverStrategy {
                 }
             }
         }
-        return new Solution(route, totalDistance(problem, route));
+        return new Solution(route, SolverUtils.totalDistance(problem, route));
     }
 
     /**
@@ -126,16 +126,5 @@ public class OrOptSolver implements SolverStrategy {
             if (pos == (segStart + x) % n) return true;
         }
         return false;
-    }
-
-    private static double totalDistance(Problem problem, Integer[] route) {
-        if (route.length == 0) {
-            return 0;
-        }
-        double total = problem.getDistance(route[route.length - 1], route[0]);
-        for (int i = 1; i < route.length; i++) {
-            total += problem.getDistance(route[i - 1], route[i]);
-        }
-        return total;
     }
 }

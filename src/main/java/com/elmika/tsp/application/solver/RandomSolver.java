@@ -32,11 +32,11 @@ public class RandomSolver implements SolverStrategy {
         if (iterations == 1) {
             log.info("Finding one random solution.");
             Integer[] route = findRandomSolution(problem);
-            return new Solution(route, getTotalDistance(problem, route));
+            return new Solution(route, SolverUtils.totalDistance(problem, route));
         }
         log.info("Comparing {} random solutions to find the best route.", iterations);
         Integer[] best = findBestRandomSolution(problem, iterations);
-        return new Solution(best, getTotalDistance(problem, best));
+        return new Solution(best, SolverUtils.totalDistance(problem, best));
     }
 
     private static Integer[] findRandomSolution(Problem problem) {
@@ -52,26 +52,15 @@ public class RandomSolver implements SolverStrategy {
 
     private static Integer[] findBestRandomSolution(Problem problem, int iterations) {
         Integer[] solution = findRandomSolution(problem);
-        double distance = getTotalDistance(problem, solution);
+        double distance = SolverUtils.totalDistance(problem, solution);
         for (int i = 0; i < iterations; i++) {
             Integer[] candidate = findRandomSolution(problem);
-            double candidateDistance = getTotalDistance(problem, candidate);
+            double candidateDistance = SolverUtils.totalDistance(problem, candidate);
             if (candidateDistance < distance) {
                 solution = candidate;
                 distance = candidateDistance;
             }
         }
         return solution;
-    }
-
-    private static double getTotalDistance(Problem problem, Integer[] route) {
-        if (route.length == 0) {
-            return 0;
-        }
-        double total = problem.getDistance(route[route.length - 1], route[0]);
-        for (int i = 1; i < route.length; i++) {
-            total += problem.getDistance(route[i - 1], route[i]);
-        }
-        return total;
     }
 }
