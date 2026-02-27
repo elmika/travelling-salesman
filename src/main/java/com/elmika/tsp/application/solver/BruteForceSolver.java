@@ -21,12 +21,12 @@ public class BruteForceSolver implements SolverStrategy {
         PermutationsIterator it = new PermutationsIterator(problem.getSize());
         Integer[] best = it.next();
         if (!it.hasNext()) {
-            return new Solution(best, totalDistance(problem, best));
+            return new Solution(best, SolverUtils.totalDistance(problem, best));
         }
-        double bestDistance = totalDistance(problem, best);
+        double bestDistance = SolverUtils.totalDistance(problem, best);
         Integer[] candidate = it.next();
         while (it.hasNext()) {
-            double d = totalDistance(problem, candidate);
+            double d = SolverUtils.totalDistance(problem, candidate);
             if (d < bestDistance) {
                 best = candidate;
                 bestDistance = d;
@@ -34,16 +34,5 @@ public class BruteForceSolver implements SolverStrategy {
             candidate = it.next();
         }
         return new Solution(best, bestDistance);
-    }
-
-    private static double totalDistance(Problem problem, Integer[] route) {
-        if (route.length == 0) {
-            return 0;
-        }
-        double total = problem.getDistance(route[route.length - 1], route[0]);
-        for (int i = 1; i < route.length; i++) {
-            total += problem.getDistance(route[i - 1], route[i]);
-        }
-        return total;
     }
 }

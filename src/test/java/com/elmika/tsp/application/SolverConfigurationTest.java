@@ -77,6 +77,72 @@ public class SolverConfigurationTest {
     }
 
     @Test
+    public void createFromCommaSeparatedStrategiesCreatesBenchmarkConfig() {
+        SolverConfiguration config = SolverConfiguration.createFrom(
+            new ProblemConfiguration("trivial", "brute-force, nearest-neighbor, random10"));
+        assertTrue(config.isBenchmark());
+        assertEquals(3, config.getResolutionStrategies().size());
+        assertEquals("brute-force", config.getResolutionStrategies().get(0));
+        assertEquals("nearest-neighbor", config.getResolutionStrategies().get(1));
+        assertEquals("random10", config.getResolutionStrategies().get(2));
+    }
+
+    @Test
+    public void createFromSpaceSeparatedStrategiesCreatesBenchmarkConfig() {
+        SolverConfiguration config = SolverConfiguration.createFrom(
+            new ProblemConfiguration("trivial", "nearest-neighbor greedy-edge"));
+        assertTrue(config.isBenchmark());
+        assertEquals(2, config.getResolutionStrategies().size());
+    }
+
+    @Test
+    public void singleStrategyIsNotBenchmark() {
+        SolverConfiguration config = SolverConfiguration.createFrom(
+            new ProblemConfiguration("trivial", "brute-force"));
+        assertTrue(!config.isBenchmark());
+        assertEquals("brute-force", config.getResolutionStrategy());
+    }
+
+    @Test
+    public void createFromOnlyDelimitersThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("trivial", ",")));
+        assertTrue(e.getMessage().contains("no valid strategy names"));
+    }
+
+    @Test
+    public void createFromMultipleDelimitersThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("trivial", ", ,")));
+        assertTrue(e.getMessage().contains("no valid strategy names"));
+    }
+
+    @Test
+    public void createFromWhitespaceAndDelimitersThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("trivial", "  ,  ")));
+        assertTrue(e.getMessage().contains("no valid strategy names"));
+    }
+
+    @Test
+    public void createFromMixedValidAndEmptyStrategiesFiltersEmpty() {
+        SolverConfiguration config = SolverConfiguration.createFrom(
+            new ProblemConfiguration("trivial", "brute-force, , random10"));
+        assertTrue(config.isBenchmark());
+        assertEquals(2, config.getResolutionStrategies().size());
+        assertEquals("brute-force", config.getResolutionStrategies().get(0));
+        assertEquals("random10", config.getResolutionStrategies().get(1));
+    }
+
+    @Test
+    public void createFromMixedValidAndInvalidStrategiesThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("trivial", "brute-force, invalid-algo, random10")));
+        assertTrue(e.getMessage().contains("invalid-algo"));
+        assertTrue(e.getMessage().contains("unknown resolution strategy"));
+    }
+
+    @Test
     public void equalsAndHashCode() {
         SolverConfiguration a = SolverConfiguration.createFrom(
             new ProblemConfiguration("trivial", "brute-force"));
