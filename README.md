@@ -2,7 +2,7 @@
 
 TSP is a classic algorithmic problem in the field of computer science and operations research. It asks for the shortest possible route that visits a set of locations exactly once and returns to the origin point.
 
-This project implements a set of resolution and improvement algorithms exposed via a **Spring Boot REST API** and an optional **CLI**.
+This project implements a set of resolution and improvement algorithms exposed via a **Spring Boot REST API**, an interactive **React web UI**, and an optional **CLI**.
 
 ## Architecture
 
@@ -11,6 +11,13 @@ The project follows **Hexagonal Architecture**. See [ARCHITECTURE.md](ARCHITECTU
 ## Project Structure
 
 ```
+frontend/                         React + TypeScript + Vite SPA
+├── src/
+│   ├── api/        types.ts, client.ts
+│   ├── components/ Sidebar, RouteCanvas, BenchmarkTable, StatusBar
+│   └── hooks/      useCanvasRenderer
+└── vite.config.ts  builds into src/main/resources/static/
+
 src/main/java/com/elmika/tsp/
 ├── domain/
 │   ├── problem/      Problem, EuclideanProblem, DistanceMatrixProblem, Point
@@ -33,24 +40,53 @@ src/main/java/com/elmika/tsp/
 
 ## Running with Docker
 
+The Dockerfile is a multi-stage build: Node.js compiles the React frontend, Maven packages the Java backend with the frontend embedded, and the final image is a slim JRE runtime.
+
 ### Build the image
 
 ```bash
 docker build -t tsp-solver .
 ```
 
-### Start the API server
+### Start the API server + web UI
 
 ```bash
 docker run --rm -p 8080:8080 tsp-solver
 ```
 
-The server starts on port 8080. All four endpoints are immediately available — no configuration file needed.
+The server starts on port 8080. Open `http://localhost:8080` in a browser to use the interactive web UI. All four API endpoints are also immediately available.
 
 ### Run the tests
 
 ```bash
 docker run --rm tsp-solver mvn test
+```
+
+---
+
+## Frontend development
+
+The React + TypeScript + Vite frontend lives in `frontend/`. During development, Vite proxies `/api` requests to the running Spring Boot server so you can work with hot-reload without rebuilding Docker.
+
+**Prerequisites**: Node.js 20+.
+
+```bash
+# 1. Start the backend (in one terminal)
+docker run --rm -p 8080:8080 tsp-solver
+
+# 2. Install frontend dependencies (first time only)
+cd frontend && npm install
+
+# 3. Start Vite dev server
+npm run dev
+```
+
+Open `http://localhost:5173` for the hot-reloading dev build. The `/api` calls are proxied to `http://localhost:8080`.
+
+To produce a production build and embed it into the Spring Boot JAR:
+```bash
+cd frontend && npm run build   # outputs to src/main/resources/static/
+docker build -t tsp-solver .   # picks up the static files
 ```
 
 ---

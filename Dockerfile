@@ -1,16 +1,23 @@
-# Use an official Maven image with Java 11 as a parent image
-FROM maven:3.6.3-jdk-11
+# Stage 1: Build React frontend
+FROM node:20-alpine AS frontend-build
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run build
+# output lands at /app/src/main/resources/static (via vite.config.ts outDir)
 
-# Set the working directory in the container
+# Stage 2: Build Java backend with embedded frontend
+FROM maven:3.6.3-jdk-11 AS java-build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+COPY --from=frontend-build /app/src/main/resources/static ./src/main/resources/static
+RUN mvn clean package -DskipTests
 
-# Copy the project files into the container at /app
-COPY . /app
-
-# Build the project
-RUN mvn clean package
-
+# Stage 3: Slim runtime image
+FROM eclipse-temurin:11-jre
+WORKDIR /app
+COPY --from=java-build /app/target/tsp-solver-0.1-SETUP.jar ./app.jar
 EXPOSE 8080
-
-# Run the application
-CMD ["java", "-jar", "target/tsp-solver-0.1-SETUP.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
