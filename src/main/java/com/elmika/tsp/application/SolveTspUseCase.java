@@ -1,30 +1,30 @@
 package com.elmika.tsp.application;
 
-import com.elmika.tsp.application.solver.BruteForceSolver;
-import com.elmika.tsp.application.solver.CrossingEliminationSolver;
-import com.elmika.tsp.application.solver.GreedyEdgeSolver;
-import com.elmika.tsp.application.solver.NearestNeighborSolver;
-import com.elmika.tsp.application.solver.OrOptSolver;
-import com.elmika.tsp.application.solver.RandomSolver;
-import com.elmika.tsp.application.solver.SimulatedAnnealingSolver;
-import com.elmika.tsp.application.solver.SolverStrategy;
-import com.elmika.tsp.application.solver.TwoOptSolver;
-import com.elmika.tsp.domain.Problem;
-import com.elmika.tsp.domain.Solution;
+import com.elmika.tsp.application.improvement.CrossingEliminationSolver;
+import com.elmika.tsp.application.improvement.OrOptSolver;
+import com.elmika.tsp.application.improvement.SimulatedAnnealingSolver;
+import com.elmika.tsp.application.improvement.TwoOptSolver;
+import com.elmika.tsp.application.resolution.BruteForceSolver;
+import com.elmika.tsp.application.resolution.GreedyEdgeSolver;
+import com.elmika.tsp.application.resolution.NearestNeighborSolver;
+import com.elmika.tsp.application.resolution.RandomSolver;
+import com.elmika.tsp.application.resolution.ResolutionStrategy;
+import com.elmika.tsp.domain.problem.Problem;
+import com.elmika.tsp.domain.solution.Solution;
 
 /**
  * Application use case implementing TspSolver.
- * Resolves the strategy name to a SolverStrategy and delegates to it.
+ * Resolves the strategy name to a ResolutionStrategy and delegates to it.
  */
 public class SolveTspUseCase implements TspSolver {
 
     @Override
     public Solution solve(Problem problem, String strategy) {
-        SolverStrategy solverStrategy = resolveStrategy(strategy);
+        ResolutionStrategy solverStrategy = resolveStrategy(strategy);
         return solverStrategy.solve(problem);
     }
 
-    private static SolverStrategy resolveStrategy(String strategy) {
+    private static ResolutionStrategy resolveStrategy(String strategy) {
         String name = strategy != null ? strategy : "random10";
         switch (name) {
             case "random":
@@ -54,7 +54,7 @@ public class SolveTspUseCase implements TspSolver {
             case "greedy-edge-sa":
                 return new SimulatedAnnealingSolver(new GreedyEdgeSolver());
             default:
-                return new RandomSolver(10);
+                throw new IllegalArgumentException("Unknown strategy: " + name);
         }
     }
 }

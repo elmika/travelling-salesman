@@ -1,6 +1,6 @@
 package com.elmika.tsp.application;
 
-import com.elmika.tsp.domain.Problem;
+import com.elmika.tsp.domain.problem.Problem;
 
 /**
  * Port for creating a TSP problem from a problem type identifier.

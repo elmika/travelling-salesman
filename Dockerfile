@@ -10,5 +10,7 @@ COPY . /app
 # Build the project
 RUN mvn clean package
 
+EXPOSE 8080
+
 # Run the application
 CMD ["java", "-jar", "target/tsp-solver-0.1-SETUP.jar"]

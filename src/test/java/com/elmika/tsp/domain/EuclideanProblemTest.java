@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.elmika.tsp.domain.problem.EuclideanProblem;
+import com.elmika.tsp.domain.problem.Problem;
+
 public class EuclideanProblemTest {
 
     private Problem create4xProblem() {

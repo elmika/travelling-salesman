@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import com.elmika.tsp.domain.problem.DistanceMatrixProblem;
+import com.elmika.tsp.domain.problem.Problem;
+
 public class DistanceMatrixProblemTest {
 
     @Test
