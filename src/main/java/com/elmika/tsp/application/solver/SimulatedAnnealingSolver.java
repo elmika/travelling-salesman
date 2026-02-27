@@ -95,6 +95,6 @@ public class SimulatedAnnealingSolver implements SolverStrategy {
             temp *= cooling;
         }
 
-        return new Solution(best, bestCost);
+        return new Solution(best, SolverUtils.totalDistance(problem, best));
     }
 }
