@@ -72,6 +72,12 @@ public final class SolverConfiguration {
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
 
+        if (strategies.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Configuration error: 'resolutionStrategy' contains no valid strategy names. " +
+                "Allowed: " + allowedStrategiesHint() + ".");
+        }
+
         for (String s : strategies) {
             if (!ALLOWED_STRATEGIES.contains(s)) {
                 throw new IllegalArgumentException(

@@ -104,6 +104,45 @@ public class SolverConfigurationTest {
     }
 
     @Test
+    public void createFromOnlyDelimitersThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("trivial", ",")));
+        assertTrue(e.getMessage().contains("no valid strategy names"));
+    }
+
+    @Test
+    public void createFromMultipleDelimitersThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("trivial", ", ,")));
+        assertTrue(e.getMessage().contains("no valid strategy names"));
+    }
+
+    @Test
+    public void createFromWhitespaceAndDelimitersThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("trivial", "  ,  ")));
+        assertTrue(e.getMessage().contains("no valid strategy names"));
+    }
+
+    @Test
+    public void createFromMixedValidAndEmptyStrategiesFiltersEmpty() {
+        SolverConfiguration config = SolverConfiguration.createFrom(
+            new ProblemConfiguration("trivial", "brute-force, , random10"));
+        assertTrue(config.isBenchmark());
+        assertEquals(2, config.getResolutionStrategies().size());
+        assertEquals("brute-force", config.getResolutionStrategies().get(0));
+        assertEquals("random10", config.getResolutionStrategies().get(1));
+    }
+
+    @Test
+    public void createFromMixedValidAndInvalidStrategiesThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("trivial", "brute-force, invalid-algo, random10")));
+        assertTrue(e.getMessage().contains("invalid-algo"));
+        assertTrue(e.getMessage().contains("unknown resolution strategy"));
+    }
+
+    @Test
     public void equalsAndHashCode() {
         SolverConfiguration a = SolverConfiguration.createFrom(
             new ProblemConfiguration("trivial", "brute-force"));
