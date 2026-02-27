@@ -1,0 +1,257 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "TSP Solver API",
+    "description": "Travelling Salesman Problem Solver — REST API.\n\nThe collection is organised as a **typical workflow**:\n1. Fetch the `cities10` problem\n2. Solve with `nearest-neighbor`\n3. Solve with `greedy-edge`\n4. Improve the `greedy-edge` result with `2opt`\n5. Benchmark all three results\n\nEach request is independent and can be run on its own.\nChange the `base_url` collection variable to point at a different host.\n\nResolution strategies: `brute-force`, `random`, `random10`, `random100`, `nearest-neighbor`, `greedy-edge`\nImprovement strategies: `2opt`, `oropt`, `sa`, `uncrossing`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string",
+      "description": "Base URL of the running API server"
+    }
+  ],
+  "item": [
+    {
+      "name": "1 — Fetch problem (cities10)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/problems/cities10",
+          "host": ["{{base_url}}"],
+          "path": ["api", "problems", "cities10"]
+        },
+        "description": "Retrieve the pre-built `cities10` Euclidean problem as a list of 10 2D points.\n\nOther valid types: `cities8`–`cities15`, `fully-random1`–`fully-random150`, `partially-random1`–`partially-random150`, `euclidean`.\n\nNon-Euclidean types (`trivial`, `simple`, `bigger`) return 400."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/problems/cities10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "problems", "cities10"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{"key": "Content-Type", "value": "application/json"}],
+          "body": "{\n  \"points\": [\n    {\"x\": 37.0, \"y\": 95.0},\n    {\"x\": 73.0, \"y\": 59.0},\n    {\"x\": 15.0, \"y\": 15.0},\n    {\"x\": 5.0,  \"y\": 86.0},\n    {\"x\": 60.0, \"y\": 70.0},\n    {\"x\": 2.0,  \"y\": 96.0},\n    {\"x\": 83.0, \"y\": 21.0},\n    {\"x\": 18.0, \"y\": 18.0},\n    {\"x\": 30.0, \"y\": 52.0},\n    {\"x\": 43.0, \"y\": 29.0}\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "2 — Solve with nearest-neighbor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"points\": [\n    {\"x\": 37, \"y\": 95},\n    {\"x\": 73, \"y\": 59},\n    {\"x\": 15, \"y\": 15},\n    {\"x\": 5,  \"y\": 86},\n    {\"x\": 60, \"y\": 70},\n    {\"x\": 2,  \"y\": 96},\n    {\"x\": 83, \"y\": 21},\n    {\"x\": 18, \"y\": 18},\n    {\"x\": 30, \"y\": 52},\n    {\"x\": 43, \"y\": 29}\n  ],\n  \"strategy\": \"nearest-neighbor\"\n}",
+          "options": {"raw": {"language": "json"}}
+        },
+        "url": {
+          "raw": "{{base_url}}/api/solve",
+          "host": ["{{base_url}}"],
+          "path": ["api", "solve"]
+        },
+        "description": "Construct a tour from scratch using the nearest-neighbor heuristic.\n\nCity indices in the response are 1-based and correspond to the order of the `points` array.\n\nOther resolution strategies: `brute-force`, `random`, `random10`, `random100`, `greedy-edge`"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points\": [\n    {\"x\": 37, \"y\": 95},\n    {\"x\": 73, \"y\": 59},\n    {\"x\": 15, \"y\": 15},\n    {\"x\": 5,  \"y\": 86},\n    {\"x\": 60, \"y\": 70},\n    {\"x\": 2,  \"y\": 96},\n    {\"x\": 83, \"y\": 21},\n    {\"x\": 18, \"y\": 18},\n    {\"x\": 30, \"y\": 52},\n    {\"x\": 43, \"y\": 29}\n  ],\n  \"strategy\": \"nearest-neighbor\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/api/solve", "host": ["{{base_url}}"], "path": ["api", "solve"]}
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{"key": "Content-Type", "value": "application/json"}],
+          "body": "{\n  \"route\": [1, 5, 4, 6, 9, 3, 8, 7, 10, 2],\n  \"totalDistance\": 312.45,\n  \"strategy\": \"nearest-neighbor\",\n  \"durationMs\": 1\n}"
+        },
+        {
+          "name": "400 Bad Request — unknown strategy",
+          "originalRequest": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points\": [{\"x\": 0, \"y\": 0}, {\"x\": 1, \"y\": 1}],\n  \"strategy\": \"nonexistent\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/api/solve", "host": ["{{base_url}}"], "path": ["api", "solve"]}
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [{"key": "Content-Type", "value": "application/json"}],
+          "body": "{\n  \"error\": \"Unknown resolution strategy: 'nonexistent'. Allowed: brute-force, random, random10, random100, nearest-neighbor, greedy-edge\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "3 — Solve with greedy-edge",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"points\": [\n    {\"x\": 37, \"y\": 95},\n    {\"x\": 73, \"y\": 59},\n    {\"x\": 15, \"y\": 15},\n    {\"x\": 5,  \"y\": 86},\n    {\"x\": 60, \"y\": 70},\n    {\"x\": 2,  \"y\": 96},\n    {\"x\": 83, \"y\": 21},\n    {\"x\": 18, \"y\": 18},\n    {\"x\": 30, \"y\": 52},\n    {\"x\": 43, \"y\": 29}\n  ],\n  \"strategy\": \"greedy-edge\"\n}",
+          "options": {"raw": {"language": "json"}}
+        },
+        "url": {
+          "raw": "{{base_url}}/api/solve",
+          "host": ["{{base_url}}"],
+          "path": ["api", "solve"]
+        },
+        "description": "Construct a tour using the greedy-edge heuristic, which repeatedly adds the globally shortest available edge until the tour is complete.\n\nTypically produces a shorter initial tour than nearest-neighbor."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points\": [\n    {\"x\": 37, \"y\": 95},\n    {\"x\": 73, \"y\": 59},\n    {\"x\": 15, \"y\": 15},\n    {\"x\": 5,  \"y\": 86},\n    {\"x\": 60, \"y\": 70},\n    {\"x\": 2,  \"y\": 96},\n    {\"x\": 83, \"y\": 21},\n    {\"x\": 18, \"y\": 18},\n    {\"x\": 30, \"y\": 52},\n    {\"x\": 43, \"y\": 29}\n  ],\n  \"strategy\": \"greedy-edge\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/api/solve", "host": ["{{base_url}}"], "path": ["api", "solve"]}
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{"key": "Content-Type", "value": "application/json"}],
+          "body": "{\n  \"route\": [1, 6, 4, 9, 5, 2, 7, 10, 3, 8],\n  \"totalDistance\": 298.17,\n  \"strategy\": \"greedy-edge\",\n  \"durationMs\": 3\n}"
+        }
+      ]
+    },
+    {
+      "name": "4 — Improve greedy-edge result with 2opt",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"points\": [\n    {\"x\": 37, \"y\": 95},\n    {\"x\": 73, \"y\": 59},\n    {\"x\": 15, \"y\": 15},\n    {\"x\": 5,  \"y\": 86},\n    {\"x\": 60, \"y\": 70},\n    {\"x\": 2,  \"y\": 96},\n    {\"x\": 83, \"y\": 21},\n    {\"x\": 18, \"y\": 18},\n    {\"x\": 30, \"y\": 52},\n    {\"x\": 43, \"y\": 29}\n  ],\n  \"solution\": {\n    \"route\": [1, 6, 4, 9, 5, 2, 7, 10, 3, 8],\n    \"totalDistance\": 298.17\n  },\n  \"strategy\": \"2opt\"\n}",
+          "options": {"raw": {"language": "json"}}
+        },
+        "url": {
+          "raw": "{{base_url}}/api/improve",
+          "host": ["{{base_url}}"],
+          "path": ["api", "improve"]
+        },
+        "description": "Improve the greedy-edge tour from request 3 using 2-opt.\n\n2-opt iteratively reverses sub-segments of the route to eliminate crossing edges.\nPass the `route` and `totalDistance` from the previous solve response in `solution`.\n\nOther improvement strategies: `oropt`, `sa`, `uncrossing`\n\n`uncrossing` only works on Euclidean problems (it is equivalent to crossing-edge elimination)."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points\": [\n    {\"x\": 37, \"y\": 95},\n    {\"x\": 73, \"y\": 59},\n    {\"x\": 15, \"y\": 15},\n    {\"x\": 5,  \"y\": 86},\n    {\"x\": 60, \"y\": 70},\n    {\"x\": 2,  \"y\": 96},\n    {\"x\": 83, \"y\": 21},\n    {\"x\": 18, \"y\": 18},\n    {\"x\": 30, \"y\": 52},\n    {\"x\": 43, \"y\": 29}\n  ],\n  \"solution\": {\n    \"route\": [1, 6, 4, 9, 5, 2, 7, 10, 3, 8],\n    \"totalDistance\": 298.17\n  },\n  \"strategy\": \"2opt\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/api/improve", "host": ["{{base_url}}"], "path": ["api", "improve"]}
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{"key": "Content-Type", "value": "application/json"}],
+          "body": "{\n  \"route\": [1, 4, 6, 9, 5, 2, 10, 7, 3, 8],\n  \"totalDistance\": 281.03,\n  \"strategy\": \"2opt\",\n  \"originalDistance\": 298.17,\n  \"improvementPercent\": 5.7,\n  \"durationMs\": 2\n}"
+        },
+        {
+          "name": "400 Bad Request — unknown strategy",
+          "originalRequest": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points\": [{\"x\": 0, \"y\": 0}, {\"x\": 1, \"y\": 1}],\n  \"solution\": {\"route\": [1, 2], \"totalDistance\": 5.0},\n  \"strategy\": \"nonexistent\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/api/improve", "host": ["{{base_url}}"], "path": ["api", "improve"]}
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [{"key": "Content-Type", "value": "application/json"}],
+          "body": "{\n  \"error\": \"Unknown improvement strategy: 'nonexistent'. Allowed: 2opt, oropt, sa, uncrossing\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "5 — Benchmark all three results",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"solutions\": [\n    {\"label\": \"nearest-neighbor\",  \"distance\": 312.45, \"durationMs\": 1},\n    {\"label\": \"greedy-edge\",        \"distance\": 298.17, \"durationMs\": 3},\n    {\"label\": \"greedy-edge + 2opt\", \"distance\": 281.03, \"durationMs\": 5}\n  ]\n}",
+          "options": {"raw": {"language": "json"}}
+        },
+        "url": {
+          "raw": "{{base_url}}/api/benchmark",
+          "host": ["{{base_url}}"],
+          "path": ["api", "benchmark"]
+        },
+        "description": "Rank the three results collected from requests 2, 3, and 4.\n\nPaste the `totalDistance` and `durationMs` from each previous response.\n`label` is a free-form string — use whatever is meaningful to you.\n\nThe response sorts by distance ascending. `gapPercent` shows how much worse each result is compared to the best (rank 1 always has `gapPercent: 0.0`).\n\nThis endpoint performs no computation — it is a pure ranking operation."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"solutions\": [\n    {\"label\": \"nearest-neighbor\",  \"distance\": 312.45, \"durationMs\": 1},\n    {\"label\": \"greedy-edge\",        \"distance\": 298.17, \"durationMs\": 3},\n    {\"label\": \"greedy-edge + 2opt\", \"distance\": 281.03, \"durationMs\": 5}\n  ]\n}"
+            },
+            "url": {"raw": "{{base_url}}/api/benchmark", "host": ["{{base_url}}"], "path": ["api", "benchmark"]}
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{"key": "Content-Type", "value": "application/json"}],
+          "body": "{\n  \"results\": [\n    {\"rank\": 1, \"label\": \"greedy-edge + 2opt\", \"distance\": 281.03, \"gapPercent\": 0.0,  \"durationMs\": 5},\n    {\"rank\": 2, \"label\": \"greedy-edge\",         \"distance\": 298.17, \"gapPercent\": 6.1,  \"durationMs\": 3},\n    {\"rank\": 3, \"label\": \"nearest-neighbor\",    \"distance\": 312.45, \"gapPercent\": 11.2, \"durationMs\": 1}\n  ]\n}"
+        },
+        {
+          "name": "400 Bad Request — empty solutions list",
+          "originalRequest": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"solutions\": []\n}"
+            },
+            "url": {"raw": "{{base_url}}/api/benchmark", "host": ["{{base_url}}"], "path": ["api", "benchmark"]}
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [{"key": "Content-Type", "value": "application/json"}],
+          "body": "{\n  \"error\": \"'solutions' must not be null or empty.\"\n}"
+        }
+      ]
+    }
+  ]
+}
