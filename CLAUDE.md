@@ -14,9 +14,9 @@ docker build -t tsp-solver .
 docker run --rm -v "$(pwd)/output:/app/output" tsp-solver
 ```
 
-**Run the tests** (must be done inside the container):
+**Run the tests** (uses the dedicated `test` stage which has Maven):
 ```
-docker run --rm tsp-solver mvn test
+docker build --target test -t tsp-solver-test .
 ```
 
 Do not attempt to run `mvn` commands directly on the host — they will fail.

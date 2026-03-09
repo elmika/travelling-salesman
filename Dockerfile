@@ -7,7 +7,14 @@ COPY frontend/ ./
 RUN npm run build
 # output lands at /app/src/main/resources/static (via vite.config.ts outDir)
 
-# Stage 2: Build Java backend with embedded frontend
+# Stage 2a: Compile and test (no frontend needed for tests)
+FROM maven:3.6.3-jdk-11 AS test
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn test
+
+# Stage 2b: Package with embedded frontend
 FROM maven:3.6.3-jdk-11 AS java-build
 WORKDIR /app
 COPY pom.xml .

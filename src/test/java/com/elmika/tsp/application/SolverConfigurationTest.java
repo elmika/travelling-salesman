@@ -71,7 +71,7 @@ public class SolverConfigurationTest {
     @Test
     public void createFromInvalidProblemSizeRandomThrows() {
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-            () -> SolverConfiguration.createFrom(new ProblemConfiguration("fully-random151", "random10")));
+            () -> SolverConfiguration.createFrom(new ProblemConfiguration("fully-random1001", "random10")));
         assertTrue(e.getMessage().contains("random"));
         assertTrue(e.getMessage().contains("out of range"));
     }

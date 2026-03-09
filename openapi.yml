@@ -46,9 +46,11 @@ paths:
           required: true
           description: |
             Problem type identifier. Supported values:
-            - `cities8` … `cities15` — fixed Euclidean problems with predefined coordinates
-            - `fully-random1` … `fully-random150` — random problems (new seed each run)
-            - `partially-random1` … `partially-random150` — reproducible random (seed 42)
+            - `cities8` … `cities30` — fixed Euclidean problems with hand-picked coordinates
+            - `circle-3` … `circle-1000` — cities equally spaced on a circle
+            - `cluster-3` … `cluster-1000` — cities in sqrt(N) clusters (seeded by N)
+            - `fully-random1` … `fully-random1000` — random problems (new seed each run)
+            - `partially-random1` … `partially-random1000` — reproducible random (per-size seed)
             - `euclidean` — a small fixed 7-city Euclidean problem
           schema:
             type: string
@@ -258,7 +260,7 @@ components:
           enum: [brute-force, random, random10, random100, nearest-neighbor, greedy-edge]
           description: |
             Resolution strategy to apply:
-            - `brute-force` — optimal exhaustive search; practical only up to ~12 cities
+            - `brute-force` — optimal exhaustive search; **max 12 cities** for synchronous requests
             - `random` — single random permutation
             - `random10` / `random100` — best of 10 or 100 random permutations
             - `nearest-neighbor` — greedy nearest-unvisited-city heuristic

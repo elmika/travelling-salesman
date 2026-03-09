@@ -13,6 +13,8 @@ public class ProblemTypeParserTest {
         assertEquals("fully-random", ProblemTypeParser.coreProblemType("fully-random100"));
         assertEquals("partially-random", ProblemTypeParser.coreProblemType("partially-random5"));
         assertEquals("simple", ProblemTypeParser.coreProblemType("simple"));
+        assertEquals("circle-", ProblemTypeParser.coreProblemType("circle-12"));
+        assertEquals("cluster-", ProblemTypeParser.coreProblemType("cluster-20"));
     }
 
     @Test
@@ -22,6 +24,8 @@ public class ProblemTypeParserTest {
         assertEquals(5, ProblemTypeParser.sizeOfProblemType("partially-random5"));
         assertEquals(0, ProblemTypeParser.sizeOfProblemType("simple"));
         assertEquals(0, ProblemTypeParser.sizeOfProblemType("cities"));
+        assertEquals(12, ProblemTypeParser.sizeOfProblemType("circle-12"));
+        assertEquals(20, ProblemTypeParser.sizeOfProblemType("cluster-20"));
     }
 
     @Test
@@ -37,7 +41,7 @@ public class ProblemTypeParserTest {
     @Test
     public void validateSizeForTypeCitiesAcceptsValidRange() {
         ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 8);
-        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 15);
+        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 30);
         ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 10);
     }
 
@@ -48,7 +52,7 @@ public class ProblemTypeParserTest {
         assertThrows(IllegalArgumentException.class,
             () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 7));
         assertThrows(IllegalArgumentException.class,
-            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 16));
+            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CITIES, 31));
     }
 
     @Test
@@ -60,9 +64,9 @@ public class ProblemTypeParserTest {
     }
 
     @Test
-    public void fullyRandom151ExceedsMaxAndFailsValidation() {
-        int size = ProblemTypeParser.sizeOfProblemType("fully-random151");
-        assertEquals(151, size);
+    public void fullyRandom1001ExceedsMaxAndFailsValidation() {
+        int size = ProblemTypeParser.sizeOfProblemType("fully-random1001");
+        assertEquals(1001, size);
         assertThrows(IllegalArgumentException.class,
             () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.FULLY_RANDOM, size));
     }
@@ -76,7 +80,7 @@ public class ProblemTypeParserTest {
     @Test
     public void validateSizeForTypeRandomAcceptsValidRange() {
         ProblemTypeParser.validateSizeForType(ProblemTypeParser.FULLY_RANDOM, 1);
-        ProblemTypeParser.validateSizeForType(ProblemTypeParser.FULLY_RANDOM, 150);
+        ProblemTypeParser.validateSizeForType(ProblemTypeParser.FULLY_RANDOM, 1000);
         ProblemTypeParser.validateSizeForType(ProblemTypeParser.PARTIALLY_RANDOM, 50);
     }
 
@@ -85,6 +89,35 @@ public class ProblemTypeParserTest {
         assertThrows(IllegalArgumentException.class,
             () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.FULLY_RANDOM, 0));
         assertThrows(IllegalArgumentException.class,
-            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.FULLY_RANDOM, 151));
+            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.FULLY_RANDOM, 1001));
+    }
+
+    @Test
+    public void validateSizeForTypeCircleAcceptsValidRange() {
+        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CIRCLE, 3);
+        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CIRCLE, 1000);
+        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CIRCLE, 50);
+    }
+
+    @Test
+    public void validateSizeForTypeCircleRejectsOutOfRange() {
+        assertThrows(IllegalArgumentException.class,
+            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CIRCLE, 2));
+        assertThrows(IllegalArgumentException.class,
+            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CIRCLE, 1001));
+    }
+
+    @Test
+    public void validateSizeForTypeClusterAcceptsValidRange() {
+        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CLUSTER, 3);
+        ProblemTypeParser.validateSizeForType(ProblemTypeParser.CLUSTER, 1000);
+    }
+
+    @Test
+    public void validateSizeForTypeClusterRejectsOutOfRange() {
+        assertThrows(IllegalArgumentException.class,
+            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CLUSTER, 2));
+        assertThrows(IllegalArgumentException.class,
+            () -> ProblemTypeParser.validateSizeForType(ProblemTypeParser.CLUSTER, 1001));
     }
 }

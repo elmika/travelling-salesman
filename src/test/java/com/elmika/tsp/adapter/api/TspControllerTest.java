@@ -30,6 +30,20 @@ class TspControllerTest {
     }
 
     @Test
+    void getProblems_circleType_returnsPoints() throws Exception {
+        mockMvc.perform(get("/api/problems/circle-10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.points", hasSize(10)));
+    }
+
+    @Test
+    void getProblems_clusterType_returnsPoints() throws Exception {
+        mockMvc.perform(get("/api/problems/cluster-20"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.points", hasSize(20)));
+    }
+
+    @Test
     void getProblems_distanceMatrixType_returns400() throws Exception {
         // 'trivial' produces a DistanceMatrixProblem, not a Euclidean problem
         mockMvc.perform(get("/api/problems/trivial"))
@@ -51,6 +65,34 @@ class TspControllerTest {
                 .andExpect(jsonPath("$.totalDistance").isNumber())
                 .andExpect(jsonPath("$.strategy").value("nearest-neighbor"))
                 .andExpect(jsonPath("$.durationMs").isNumber());
+    }
+
+    @Test
+    void solve_bruteForce_tooLarge_returns400() throws Exception {
+        // 13 cities exceeds brute-force sync limit of 12
+        StringBuilder sb = new StringBuilder("{\"points\":[");
+        for (int i = 0; i < 13; i++) {
+            if (i > 0) sb.append(",");
+            sb.append("{\"x\":").append(i * 7).append(",\"y\":").append(i * 3).append("}");
+        }
+        sb.append("],\"strategy\":\"brute-force\"}");
+        mockMvc.perform(post("/api/solve")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(sb.toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").exists());
+    }
+
+    @Test
+    void solve_bruteForce_exactLimit_succeeds() throws Exception {
+        // 4 cities — well within the brute-force limit
+        String body = "{\"points\":[{\"x\":0,\"y\":0},{\"x\":3,\"y\":4},{\"x\":6,\"y\":0},{\"x\":3,\"y\":0}],"
+                    + "\"strategy\":\"brute-force\"}";
+        mockMvc.perform(post("/api/solve")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.route", hasSize(4)));
     }
 
     @Test

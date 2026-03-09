@@ -1,5 +1,6 @@
 package com.elmika.tsp.application.improvement;
 
+import com.elmika.tsp.application.solver.SolverUtils;
 import java.util.Random;
 
 import org.slf4j.Logger;

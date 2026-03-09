@@ -1,5 +1,6 @@
 package com.elmika.tsp.application.resolution;
 
+import com.elmika.tsp.application.solver.SolverUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

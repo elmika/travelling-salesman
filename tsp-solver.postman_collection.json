@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "name": "TSP Solver API",
-    "description": "Travelling Salesman Problem Solver — REST API.\n\nThe collection is organised as a **typical workflow**:\n1. Fetch the `cities10` problem\n2. Solve with `nearest-neighbor`\n3. Solve with `greedy-edge`\n4. Improve the `greedy-edge` result with `2opt`\n5. Benchmark all three results\n\nEach request is independent and can be run on its own.\nChange the `base_url` collection variable to point at a different host.\n\nResolution strategies: `brute-force`, `random`, `random10`, `random100`, `nearest-neighbor`, `greedy-edge`\nImprovement strategies: `2opt`, `oropt`, `sa`, `uncrossing`",
+    "description": "Travelling Salesman Problem Solver — REST API.\n\nThe collection is organised as a **typical workflow**:\n1. Fetch the `cities10` problem\n2. Solve with `nearest-neighbor`\n3. Solve with `greedy-edge`\n4. Improve the `greedy-edge` result with `2opt`\n5. Benchmark all three results\n\nEach request is independent and can be run on its own.\nChange the `base_url` collection variable to point at a different host.\n\nProblem types: `citiesN` (8–30), `circle-N` (3–1000), `cluster-N` (3–1000), `partially-randomN` (1–1000), `fully-randomN` (1–1000)\nResolution strategies: `brute-force` (max 12 cities), `random`, `random10`, `random100`, `nearest-neighbor`, `greedy-edge`\nImprovement strategies: `2opt`, `oropt`, `sa`, `uncrossing`",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -24,7 +24,7 @@
           "host": ["{{base_url}}"],
           "path": ["api", "problems", "cities10"]
         },
-        "description": "Retrieve the pre-built `cities10` Euclidean problem as a list of 10 2D points.\n\nOther valid types: `cities8`–`cities15`, `fully-random1`–`fully-random150`, `partially-random1`–`partially-random150`, `euclidean`.\n\nNon-Euclidean types (`trivial`, `simple`, `bigger`) return 400."
+        "description": "Retrieve the pre-built `cities10` Euclidean problem as a list of 10 2D points.\n\nOther valid types: `cities8`–`cities30`, `circle-3`–`circle-1000`, `cluster-3`–`cluster-1000`, `fully-random1`–`fully-random1000`, `partially-random1`–`partially-random1000`, `euclidean`.\n\nNon-Euclidean types (`trivial`, `simple`, `bigger`) return 400."
       },
       "response": [
         {
@@ -63,7 +63,7 @@
           "host": ["{{base_url}}"],
           "path": ["api", "solve"]
         },
-        "description": "Construct a tour from scratch using the nearest-neighbor heuristic.\n\nCity indices in the response are 1-based and correspond to the order of the `points` array.\n\nOther resolution strategies: `brute-force`, `random`, `random10`, `random100`, `greedy-edge`"
+        "description": "Construct a tour from scratch using the nearest-neighbor heuristic.\n\nCity indices in the response are 1-based and correspond to the order of the `points` array.\n\nOther resolution strategies: `brute-force` (max 12 cities), `random`, `random10`, `random100`, `greedy-edge`"
       },
       "response": [
         {
