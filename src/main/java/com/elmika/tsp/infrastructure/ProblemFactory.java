@@ -37,6 +37,8 @@ public class ProblemFactory {
             case ProblemTypeParser.CLUSTER:
                 ProblemTypeParser.validateSizeForType(core, size);
                 return createClusterProblemOfSize(size);
+            case ProblemTypeParser.TSPLIB:
+                return TspLibParser.load(problemType.substring(ProblemTypeParser.TSPLIB.length()));
             default:
                 throw new IllegalArgumentException("Unknown problem type: '" + problemType + "'.");
         }

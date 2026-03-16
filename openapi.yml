@@ -52,6 +52,8 @@ paths:
             - `fully-random1` … `fully-random1000` — random problems (new seed each run)
             - `partially-random1` … `partially-random1000` — reproducible random (per-size seed)
             - `euclidean` — a small fixed 7-city Euclidean problem
+            - `tsplib-<name>` — TSPLIB95 EUC_2D benchmark (e.g. `tsplib-berlin52`, `tsplib-eil51`,
+              `tsplib-kroA100`); 72 problems ranging from 51 to 11849 cities
           schema:
             type: string
             example: cities10

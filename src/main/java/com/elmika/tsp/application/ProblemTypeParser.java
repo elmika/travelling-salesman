@@ -17,6 +17,12 @@ public final class ProblemTypeParser {
     public static final String CIRCLE = "circle-";
     /** Core type string for "cluster-N" problems (note trailing hyphen, as digits are stripped). */
     public static final String CLUSTER = "cluster-";
+    /**
+     * Core type prefix for TSPLIB95 benchmark problems (e.g. "tsplib-berlin52").
+     * Names like "berlin52" end in digits but must not be truncated, so
+     * {@link #coreProblemType(String)} special-cases this prefix.
+     */
+    public static final String TSPLIB = "tsplib-";
 
     /** Valid size range for "citiesN": 8 to 30. */
     public static final int CITIES_SIZE_MIN = 8;
@@ -35,10 +41,15 @@ public final class ProblemTypeParser {
 
     /**
      * Returns the core problem type with any trailing digits stripped (e.g. "cities10" -> "cities").
+     * TSPLIB names (e.g. "tsplib-berlin52") return the prefix {@code "tsplib-"} unchanged, because
+     * the suffix is an opaque name that may end in digits.
      */
     public static String coreProblemType(String type) {
         if (type == null) {
             return "";
+        }
+        if (type.startsWith(TSPLIB)) {
+            return TSPLIB;
         }
         return type.replaceAll("\\d+$", "");
     }
@@ -94,6 +105,16 @@ public final class ProblemTypeParser {
         }
         String core = coreProblemType(problemType);
         int size = sizeOfProblemType(problemType);
+
+        if (TSPLIB.equals(core)) {
+            String tspName = problemType.substring(TSPLIB.length());
+            if (tspName.isBlank()) {
+                throw new IllegalArgumentException(
+                    "Configuration error: 'problem' '" + problemType + "' requires a TSPLIB name suffix. " +
+                    "Example: tsplib-berlin52.");
+            }
+            return; // existence is validated at load time by TspLibParser
+        }
 
         if (CITIES.equals(core) || FULLY_RANDOM.equals(core) || PARTIALLY_RANDOM.equals(core)
                 || CIRCLE.equals(core) || CLUSTER.equals(core)) {

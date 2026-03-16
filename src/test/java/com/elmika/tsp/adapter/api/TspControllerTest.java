@@ -44,6 +44,20 @@ class TspControllerTest {
     }
 
     @Test
+    void getProblems_tsplibType_returnsPoints() throws Exception {
+        mockMvc.perform(get("/api/problems/tsplib-berlin52"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.points", hasSize(52)));
+    }
+
+    @Test
+    void getProblems_tsplibUnknownName_returns400() throws Exception {
+        mockMvc.perform(get("/api/problems/tsplib-doesnotexist"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").exists());
+    }
+
+    @Test
     void getProblems_distanceMatrixType_returns400() throws Exception {
         // 'trivial' produces a DistanceMatrixProblem, not a Euclidean problem
         mockMvc.perform(get("/api/problems/trivial"))

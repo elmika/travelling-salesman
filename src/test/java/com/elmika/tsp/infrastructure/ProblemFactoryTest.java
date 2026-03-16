@@ -128,4 +128,27 @@ public class ProblemFactoryTest {
         assertThrows(IllegalArgumentException.class,
             () -> ProblemFactory.createProblem("unknown-type"));
     }
+
+    // ── TSPLIB problems ───────────────────────────────────────────
+
+    @Test
+    public void tsplibBerlin52ReturnsProblemWithCorrectSize() {
+        Problem problem = ProblemFactory.createProblem("tsplib-berlin52");
+        assertTrue(problem instanceof EuclideanProblem);
+        assertEquals(52, problem.getSize());
+    }
+
+    @Test
+    public void tsplibEil51ReturnsProblemWithCorrectSize() {
+        Problem problem = ProblemFactory.createProblem("tsplib-eil51");
+        assertTrue(problem instanceof EuclideanProblem);
+        assertEquals(51, problem.getSize());
+    }
+
+    @Test
+    public void tsplibUnknownNameThrows() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+            () -> ProblemFactory.createProblem("tsplib-doesnotexist"));
+        assertTrue(e.getMessage().contains("doesnotexist"));
+    }
 }
