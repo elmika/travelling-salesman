@@ -15,6 +15,38 @@
   ],
   "item": [
     {
+      "name": "0 — List available problem types",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/problem-types",
+          "host": ["{{base_url}}"],
+          "path": ["api", "problem-types"]
+        },
+        "description": "Returns all available TSPLIB95 EUC_2D benchmark names as full type strings (e.g. `tsplib-berlin52`). Use any returned name directly with `GET /api/problems/{type}`."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/problem-types",
+              "host": ["{{base_url}}"],
+              "path": ["api", "problem-types"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{"key": "Content-Type", "value": "application/json"}],
+          "body": "{\n  \"tsplibTypes\": [\n    \"tsplib-berlin52\",\n    \"tsplib-bier127\",\n    \"tsplib-eil51\"\n  ]\n}"
+        }
+      ]
+    },
+    {
       "name": "1 — Fetch problem (cities10)",
       "request": {
         "method": "GET",

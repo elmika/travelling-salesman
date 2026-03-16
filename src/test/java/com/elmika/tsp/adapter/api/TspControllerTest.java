@@ -168,6 +168,16 @@ class TspControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    // ── GET /api/problem-types ────────────────────────────────────
+
+    @Test
+    void getProblemTypes_returnsTsplibList() throws Exception {
+        mockMvc.perform(get("/api/problem-types"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tsplibTypes").isArray())
+                .andExpect(jsonPath("$.tsplibTypes[0]").value("tsplib-berlin52"));
+    }
+
     // ── POST /api/benchmark ───────────────────────────────────────
 
     @Test

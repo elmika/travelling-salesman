@@ -73,6 +73,10 @@ export interface BenchmarkResponse {
   results: BenchmarkResult[];
 }
 
+export interface ProblemTypesResponse {
+  tsplibTypes: string[];
+}
+
 export interface ApiError {
   error: string;
 }

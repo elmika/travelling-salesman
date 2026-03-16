@@ -5,7 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
+import com.elmika.tsp.application.ProblemTypeParser;
 import com.elmika.tsp.domain.problem.EuclideanProblem;
 import com.elmika.tsp.domain.problem.Problem;
 
@@ -27,6 +34,30 @@ import com.elmika.tsp.domain.problem.Problem;
 public class TspLibParser {
 
     private TspLibParser() {
+    }
+
+    /**
+     * Returns the names of all available TSPLIB problems as full type strings (e.g. {@code "tsplib-berlin52"}).
+     * The list is sorted alphabetically.
+     *
+     * @throws IllegalStateException if the classpath resources cannot be scanned
+     */
+    public static List<String> availableNames() {
+        try {
+            Resource[] resources = new PathMatchingResourcePatternResolver()
+                    .getResources("classpath:tsplib/*.tsp");
+            List<String> names = new ArrayList<>(resources.length);
+            for (Resource r : resources) {
+                String filename = r.getFilename();
+                if (filename != null && filename.endsWith(".tsp")) {
+                    names.add(ProblemTypeParser.TSPLIB + filename.substring(0, filename.length() - 4));
+                }
+            }
+            Collections.sort(names);
+            return Collections.unmodifiableList(names);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to list TSPLIB resources", e);
+        }
     }
 
     /**

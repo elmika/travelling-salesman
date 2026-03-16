@@ -10,7 +10,7 @@ import { StatusBar } from './StatusBar';
 const range = (prefix: string, lo: number, hi: number): string[] =>
   Array.from({ length: hi - lo + 1 }, (_, i) => `${prefix}${lo + i}`);
 
-const PROBLEM_TYPES = [
+const BASE_PROBLEM_TYPES = [
   'euclidean',
   ...range('cities', 8, 15),
   ...range('fully-random', 1, 150),
@@ -31,6 +31,7 @@ const IMPROVEMENT_STRATEGIES: ImprovementStrategy[] = ['2opt', 'oropt', 'sa', 'u
 interface SidebarProps {
   points: Point[];
   problemType: string;
+  tsplibTypes: string[];
   currentRoute: Route | null;
   selectedResolutionStrategy: ResolutionStrategy;
   selectedImprovementStrategy: ImprovementStrategy;
@@ -49,6 +50,7 @@ interface SidebarProps {
 export function Sidebar({
   points,
   problemType,
+  tsplibTypes,
   currentRoute,
   selectedResolutionStrategy,
   selectedImprovementStrategy,
@@ -76,11 +78,22 @@ export function Sidebar({
           onChange={(e) => onProblemTypeChange(e.target.value)}
           style={{ width: '100%', marginBottom: 8, padding: '6px 8px', fontSize: 13 }}
         >
-          {PROBLEM_TYPES.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
+          <optgroup label="General">
+            {BASE_PROBLEM_TYPES.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </optgroup>
+          {tsplibTypes.length > 0 && (
+            <optgroup label="TSPLIB">
+              {tsplibTypes.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </optgroup>
+          )}
         </select>
         <button
           onClick={onLoadProblem}

@@ -5,7 +5,8 @@ info:
   description: |
     Stateless REST API for the Travelling Salesman Problem solver.
 
-    The API exposes four operations:
+    The API exposes five operations:
+    - **GET /api/problem-types** — list all available problem type names (including TSPLIB benchmarks)
     - **GET /api/problems/{type}** — retrieve a named pre-built Euclidean problem as 2D points
     - **POST /api/solve** — construct a tour from scratch with a resolution strategy
     - **POST /api/improve** — refine an existing tour with an improvement strategy
@@ -30,6 +31,28 @@ tags:
     description: Rank and compare solutions
 
 paths:
+
+  /api/problem-types:
+    get:
+      summary: List available problem types
+      description: |
+        Returns the names of all problem types available on this server.
+        Currently includes the full list of TSPLIB95 EUC_2D benchmarks bundled
+        with the server. Use the returned names directly with `GET /api/problems/{type}`.
+      operationId: getProblemTypes
+      tags: [Problems]
+      responses:
+        '200':
+          description: Available problem types grouped by category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemTypesResponse'
+              example:
+                tsplibTypes:
+                  - tsplib-berlin52
+                  - tsplib-eil51
+                  - tsplib-kroA100
 
   /api/problems/{type}:
     get:
@@ -237,6 +260,17 @@ components:
           type: number
           format: double
           description: Total tour distance (sum of consecutive edge lengths, including return to start)
+
+    ProblemTypesResponse:
+      type: object
+      properties:
+        tsplibTypes:
+          type: array
+          items:
+            type: string
+          description: |
+            Full type strings for all available TSPLIB95 EUC_2D benchmarks,
+            sorted alphabetically (e.g. `tsplib-berlin52`, `tsplib-eil51`).
 
     ProblemResponse:
       type: object
