@@ -3,9 +3,9 @@ package com.elmika.tsp.infrastructure;
 import java.util.Random;
 
 import com.elmika.tsp.application.ProblemTypeParser;
-import com.elmika.tsp.domain.DistanceMatrixProblem;
-import com.elmika.tsp.domain.EuclideanProblem;
-import com.elmika.tsp.domain.Problem;
+import com.elmika.tsp.domain.problem.DistanceMatrixProblem;
+import com.elmika.tsp.domain.problem.EuclideanProblem;
+import com.elmika.tsp.domain.problem.Problem;
 
 public class ProblemFactory {
 

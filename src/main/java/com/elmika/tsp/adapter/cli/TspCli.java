@@ -10,17 +10,17 @@ import java.util.List;
 import com.elmika.tsp.adapter.view.RouteCoordinatesJsonExporter;
 import com.elmika.tsp.adapter.view.RouteCoordinatesMapper;
 import com.elmika.tsp.adapter.view.RouteCoordinatesView;
-import com.elmika.tsp.application.BenchmarkResult;
-import com.elmika.tsp.application.BenchmarkTspUseCase;
 import com.elmika.tsp.application.ConfigLoader;
 import com.elmika.tsp.application.ProblemConfiguration;
 import com.elmika.tsp.application.ProblemProvider;
 import com.elmika.tsp.application.SolverConfiguration;
-import com.elmika.tsp.application.TspBenchmark;
 import com.elmika.tsp.application.TspSolver;
-import com.elmika.tsp.domain.EuclideanProblem;
-import com.elmika.tsp.domain.Problem;
-import com.elmika.tsp.domain.Solution;
+import com.elmika.tsp.application.benchmark.BenchmarkResult;
+import com.elmika.tsp.application.benchmark.BenchmarkTspUseCase;
+import com.elmika.tsp.application.benchmark.TspBenchmark;
+import com.elmika.tsp.domain.problem.EuclideanProblem;
+import com.elmika.tsp.domain.problem.Problem;
+import com.elmika.tsp.domain.solution.Solution;
 
 /**
  * Driving adapter: CLI entry point. Loads configuration, obtains problem,

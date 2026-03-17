@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.elmika.tsp.domain.DistanceMatrixProblem;
-import com.elmika.tsp.domain.EuclideanProblem;
-import com.elmika.tsp.domain.Problem;
-import com.elmika.tsp.domain.Solution;
+import com.elmika.tsp.domain.problem.DistanceMatrixProblem;
+import com.elmika.tsp.domain.problem.EuclideanProblem;
+import com.elmika.tsp.domain.problem.Problem;
+import com.elmika.tsp.domain.solution.Solution;
 
 public class RouteCoordinatesMapperTest {
 

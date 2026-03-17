@@ -1,7 +1,7 @@
 package com.elmika.tsp.infrastructure;
 
 import com.elmika.tsp.application.ProblemProvider;
-import com.elmika.tsp.domain.Problem;
+import com.elmika.tsp.domain.problem.Problem;
 
 /**
  * Driven adapter for ProblemProvider. Creates problems from built-in types

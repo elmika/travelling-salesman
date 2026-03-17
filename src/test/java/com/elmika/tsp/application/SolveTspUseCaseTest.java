@@ -5,10 +5,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.elmika.tsp.domain.DistanceMatrixProblem;
-import com.elmika.tsp.domain.EuclideanProblem;
-import com.elmika.tsp.domain.Problem;
-import com.elmika.tsp.domain.Solution;
+import com.elmika.tsp.domain.problem.DistanceMatrixProblem;
+import com.elmika.tsp.domain.problem.EuclideanProblem;
+import com.elmika.tsp.domain.problem.Problem;
+import com.elmika.tsp.domain.solution.Solution;
 
 public class SolveTspUseCaseTest {
 

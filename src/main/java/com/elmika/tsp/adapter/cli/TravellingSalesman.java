@@ -1,10 +1,10 @@
 package com.elmika.tsp.adapter.cli;
 
-import com.elmika.tsp.application.BenchmarkTspUseCase;
 import com.elmika.tsp.application.SolveTspUseCase;
 import com.elmika.tsp.application.TspSolver;
 import com.elmika.tsp.application.ConfigLoader;
 import com.elmika.tsp.application.ProblemProvider;
+import com.elmika.tsp.application.benchmark.BenchmarkTspUseCase;
 import com.elmika.tsp.infrastructure.InMemoryProblemFactory;
 import com.elmika.tsp.infrastructure.JsonFileConfigLoader;
 

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.elmika.tsp.application.resolution.PermutationsIterator;
+
 public class PermutationsIteratorTest {
 
     private int countIterationsForN(int n) {

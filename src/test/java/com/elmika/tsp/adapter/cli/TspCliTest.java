@@ -8,16 +8,15 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 
-import com.elmika.tsp.application.BenchmarkTspUseCase;
 import com.elmika.tsp.application.ConfigLoader;
 import com.elmika.tsp.application.ProblemConfiguration;
 import com.elmika.tsp.application.ProblemProvider;
 import com.elmika.tsp.application.SolveTspUseCase;
 import com.elmika.tsp.application.TspSolver;
-import com.elmika.tsp.domain.DistanceMatrixProblem;
-import com.elmika.tsp.domain.EuclideanProblem;
-import com.elmika.tsp.domain.Problem;
-import com.elmika.tsp.domain.Solution;
+import com.elmika.tsp.application.benchmark.BenchmarkTspUseCase;
+import com.elmika.tsp.domain.problem.DistanceMatrixProblem;
+import com.elmika.tsp.domain.problem.EuclideanProblem;
+import com.elmika.tsp.domain.solution.Solution;
 
 public class TspCliTest {
 

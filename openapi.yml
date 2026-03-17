@@ -1,0 +1,408 @@
+openapi: 3.0.3
+
+info:
+  title: TSP Solver API
+  description: |
+    Stateless REST API for the Travelling Salesman Problem solver.
+
+    The API exposes four operations:
+    - **GET /api/problems/{type}** — retrieve a named pre-built Euclidean problem as 2D points
+    - **POST /api/solve** — construct a tour from scratch with a resolution strategy
+    - **POST /api/improve** — refine an existing tour with an improvement strategy
+    - **POST /api/benchmark** — rank a set of pre-computed results by distance
+
+    City indices in routes are **1-based** and correspond to the order of the `points` array.
+    All error responses return HTTP 400 with `{"error": "<reason>"}`.
+  version: 0.1-SETUP
+
+servers:
+  - url: http://localhost:8080
+    description: Local Docker container (docker run --rm -p 8080:8080 tsp-solver)
+
+tags:
+  - name: Problems
+    description: Retrieve named pre-built problems
+  - name: Resolution
+    description: Construct tours from scratch
+  - name: Improvement
+    description: Refine existing tours
+  - name: Benchmark
+    description: Rank and compare solutions
+
+paths:
+
+  /api/problems/{type}:
+    get:
+      summary: Get a named problem
+      description: |
+        Returns the 2D coordinates of a named Euclidean problem.
+        Non-Euclidean built-in types (`trivial`, `simple`, `bigger`) cannot be
+        returned as points and will produce a 400 response.
+      operationId: getProblem
+      tags: [Problems]
+      parameters:
+        - name: type
+          in: path
+          required: true
+          description: |
+            Problem type identifier. Supported values:
+            - `cities8` … `cities15` — fixed Euclidean problems with predefined coordinates
+            - `fully-random1` … `fully-random150` — random problems (new seed each run)
+            - `partially-random1` … `partially-random150` — reproducible random (seed 42)
+            - `euclidean` — a small fixed 7-city Euclidean problem
+          schema:
+            type: string
+            example: cities10
+      responses:
+        '200':
+          description: Euclidean problem returned as an ordered list of 2D points
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemResponse'
+              example:
+                points:
+                  - {x: 37.0, y: 95.0}
+                  - {x: 73.0, y: 59.0}
+                  - {x: 15.0, y: 15.0}
+                  - {x: 5.0,  y: 86.0}
+                  - {x: 60.0, y: 70.0}
+                  - {x: 2.0,  y: 96.0}
+                  - {x: 83.0, y: 21.0}
+                  - {x: 18.0, y: 18.0}
+                  - {x: 30.0, y: 52.0}
+                  - {x: 43.0, y: 29.0}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/solve:
+    post:
+      summary: Solve a problem from scratch
+      description: |
+        Constructs a complete tour from scratch using a resolution strategy.
+        City indices in the returned route are **1-based** and correspond to the
+        order of the `points` array.
+      operationId: solve
+      tags: [Resolution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolveRequest'
+            example:
+              points:
+                - {x: 37.0, y: 95.0}
+                - {x: 73.0, y: 59.0}
+                - {x: 15.0, y: 15.0}
+                - {x: 5.0,  y: 86.0}
+                - {x: 60.0, y: 70.0}
+                - {x: 2.0,  y: 96.0}
+                - {x: 83.0, y: 21.0}
+                - {x: 18.0, y: 18.0}
+                - {x: 30.0, y: 52.0}
+                - {x: 43.0, y: 29.0}
+              strategy: nearest-neighbor
+      responses:
+        '200':
+          description: Solved tour with total distance and execution time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolveResponse'
+              example:
+                route: [1, 5, 4, 6, 9, 3, 8, 7, 10, 2]
+                totalDistance: 312.45
+                strategy: nearest-neighbor
+                durationMs: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/improve:
+    post:
+      summary: Improve an existing tour
+      description: |
+        Applies an improvement strategy to a previously computed tour.
+        The `solution.totalDistance` value is used solely to compute `improvementPercent`;
+        the actual distance is re-computed from the supplied points and route.
+        City indices in the route are **1-based**.
+      operationId: improve
+      tags: [Improvement]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImproveRequest'
+            example:
+              points:
+                - {x: 37.0, y: 95.0}
+                - {x: 73.0, y: 59.0}
+                - {x: 15.0, y: 15.0}
+                - {x: 5.0,  y: 86.0}
+                - {x: 60.0, y: 70.0}
+                - {x: 2.0,  y: 96.0}
+                - {x: 83.0, y: 21.0}
+                - {x: 18.0, y: 18.0}
+                - {x: 30.0, y: 52.0}
+                - {x: 43.0, y: 29.0}
+              solution:
+                route: [1, 6, 4, 9, 5, 2, 7, 10, 3, 8]
+                totalDistance: 298.17
+              strategy: 2opt
+      responses:
+        '200':
+          description: Improved tour with improvement metrics and execution time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImproveResponse'
+              example:
+                route: [1, 4, 6, 9, 5, 2, 10, 7, 3, 8]
+                totalDistance: 281.03
+                strategy: 2opt
+                originalDistance: 298.17
+                improvementPercent: 5.7
+                durationMs: 2
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/benchmark:
+    post:
+      summary: Rank solutions by distance
+      description: |
+        Accepts a list of pre-computed solution metadata and returns them sorted
+        by total distance (shortest first). `gapPercent` is the percentage by which
+        each solution's distance exceeds the best, rounded to one decimal place.
+        No computation is performed — this is a pure ranking operation.
+      operationId: benchmark
+      tags: [Benchmark]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BenchmarkRequest'
+            example:
+              solutions:
+                - {label: "nearest-neighbor",  distance: 312.45, durationMs: 1}
+                - {label: "greedy-edge",        distance: 298.17, durationMs: 3}
+                - {label: "greedy-edge + 2opt", distance: 281.03, durationMs: 5}
+      responses:
+        '200':
+          description: Solutions ranked by total distance, best first
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenchmarkResponse'
+              example:
+                results:
+                  - {rank: 1, label: "greedy-edge + 2opt", distance: 281.03, gapPercent: 0.0,  durationMs: 5}
+                  - {rank: 2, label: "greedy-edge",         distance: 298.17, gapPercent: 6.1,  durationMs: 3}
+                  - {rank: 3, label: "nearest-neighbor",    distance: 312.45, gapPercent: 11.2, durationMs: 1}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+
+  schemas:
+
+    Point:
+      type: object
+      required: [x, y]
+      properties:
+        x:
+          type: number
+          format: double
+          description: X coordinate
+        y:
+          type: number
+          format: double
+          description: Y coordinate
+
+    Solution:
+      type: object
+      required: [route, totalDistance]
+      properties:
+        route:
+          type: array
+          items:
+            type: integer
+          description: Ordered list of 1-based city indices forming the tour
+        totalDistance:
+          type: number
+          format: double
+          description: Total tour distance (sum of consecutive edge lengths, including return to start)
+
+    ProblemResponse:
+      type: object
+      properties:
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/Point'
+          description: Ordered list of city coordinates; index 0 = city 1
+
+    SolveRequest:
+      type: object
+      required: [points, strategy]
+      properties:
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/Point'
+          description: City coordinates; must not be empty
+          minItems: 1
+        strategy:
+          type: string
+          enum: [brute-force, random, random10, random100, nearest-neighbor, greedy-edge]
+          description: |
+            Resolution strategy to apply:
+            - `brute-force` — optimal exhaustive search; practical only up to ~12 cities
+            - `random` — single random permutation
+            - `random10` / `random100` — best of 10 or 100 random permutations
+            - `nearest-neighbor` — greedy nearest-unvisited-city heuristic
+            - `greedy-edge` — builds the tour by repeatedly adding the shortest available edge
+
+    SolveResponse:
+      type: object
+      properties:
+        route:
+          type: array
+          items:
+            type: integer
+          description: Ordered list of 1-based city indices
+        totalDistance:
+          type: number
+          format: double
+        strategy:
+          type: string
+        durationMs:
+          type: integer
+          format: int64
+          description: Wall-clock time for the solve operation
+
+    ImproveRequest:
+      type: object
+      required: [points, solution, strategy]
+      properties:
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/Point'
+          description: City coordinates for the same problem as the initial solution
+          minItems: 1
+        solution:
+          $ref: '#/components/schemas/Solution'
+        strategy:
+          type: string
+          enum: [2opt, oropt, sa, uncrossing]
+          description: |
+            Improvement strategy to apply:
+            - `2opt` — reverses sub-segments to eliminate crossing edges
+            - `oropt` — relocates single cities and segments of 2–3 cities
+            - `sa` — simulated annealing; probabilistically accepts worse moves
+            - `uncrossing` — eliminates crossing edges (Euclidean problems only)
+
+    ImproveResponse:
+      type: object
+      properties:
+        route:
+          type: array
+          items:
+            type: integer
+          description: Improved ordered list of 1-based city indices
+        totalDistance:
+          type: number
+          format: double
+          description: Total distance of the improved tour
+        strategy:
+          type: string
+        originalDistance:
+          type: number
+          format: double
+          description: Total distance of the input solution
+        improvementPercent:
+          type: number
+          format: double
+          description: |
+            Percentage distance reduction: (originalDistance - totalDistance) / originalDistance × 100,
+            rounded to one decimal place. Positive means improvement.
+        durationMs:
+          type: integer
+          format: int64
+
+    BenchmarkEntry:
+      type: object
+      required: [label, distance, durationMs]
+      properties:
+        label:
+          type: string
+          description: Human-readable identifier for this result
+        distance:
+          type: number
+          format: double
+          description: Total tour distance to rank by
+        durationMs:
+          type: integer
+          format: int64
+          description: Time taken to produce this result (informational only)
+
+    BenchmarkRequest:
+      type: object
+      required: [solutions]
+      properties:
+        solutions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BenchmarkEntry'
+          minItems: 1
+          description: Set of results to rank; must not be empty
+
+    BenchmarkResult:
+      type: object
+      properties:
+        rank:
+          type: integer
+          description: 1-based rank (1 = shortest distance)
+        label:
+          type: string
+        distance:
+          type: number
+          format: double
+        gapPercent:
+          type: number
+          format: double
+          description: |
+            Percentage above the best solution's distance, rounded to one decimal place.
+            Always 0.0 for rank 1.
+        durationMs:
+          type: integer
+          format: int64
+
+    BenchmarkResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BenchmarkResult'
+          description: Solutions sorted by distance ascending
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Human-readable description of what was wrong
+
+  responses:
+    BadRequest:
+      description: |
+        Invalid or missing input, or unknown strategy name.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "Unknown resolution strategy: 'foo'. Allowed: brute-force, random, random10, random100, nearest-neighbor, greedy-edge"

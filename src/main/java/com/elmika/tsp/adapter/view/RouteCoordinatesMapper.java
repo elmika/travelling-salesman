@@ -3,10 +3,10 @@ package com.elmika.tsp.adapter.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.elmika.tsp.domain.EuclideanProblem;
-import com.elmika.tsp.domain.geometry.Point;
-import com.elmika.tsp.domain.Problem;
-import com.elmika.tsp.domain.Solution;
+import com.elmika.tsp.domain.problem.EuclideanProblem;
+import com.elmika.tsp.domain.problem.Point;
+import com.elmika.tsp.domain.problem.Problem;
+import com.elmika.tsp.domain.solution.Solution;
 
 /**
  * Maps a Problem + Solution to a RouteCoordinatesView when the problem is Euclidean.
@@ -30,4 +30,3 @@ public final class RouteCoordinatesMapper {
         return new RouteCoordinatesView(coords);
     }
 }
-
