@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type {
   Point,
   Route,
@@ -7,7 +7,7 @@ import type {
   BenchmarkEntry,
   BenchmarkResult,
 } from './api/types';
-import { fetchProblem, solveProblem, improveSolution, runBenchmark } from './api/client';
+import { fetchProblemTypes, fetchProblem, solveProblem, improveSolution, runBenchmark } from './api/client';
 import { Sidebar } from './components/Sidebar';
 import { RouteCanvas } from './components/RouteCanvas';
 import { BenchmarkTable } from './components/BenchmarkTable';
@@ -33,8 +33,15 @@ export default function App() {
     useState<ImprovementStrategy>('2opt');
   const [benchmarkEntries, setBenchmarkEntries] = useState<BenchmarkEntry[]>([]);
   const [benchmarkResults, setBenchmarkResults] = useState<BenchmarkResult[]>([]);
+  const [tsplibTypes, setTsplibTypes] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchProblemTypes()
+      .then((res) => setTsplibTypes(res.tsplibTypes))
+      .catch(() => {/* silently degrade — dropdown still shows hardcoded types */});
+  }, []);
 
   async function handleLoadProblem() {
     setLoading(true);
@@ -46,6 +53,8 @@ export default function App() {
       setCurrentDistance(0);
       setCurrentLabel('');
       setCurrentDurationMs(0);
+      setBenchmarkEntries([]);
+      setBenchmarkResults([]);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -120,6 +129,7 @@ export default function App() {
       <Sidebar
         points={points}
         problemType={problemType}
+        tsplibTypes={tsplibTypes}
         currentRoute={currentRoute}
         selectedResolutionStrategy={selectedResolutionStrategy}
         selectedImprovementStrategy={selectedImprovementStrategy}

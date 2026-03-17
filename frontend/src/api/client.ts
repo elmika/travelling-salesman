@@ -1,5 +1,6 @@
 import type {
   ProblemResponse,
+  ProblemTypesResponse,
   SolveRequest,
   SolveResponse,
   ImproveRequest,
@@ -37,6 +38,10 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   }
 
   return response.json() as Promise<T>;
+}
+
+export function fetchProblemTypes(): Promise<ProblemTypesResponse> {
+  return request<ProblemTypesResponse>('/api/problem-types');
 }
 
 export function fetchProblem(type: string): Promise<ProblemResponse> {

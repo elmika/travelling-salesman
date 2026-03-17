@@ -1,6 +1,6 @@
 package com.elmika.tsp.application.solver;
 
-import com.elmika.tsp.domain.Problem;
+import com.elmika.tsp.domain.problem.Problem;
 
 /**
  * Shared utility methods for solver implementations.

@@ -5,7 +5,8 @@ info:
   description: |
     Stateless REST API for the Travelling Salesman Problem solver.
 
-    The API exposes four operations:
+    The API exposes five operations:
+    - **GET /api/problem-types** — list all available problem type names (including TSPLIB benchmarks)
     - **GET /api/problems/{type}** — retrieve a named pre-built Euclidean problem as 2D points
     - **POST /api/solve** — construct a tour from scratch with a resolution strategy
     - **POST /api/improve** — refine an existing tour with an improvement strategy
@@ -31,6 +32,28 @@ tags:
 
 paths:
 
+  /api/problem-types:
+    get:
+      summary: List available problem types
+      description: |
+        Returns the names of all problem types available on this server.
+        Currently includes the full list of TSPLIB95 EUC_2D benchmarks bundled
+        with the server. Use the returned names directly with `GET /api/problems/{type}`.
+      operationId: getProblemTypes
+      tags: [Problems]
+      responses:
+        '200':
+          description: Available problem types grouped by category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemTypesResponse'
+              example:
+                tsplibTypes:
+                  - tsplib-berlin52
+                  - tsplib-eil51
+                  - tsplib-kroA100
+
   /api/problems/{type}:
     get:
       summary: Get a named problem
@@ -46,10 +69,14 @@ paths:
           required: true
           description: |
             Problem type identifier. Supported values:
-            - `cities8` … `cities15` — fixed Euclidean problems with predefined coordinates
-            - `fully-random1` … `fully-random150` — random problems (new seed each run)
-            - `partially-random1` … `partially-random150` — reproducible random (seed 42)
+            - `cities8` … `cities30` — fixed Euclidean problems with hand-picked coordinates
+            - `circle-3` … `circle-1000` — cities equally spaced on a circle
+            - `cluster-3` … `cluster-1000` — cities in sqrt(N) clusters (seeded by N)
+            - `fully-random1` … `fully-random1000` — random problems (new seed each run)
+            - `partially-random1` … `partially-random1000` — reproducible random (per-size seed)
             - `euclidean` — a small fixed 7-city Euclidean problem
+            - `tsplib-<name>` — TSPLIB95 EUC_2D benchmark (e.g. `tsplib-berlin52`, `tsplib-eil51`,
+              `tsplib-kroA100`); 72 problems ranging from 51 to 11849 cities
           schema:
             type: string
             example: cities10
@@ -234,6 +261,17 @@ components:
           format: double
           description: Total tour distance (sum of consecutive edge lengths, including return to start)
 
+    ProblemTypesResponse:
+      type: object
+      properties:
+        tsplibTypes:
+          type: array
+          items:
+            type: string
+          description: |
+            Full type strings for all available TSPLIB95 EUC_2D benchmarks,
+            sorted alphabetically (e.g. `tsplib-berlin52`, `tsplib-eil51`).
+
     ProblemResponse:
       type: object
       properties:
@@ -258,7 +296,7 @@ components:
           enum: [brute-force, random, random10, random100, nearest-neighbor, greedy-edge]
           description: |
             Resolution strategy to apply:
-            - `brute-force` — optimal exhaustive search; practical only up to ~12 cities
+            - `brute-force` — optimal exhaustive search; **max 12 cities** for synchronous requests
             - `random` — single random permutation
             - `random10` / `random100` — best of 10 or 100 random permutations
             - `nearest-neighbor` — greedy nearest-unvisited-city heuristic

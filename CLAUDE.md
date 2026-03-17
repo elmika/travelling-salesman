@@ -1,4 +1,6 @@
-# CLAUDE.md — Project instructions for Claude Code
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Runtime environment
 
@@ -9,17 +11,19 @@ The project runs entirely in Docker. There is no local Java or Maven installatio
 docker build -t tsp-solver .
 ```
 
-**Run the solver**:
+**Start the API server + web UI**:
 ```
-docker run --rm -v "$(pwd)/output:/app/output" tsp-solver
+docker run --rm -p 8080:8080 tsp-solver
 ```
 
-**Run the tests** (must be done inside the container):
+**Run the tests** (uses the dedicated `test` stage which has Maven — the final image does not):
 ```
-docker run --rm tsp-solver mvn test
+docker build --target test -t tsp-solver-test .
 ```
 
 Do not attempt to run `mvn` commands directly on the host — they will fail.
+
+**Known pre-existing test failure**: `TravellingSalesmanTest.mainFlowRunsWithoutException` reads `problemConfiguration.json` from disk, which does not exist in the Docker build context. All other tests pass.
 
 ## Architecture rules
 
@@ -29,18 +33,32 @@ This project uses Hexagonal Architecture. The dependency rule is strict:
 - **Application** → may import domain only
 - **Infrastructure** → may import application and domain
 - **Adapter (CLI)** → may import application; may import infrastructure only in the composition root (`TravellingSalesman.java`)
+- **Adapter (API)** → may import application; may import infrastructure only in the composition root (`TspApiConfig.java`)
 
 Never collapse these layers or introduce cross-layer shortcuts.
 
 ## Solver conventions
 
-- Improvement solvers (2-opt, Or-opt, SA, crossing elimination) are **decorators**: they wrap a `SolverStrategy` and refine its output. They must not contain their own initial-solution logic.
-- New solvers must be registered in `SolveTspUseCase` (strategy name → instance mapping) and listed in `problemConfiguration.json` under `possibleResolutionStrategies`.
+**Improvement solvers** (TwoOptSolver, OrOptSolver, SimulatedAnnealingSolver, CrossingEliminationSolver) implement **both** `ResolutionStrategy` and `ImprovementStrategy`:
+- `(ResolutionStrategy inner)` constructor — for CLI composite use; `solve(problem)` delegates to `improve(problem, inner.solve(problem))`
+- `()` no-arg constructor — for API standalone use via `/api/improve`
+- The core logic lives in `improve(problem, initial)`; `solve()` must throw if `inner` is null
+
+These are **decorators**: they wrap a `SolverStrategy` and refine its output. They must not contain their own initial-solution logic.
+
+**Adding a new resolution strategy**:
+1. Register it in `SolveTspUseCase` (strategy name → instance mapping)
+2. Register it in `ResolutionService` (with `syncSizeLimit`/`asyncSizeLimit` via `StrategyEntry`)
+3. List it in `problemConfiguration.json` under `possibleResolutionStrategies` (CLI)
+4. Add it to the `strategy` enum in `openapi.yml` and `tsp-solver.postman_collection.json`
+
+**Adding a new improvement strategy**: same pattern but in `ImprovementService`.
 
 ## Fail-fast philosophy
 
 - No silent defaults. If config is missing, malformed, or contains an unknown strategy, throw — do not fall back to a default.
 - Validation belongs in `SolverConfiguration.createFrom()`, not scattered across callers.
+- `ProblemFactory` default case throws on unknown type.
 
 ## Living documentation
 

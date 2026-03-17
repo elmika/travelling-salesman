@@ -31,8 +31,16 @@ public class ProblemFactory {
             case ProblemTypeParser.PARTIALLY_RANDOM:
                 ProblemTypeParser.validateSizeForType(core, size);
                 return createPredictableRandomProblemOfSize(size);
+            case ProblemTypeParser.CIRCLE:
+                ProblemTypeParser.validateSizeForType(core, size);
+                return createCircleProblemOfSize(size);
+            case ProblemTypeParser.CLUSTER:
+                ProblemTypeParser.validateSizeForType(core, size);
+                return createClusterProblemOfSize(size);
+            case ProblemTypeParser.TSPLIB:
+                return TspLibParser.load(problemType.substring(ProblemTypeParser.TSPLIB.length()));
             default:
-                return createSimplestProblem();
+                throw new IllegalArgumentException("Unknown problem type: '" + problemType + "'.");
         }
     }
 
@@ -77,11 +85,20 @@ public class ProblemFactory {
         return new EuclideanProblem(points);
     }
 
+    /**
+     * Returns the first {@code size} cities from the 30-city curated set.
+     * Coordinates are hand-picked to give good spread across [0,100]x[0,100].
+     */
     private static Problem createEuclideanProblemOfSize(int size) {
         double[][] fullArray = {
-            {37, 95}, {73, 59}, {15, 15}, {5, 86}, {60, 70},
-            {2, 96}, {83, 21}, {18, 18}, {30, 52}, {43, 29},
-            {61, 13}, {29, 36}, {45, 78}, {19, 51}, {59, 4}
+            // --- original 15 ---
+            {37, 95}, {73, 59}, {15, 15}, {5,  86}, {60, 70},
+            {2,  96}, {83, 21}, {18, 18}, {30, 52}, {43, 29},
+            {61, 13}, {29, 36}, {45, 78}, {19, 51}, {59,  4},
+            // --- extended to 30 ---
+            {90, 90}, {10, 90}, {90, 10}, {50, 50}, {70, 40},
+            {80, 70}, {40, 80}, {20, 30}, {55, 20}, {85, 55},
+            {30, 70}, {65, 85}, {75, 15}, {45, 60}, {10, 50}
         };
         double[][] truncated = new double[size][];
         for (int j = 0; j < size; j++) {
@@ -90,16 +107,59 @@ public class ProblemFactory {
         return new EuclideanProblem(truncated);
     }
 
+    /**
+     * Places {@code n} cities equally spaced on a circle of radius 40
+     * centred at (50, 50). The trivially optimal tour visits them in order.
+     */
+    private static Problem createCircleProblemOfSize(int n) {
+        double[][] coords = new double[n][2];
+        double centerX = 50.0, centerY = 50.0, radius = 40.0;
+        for (int i = 0; i < n; i++) {
+            double angle = 2.0 * Math.PI * i / n;
+            coords[i][0] = centerX + radius * Math.cos(angle);
+            coords[i][1] = centerY + radius * Math.sin(angle);
+        }
+        return new EuclideanProblem(coords);
+    }
+
+    /**
+     * Places {@code n} cities in sqrt(n) tight clusters spread across the map.
+     * Seeded by {@code n} so the same size always produces the same layout.
+     */
+    private static Problem createClusterProblemOfSize(int n) {
+        int k = Math.max(2, (int) Math.round(Math.sqrt(n)));
+        Random rng = new Random((long) n * 1_000_003L);
+
+        double[][] centers = new double[k][2];
+        for (int c = 0; c < k; c++) {
+            centers[c][0] = 15.0 + rng.nextDouble() * 70.0;
+            centers[c][1] = 15.0 + rng.nextDouble() * 70.0;
+        }
+
+        double[][] coords = new double[n][2];
+        for (int i = 0; i < n; i++) {
+            int cluster = rng.nextInt(k);
+            coords[i][0] = Math.max(0, Math.min(100, centers[cluster][0] + rng.nextGaussian() * 8.0));
+            coords[i][1] = Math.max(0, Math.min(100, centers[cluster][1] + rng.nextGaussian() * 8.0));
+        }
+        return new EuclideanProblem(coords);
+    }
+
+    /**
+     * Reproducible random problem: each size {@code n} uses an independent seed
+     * derived from {@code n}, so partially-random5 always gives the same 5 cities
+     * and those cities are unrelated to partially-random10.
+     */
     private static Problem createPredictableRandomProblemOfSize(int size) {
-        return createRandomProblemOfSize(size, true);
+        return createRandomProblemOfSize(size, (long) size * 1_000_003L);
     }
 
     private static Problem createRandomProblemOfSize(int size) {
-        return createRandomProblemOfSize(size, false);
+        return createRandomProblemOfSize(size, null);
     }
 
-    private static Problem createRandomProblemOfSize(int size, boolean fixedSeed) {
-        Random random = fixedSeed ? new Random(42) : new Random();
+    private static Problem createRandomProblemOfSize(int size, Long seed) {
+        Random random = seed != null ? new Random(seed) : new Random();
         double[][] coordinates = new double[size][2];
         for (int j = 0; j < size; j++) {
             coordinates[j][0] = (double) random.nextInt(101);

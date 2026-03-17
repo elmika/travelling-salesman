@@ -1,5 +1,8 @@
 package com.elmika.tsp.application;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.elmika.tsp.domain.problem.Problem;
 
 /**
@@ -8,4 +11,9 @@ import com.elmika.tsp.domain.problem.Problem;
  */
 public interface ProblemProvider {
     Problem create(String problemType);
+
+    /** Returns the names of all available TSPLIB problems (e.g. {@code "tsplib-berlin52"}). */
+    default List<String> tsplibNames() {
+        return Collections.emptyList();
+    }
 }

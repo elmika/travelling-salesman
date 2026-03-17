@@ -5,4 +5,5 @@ target
 output/
 frontend/node_modules/
 frontend/dist/
+frontend/.vite/
 src/main/resources/static/

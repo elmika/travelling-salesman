@@ -1,5 +1,6 @@
 package com.elmika.tsp.application.resolution;
 
+import com.elmika.tsp.application.solver.SolverUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
