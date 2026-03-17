@@ -53,6 +53,8 @@ export default function App() {
       setCurrentDistance(0);
       setCurrentLabel('');
       setCurrentDurationMs(0);
+      setBenchmarkEntries([]);
+      setBenchmarkResults([]);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
